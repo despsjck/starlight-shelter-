@@ -1,0 +1,1634 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>별빛쉘터 — STARLIGHT SHELTER</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ── Reset & Variables ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #05060e;
+      --surf:     #090b18;
+      --panel:    #0d1020;
+      --border:   #1c1f38;
+      --bglow:    #2e3462;
+      --acc:      #4d7cff;
+      --acc2:     #8b5cf6;
+      --neon:     #00ccff;
+      --neon2:    #7c3aed;
+      --gold:     #f0c060;
+      --text:     #c4ccee;
+      --muted:    #424870;
+      --green:    #1fd4a0;
+      --red:      #ef4444;
+      --orange:   #fb923c;
+      --font:     'Noto Sans KR', sans-serif;
+      --mono:     'JetBrains Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      overflow-y: hidden;
+    }
+
+    /* ── Stars ── */
+    #stars {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    }
+
+    /* ── Scanlines ── */
+    #scanlines {
+      position: fixed; inset: 0; z-index: 2; pointer-events: none;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 3px,
+        rgba(0,0,8,0.10) 3px, rgba(0,0,8,0.10) 4px
+      );
+    }
+
+    /* ── App Shell ── */
+    #app {
+      position: relative; z-index: 10;
+      height: 100vh;
+      display: flex; flex-direction: column;
+      /* opacity / pointer-events controlled by JS via .entered class */
+    }
+
+    /* ══════════════════════════════
+       TOP BAR
+    ══════════════════════════════ */
+    #topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.6rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      background: rgba(5,6,14,0.97);
+      backdrop-filter: blur(12px);
+      flex-shrink: 0; gap: 1rem;
+      min-height: 56px;
+    }
+
+    .tb-left { display: flex; align-items: center; gap: 1.25rem; }
+
+    /* Logo */
+    .logo { display: flex; flex-direction: column; line-height: 1; }
+
+    .logo-ko {
+      font-size: 1.25rem; font-weight: 700;
+      background: linear-gradient(100deg, #c0cbff 0%, var(--acc2) 50%, var(--gold) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      position: relative;
+    }
+    .logo-ko::before, .logo-ko::after {
+      content: attr(data-t);
+      position: absolute; top: 0; left: 0; width: 100%;
+      -webkit-background-clip: text; background-clip: text;
+      animation-iteration-count: infinite;
+      animation-timing-function: steps(1);
+    }
+    .logo-ko::before {
+      -webkit-text-fill-color: #ff44ee; opacity: 0;
+      animation: glA 5s infinite;
+      clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+    }
+    .logo-ko::after {
+      -webkit-text-fill-color: #00ffee; opacity: 0;
+      animation: glB 5s infinite;
+      clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+    }
+    @keyframes glA {
+      0%,88%,91%,100%{ opacity:0; transform:translate(0); }
+      89%{ opacity:.7; transform:translate(3px,-1px); }
+      90%{ opacity:.7; transform:translate(-2px,1px); }
+    }
+    @keyframes glB {
+      0%,88%,91%,100%{ opacity:0; transform:translate(0); }
+      89%{ opacity:.7; transform:translate(-3px,1px); }
+      90%{ opacity:.7; transform:translate(2px,-1px); }
+    }
+
+    .logo-en {
+      font-family: var(--mono); font-size: 0.5rem;
+      color: var(--muted); letter-spacing: .22em; margin-top: .1rem;
+    }
+
+    /* Status strip */
+    .stat-strip { display: flex; align-items: center; gap: 1.25rem; }
+    .stat-item { display: flex; flex-direction: column; gap: .08rem; }
+    .stat-lbl { font-family: var(--mono); font-size: .5rem; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; }
+    .stat-val { font-family: var(--mono); font-size: .78rem; font-weight: 700; }
+    .stat-val.ok   { color: var(--green); }
+    .stat-val.warn { color: var(--gold); }
+
+    /* Vertical separator */
+    .tb-sep { width: 1px; height: 30px; background: var(--border); }
+
+    /* Control buttons */
+    .tb-right { display: flex; align-items: center; gap: .5rem; }
+
+    .cbtn {
+      display: flex; align-items: center; gap: .35rem;
+      padding: .35rem .7rem;
+      background: transparent;
+      border: 1px solid var(--border); border-radius: 6px;
+      color: var(--muted); font-family: var(--mono); font-size: .62rem;
+      cursor: pointer; transition: all .2s; letter-spacing: .05em;
+      user-select: none;
+    }
+    .cbtn:hover { border-color: var(--acc); color: var(--acc); }
+    .cbtn.on { border-color: var(--neon); color: var(--neon); background: rgba(0,204,255,.07); }
+    .cbtn .led { width:6px; height:6px; border-radius:50%; background:currentColor; }
+    .cbtn.on .led { box-shadow: 0 0 6px currentColor; animation: blink 2s ease-in-out infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+    /* ══════════════════════════════
+       MAIN LAYOUT
+    ══════════════════════════════ */
+    #content {
+      display: flex; flex: 1; overflow: hidden;
+    }
+
+    /* ══════════════════════════════
+       BUILDING SIDEBAR
+    ══════════════════════════════ */
+    #bldg {
+      width: 196px; flex-shrink: 0;
+      display: flex; flex-direction: column;
+      padding: 1.25rem .875rem 1.25rem 1.125rem;
+      border-right: 1px solid var(--border);
+      background: rgba(5,6,14,.9);
+      gap: 3px;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .bldg-label {
+      font-family: var(--mono); font-size: .5rem;
+      color: var(--muted); letter-spacing: .18em; text-transform: uppercase;
+      margin-bottom: .6rem; padding-left: .15rem;
+    }
+
+    .fbtn {
+      position: relative;
+      display: flex; align-items: center; gap: .55rem;
+      padding: .6rem .65rem;
+      background: var(--surf);
+      border: 1px solid var(--border); border-radius: 7px;
+      cursor: pointer; transition: all .2s ease;
+      text-align: left; overflow: hidden;
+      outline: none;
+    }
+    /* Building pyramid: narrower toward roof */
+    .fbtn[data-f="rf"]{ margin-left: 28px; }
+    .fbtn[data-f="3f"]{ margin-left: 14px; }
+    .fbtn[data-f="2f"]{ margin-left: 7px; }
+    .fbtn[data-f="1f"]{ margin-left: 0; }
+    .fbtn[data-f="b1"]{ margin-left: 0; margin-top: 3px; border-top: 2px dashed var(--border); }
+
+    .fbtn::before {
+      content:''; position:absolute; left:0; top:0; bottom:0;
+      width:3px; background:transparent; border-radius:4px 0 0 4px;
+      transition: background .2s, box-shadow .2s;
+    }
+    .fbtn:hover { border-color: var(--bglow); background: rgba(77,124,255,.06); }
+    .fbtn:hover::before { background: var(--acc); }
+    .fbtn.active { border-color: var(--acc); background: rgba(77,124,255,.13);
+      box-shadow: 0 0 18px rgba(77,124,255,.12), inset 0 0 10px rgba(77,124,255,.05); }
+    .fbtn.active::before { background: var(--neon); box-shadow: 0 0 8px var(--neon); }
+
+    .fbtn-code {
+      font-family: var(--mono); font-size: .82rem; font-weight: 700;
+      color: var(--text); min-width: 26px;
+      transition: color .2s;
+    }
+    .fbtn.active .fbtn-code { color: var(--neon); }
+
+    .fbtn-info { flex:1; min-width:0; }
+    .fbtn-name { font-size: .68rem; color: var(--muted); line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .fbtn.active .fbtn-name { color: var(--text); }
+
+    .fbtn-rooms {
+      font-family: var(--mono); font-size: .55rem; color: var(--muted);
+      background: rgba(255,255,255,.04); border: 1px solid var(--border);
+      border-radius: 3px; padding: .05rem .28rem; flex-shrink:0;
+    }
+
+    .wins { display:flex; gap:2px; flex-shrink:0; }
+    .w { width:4px; height:5px; border-radius:1px; background:var(--muted); opacity:.25; transition:all .2s; }
+    .fbtn.active .w { background:var(--neon); opacity:.75; box-shadow:0 0 4px var(--neon); }
+
+    .ground { height:1px; background: linear-gradient(90deg,transparent,var(--bglow),transparent); margin-top:4px; }
+
+    /* Exterior thumbnail at bottom of sidebar */
+    .bldg-ext {
+      margin-top: auto; padding-top: .75rem;
+      border-top: 1px solid var(--border);
+    }
+    .bldg-ext img {
+      width:100%; height:80px; object-fit:cover; border-radius:6px;
+      border:1px solid var(--border); filter:brightness(.55) saturate(.7);
+      display:block;
+    }
+    .bldg-ext-label {
+      font-family:var(--mono); font-size:.48rem; color:var(--muted);
+      letter-spacing:.12em; text-transform:uppercase; margin-top:.3rem;
+    }
+
+    /* ══════════════════════════════
+       FLOOR CONTENT
+    ══════════════════════════════ */
+    #fcontent {
+      flex:1; overflow-y:auto; padding: 2rem 2rem 3rem;
+      scroll-behavior: smooth;
+    }
+    #fcontent::-webkit-scrollbar { width:3px; }
+    #fcontent::-webkit-scrollbar-track { background:var(--bg); }
+    #fcontent::-webkit-scrollbar-thumb { background:var(--bglow); border-radius:2px; }
+
+    .fsec { display:none; }
+    .fsec.active {
+      display:block;
+      animation: secIn .3s ease;
+    }
+    @keyframes secIn {
+      from { opacity:0; transform:translateY(12px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    /* ── Floor Header ── */
+    .fhdr {
+      display:grid; grid-template-columns:1fr auto;
+      gap:1.5rem; align-items:start;
+      margin-bottom:1.75rem; padding-bottom:1.5rem;
+      border-bottom:1px solid var(--border);
+    }
+
+    .fhdr-path {
+      font-family:var(--mono); font-size:.58rem;
+      color:var(--muted); letter-spacing:.14em; margin-bottom:.45rem;
+    }
+    .fhdr-path span { color:var(--acc); }
+
+    .fhdr-title {
+      font-size: clamp(1.4rem,2.5vw,2rem);
+      font-weight:700; color:#fff; line-height:1.1; margin-bottom:.2rem;
+    }
+
+    .fhdr-en {
+      font-family:var(--mono); font-size:.65rem;
+      color:var(--acc); letter-spacing:.14em; margin-bottom:.9rem;
+    }
+
+    .fhdr-desc {
+      font-size:.84rem; color:var(--muted); line-height:1.85; max-width:580px;
+    }
+
+    .fhdr-stats {
+      display:flex; gap:.65rem; margin-top:1.1rem; flex-wrap:wrap;
+    }
+    .fhdr-stat {
+      padding:.45rem .8rem;
+      background:var(--surf); border:1px solid var(--border); border-radius:6px;
+      display:flex; flex-direction:column; gap:.1rem;
+    }
+    .fhdr-stat-lbl { font-family:var(--mono); font-size:.5rem; text-transform:uppercase; letter-spacing:.12em; color:var(--muted); }
+    .fhdr-stat-val { font-family:var(--mono); font-size:.82rem; font-weight:700; color:var(--text); }
+
+    .fhdr-img {
+      width:210px; height:145px; object-fit:cover;
+      border-radius:8px; border:1px solid var(--border);
+      filter:brightness(.75) saturate(.85);
+      flex-shrink:0;
+    }
+
+    /* ── Section Divider ── */
+    .sdiv {
+      display:flex; align-items:center; gap:.75rem; margin-bottom:1rem;
+    }
+    .sdiv span { font-family:var(--mono); font-size:.58rem; text-transform:uppercase; letter-spacing:.18em; color:var(--muted); white-space:nowrap; }
+    .sdiv::before, .sdiv::after { content:''; flex:1; height:1px; background:var(--border); }
+    .sdiv::before { max-width:20px; }
+
+    /* ══════════════════════════════
+       ROOM CARDS
+    ══════════════════════════════ */
+    .rgrid {
+      display:grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px,1fr));
+      gap:.875rem;
+    }
+
+    .rcard {
+      position:relative; background:var(--surf);
+      border:1px solid var(--border); border-radius:10px;
+      overflow:hidden; cursor:pointer;
+      transition: border-color .2s, transform .2s, box-shadow .2s;
+    }
+    .rcard:hover {
+      border-color:var(--acc); transform:translateY(-2px);
+      box-shadow: 0 6px 24px rgba(77,124,255,.18);
+    }
+
+    .rcard-img {
+      width:100%; height:140px; object-fit:cover; display:block;
+      filter:brightness(.68) saturate(.8);
+      transition: filter .3s;
+    }
+    .rcard:hover .rcard-img { filter:brightness(.88) saturate(1.05); }
+
+    .rcard-body { padding:.8rem .875rem; }
+
+    .rbadge {
+      display:inline-block; font-family:var(--mono);
+      font-size:.55rem; text-transform:uppercase; letter-spacing:.1em;
+      padding:.1rem .42rem; border-radius:3px; margin-bottom:.38rem;
+    }
+
+    .rcard-name { font-size:.9rem; font-weight:600; color:#fff; margin-bottom:.28rem; }
+    .rcard-desc { font-size:.74rem; color:var(--muted); line-height:1.55; }
+
+    /* Glow bar at bottom */
+    .rcard-bar {
+      position:absolute; bottom:0; left:0; right:0; height:2px;
+      background:transparent; transition:background .2s;
+    }
+    .rcard:hover .rcard-bar { background:linear-gradient(90deg,var(--acc),var(--acc2)); }
+
+    /* Corner bracket */
+    .rcard::after {
+      content:''; position:absolute; bottom:7px; right:7px;
+      width:10px; height:10px;
+      border-bottom:1.5px solid var(--bglow); border-right:1.5px solid var(--bglow);
+      opacity:0; transition:opacity .2s;
+    }
+    .rcard:hover::after { opacity:1; }
+
+    /* Enter hint */
+    .rcard-hint {
+      position:absolute; top:8px; right:8px;
+      background:rgba(0,0,0,.65); border:1px solid rgba(255,255,255,.1);
+      border-radius:4px; padding:.15rem .4rem;
+      font-family:var(--mono); font-size:.55rem; color:rgba(255,255,255,.45);
+      opacity:0; transition:opacity .2s;
+    }
+    .rcard:hover .rcard-hint { opacity:1; }
+
+    /* Badge colors */
+    .b-sys  { background:rgba(77,124,255,.15); color:#6fa3ff; }
+    .b-core { background:rgba(0,204,255,.15); color:var(--neon); }
+    .b-pow  { background:rgba(248,113,113,.15); color:#f87171; }
+    .b-sec  { background:rgba(239,68,68,.18); color:#ef4444; border:1px solid rgba(239,68,68,.25); }
+    .b-pub  { background:rgba(244,114,182,.15); color:#f472b6; }
+    .b-cast { background:rgba(251,146,60,.15); color:#fb923c; }
+    .b-liv  { background:rgba(31,212,160,.15); color:var(--green); }
+    .b-info { background:rgba(251,191,36,.15); color:#fbbf24; }
+    .b-lei  { background:rgba(167,139,250,.15); color:#a78bfa; }
+    .b-med  { background:rgba(248,113,113,.15); color:#f87171; }
+
+    /* ══════════════════════════════
+       MODAL
+    ══════════════════════════════ */
+    #mbdp {
+      display:none; position:fixed; inset:0; z-index:1000;
+      background:rgba(5,6,14,.93); backdrop-filter:blur(10px);
+      align-items:center; justify-content:center; padding:1.25rem;
+    }
+    #mbdp.open { display:flex; animation:fdIn .2s ease; }
+    @keyframes fdIn { from{opacity:0} to{opacity:1} }
+
+    #modal {
+      position:relative; background:var(--panel);
+      border:1px solid var(--bglow); border-radius:16px;
+      width:100%; max-width:780px; max-height:90vh;
+      overflow-y:auto;
+      box-shadow: 0 0 80px rgba(77,124,255,.1), 0 28px 70px rgba(0,0,0,.85);
+      animation: mIn .25s ease;
+    }
+    @keyframes mIn {
+      from{ opacity:0; transform:scale(.97) translateY(12px); }
+      to  { opacity:1; transform:scale(1) translateY(0); }
+    }
+    #modal::-webkit-scrollbar { width:3px; }
+    #modal::-webkit-scrollbar-thumb { background:var(--bglow); }
+
+    #m-img {
+      width:100%; height:300px; object-fit:cover;
+      border-radius:12px 12px 0 0; display:block;
+    }
+    #m-canvas { display:none; width:100%; height:300px; border-radius:12px 12px 0 0; }
+
+    .mbody { padding:1.75rem 2rem 2rem; }
+
+    .m-path { font-family:var(--mono); font-size:.6rem; color:var(--muted); letter-spacing:.1em; margin-bottom:.5rem; }
+    .m-path em { color:var(--acc); font-style:normal; }
+
+    #m-title { font-size:1.8rem; font-weight:700; color:#fff; margin-bottom:.2rem; }
+    #m-en { font-family:var(--mono); font-size:.72rem; color:var(--acc); letter-spacing:.14em; margin-bottom:1.1rem; }
+
+    .mhr { height:1px; background:var(--border); margin:.9rem 0; }
+
+    #m-desc { font-size:.88rem; color:var(--text); line-height:1.95; }
+
+    #m-meta {
+      display:grid; grid-template-columns:1fr 1fr;
+      gap:.7rem; margin-top:1.5rem;
+    }
+    .mmc {
+      background:var(--surf); border:1px solid var(--border); border-radius:8px;
+      padding:.7rem .9rem;
+    }
+    .mmk { font-family:var(--mono); font-size:.55rem; text-transform:uppercase; letter-spacing:.12em; color:var(--muted); margin-bottom:.28rem; }
+    .mmv { font-size:.84rem; color:var(--text); font-weight:500; }
+
+    .m-close {
+      position:absolute; top:1rem; right:1rem;
+      width:34px; height:34px; border-radius:50%;
+      background:rgba(0,0,0,.65); border:1px solid rgba(255,255,255,.12);
+      color:#fff; font-size:1rem; cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      transition:background .2s; z-index:10;
+    }
+    .m-close:hover { background:rgba(239,68,68,.4); }
+
+    /* ── Placeholder canvas ── */
+    canvas.rcard-img { filter:none !important; }
+
+    /* ══════════════════════════════
+       LANDING PAGE
+    ══════════════════════════════ */
+    #landing {
+      position: fixed; inset: 0; z-index: 200;
+      cursor: pointer; overflow: hidden;
+      background: var(--bg);
+    }
+
+    #landing-img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center 30%;
+      display: block;
+      filter: brightness(0.52) saturate(0.85);
+      transform: scale(1.04);
+      transition: transform 12s ease, filter .5s ease;
+    }
+    #landing.ready #landing-img {
+      transform: scale(1); /* 느린 줌 아웃 효과 */
+    }
+    #landing:hover #landing-img {
+      filter: brightness(0.65) saturate(1);
+    }
+
+    /* 상단 페이드 */
+    #landing::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 180px; z-index: 1;
+      background: linear-gradient(to bottom, rgba(5,6,14,.85) 0%, transparent 100%);
+      pointer-events: none;
+    }
+    /* 하단 페이드 */
+    #landing::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 220px; z-index: 1;
+      background: linear-gradient(to top, rgba(5,6,14,.9) 0%, transparent 100%);
+      pointer-events: none;
+    }
+
+    .landing-center {
+      position: absolute; inset: 0; z-index: 2;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: .6rem; text-align: center;
+      padding: 2rem;
+    }
+
+    .landing-badge {
+      font-family: var(--mono); font-size: .58rem;
+      letter-spacing: .22em; text-transform: uppercase;
+      color: rgba(200,215,255,.5);
+      border: 1px solid rgba(200,215,255,.12);
+      padding: .3rem 1rem; border-radius: 99px;
+      margin-bottom: .5rem;
+    }
+
+    .landing-title {
+      font-size: clamp(2.8rem, 7vw, 5rem);
+      font-weight: 700; line-height: 1;
+      background: linear-gradient(130deg, #e8ecff 0%, var(--acc2) 45%, var(--gold) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      /* 글리치 */
+      position: relative;
+    }
+    .landing-title::before, .landing-title::after {
+      content: attr(data-t);
+      position: absolute; top: 0; left: 0; width: 100%;
+      background: transparent;
+      -webkit-background-clip: text; background-clip: text;
+      animation-timing-function: steps(1); animation-iteration-count: infinite;
+    }
+    .landing-title::before {
+      -webkit-text-fill-color: #ff44ee; opacity: 0;
+      clip-path: polygon(0 0, 100% 0, 100% 42%, 0 42%);
+      animation: glA 6s infinite;
+    }
+    .landing-title::after {
+      -webkit-text-fill-color: #00ffee; opacity: 0;
+      clip-path: polygon(0 58%, 100% 58%, 100% 100%, 0 100%);
+      animation: glB 6s infinite;
+    }
+
+    .landing-en {
+      font-family: var(--mono); font-size: clamp(.65rem, 1.5vw, .9rem);
+      color: rgba(200,215,255,.45); letter-spacing: .25em; margin-top: .25rem;
+    }
+
+    .landing-enter {
+      margin-top: 2.5rem;
+      display: flex; flex-direction: column; align-items: center; gap: .5rem;
+    }
+
+    .enter-btn {
+      position: relative;
+      padding: .75rem 2.5rem;
+      background: rgba(77,124,255,.1);
+      border: 1px solid rgba(77,124,255,.4);
+      border-radius: 8px;
+      color: #c0cbff; font-family: var(--mono); font-size: .78rem;
+      letter-spacing: .15em; text-transform: uppercase;
+      cursor: pointer; transition: all .25s ease;
+      overflow: hidden;
+    }
+    .enter-btn::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(77,124,255,.15), transparent);
+      transform: translateX(-100%);
+      transition: transform .5s ease;
+    }
+    #landing:hover .enter-btn::before { transform: translateX(100%); }
+    #landing:hover .enter-btn {
+      border-color: var(--neon); color: #fff;
+      box-shadow: 0 0 20px rgba(0,204,255,.2);
+    }
+
+    .enter-hint {
+      font-family: var(--mono); font-size: .52rem;
+      color: rgba(200,215,255,.3); letter-spacing: .12em;
+      animation: hintPulse 2.5s ease-in-out infinite;
+    }
+    @keyframes hintPulse {
+      0%,100%{ opacity:.3 } 50%{ opacity:.7 }
+    }
+
+    /* 우측 하단 좌표 텍스트 */
+    .landing-coord {
+      position: absolute; bottom: 1.5rem; right: 1.75rem; z-index: 2;
+      font-family: var(--mono); font-size: .52rem;
+      color: rgba(200,215,255,.25); letter-spacing: .1em;
+      line-height: 1.7; text-align: right;
+    }
+
+    /* 좌측 하단 스캔라인 장식 */
+    .landing-scan {
+      position: absolute; bottom: 1.75rem; left: 1.75rem; z-index: 2;
+      display: flex; flex-direction: column; gap: 3px;
+    }
+    .landing-scan span {
+      display: block; height: 1px;
+      background: var(--neon); box-shadow: 0 0 5px var(--neon);
+      opacity: .3;
+    }
+    .landing-scan span:nth-child(1){ width: 48px; }
+    .landing-scan span:nth-child(2){ width: 32px; }
+    .landing-scan span:nth-child(3){ width: 16px; }
+
+    /* 진입 트랜지션 */
+    #landing { transition: opacity .9s ease; }
+    #landing.exiting { opacity: 0; pointer-events: none; }
+
+    #app {
+      opacity: 0; pointer-events: none;
+      transition: opacity .7s ease .5s;
+    }
+    #app.entered { opacity: 1; pointer-events: auto; }
+
+    /* ══════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════ */
+    @media (max-width:680px) {
+      body { overflow-y:auto; }
+      #app { height:auto; }
+      #landing-img { object-position: center center; }
+      .landing-title { font-size: 2.8rem; }
+      #content { flex-direction:column; overflow:visible; }
+      #fcontent { overflow:visible; padding:1rem 1rem 2rem; }
+
+      #bldg {
+        width:100%; flex-direction:row; flex-wrap:nowrap;
+        justify-content:flex-start; overflow-x:auto;
+        padding:.5rem; gap:4px; border-right:none; border-bottom:1px solid var(--border);
+      }
+      .bldg-label, .bldg-ext, .ground { display:none; }
+      .fbtn[data-f="rf"],.fbtn[data-f="3f"],.fbtn[data-f="2f"],
+      .fbtn[data-f="1f"],.fbtn[data-f="b1"] { margin-left:0; border-top:1px solid var(--border); }
+      .fbtn { padding:.4rem .65rem; min-width:54px; }
+      .fbtn-name, .fbtn-rooms, .wins { display:none; }
+
+      .fhdr { grid-template-columns:1fr; }
+      .fhdr-img { width:100%; height:160px; }
+      .stat-strip { display:none; }
+      .mbody { padding:1.2rem; }
+      #m-meta { grid-template-columns:1fr; }
+      #m-img, #m-canvas { height:200px; }
+    }
+  </style>
+
+  <!-- ── Placeholder render (before DOM) ── -->
+  <script>
+  function _drawPH(ctx, w, h, emoji, lbl, hex) {
+    const r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
+    ctx.fillStyle='#080b16'; ctx.fillRect(0,0,w,h);
+    const gr=ctx.createLinearGradient(0,0,w,h);
+    gr.addColorStop(0,`rgba(${r},${g},${b},.16)`); gr.addColorStop(1,`rgba(${r},${g},${b},.02)`);
+    ctx.fillStyle=gr; ctx.fillRect(0,0,w,h);
+    ctx.strokeStyle=`rgba(${r},${g},${b},.07)`; ctx.lineWidth=1;
+    const gx=Math.round(w/9), gy=Math.round(h/5);
+    for(let x=0;x<=w;x+=gx){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke();}
+    for(let y=0;y<=h;y+=gy){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();}
+    const cx=w/2, cy=h*.42;
+    ctx.font=`${Math.round(h*.24)}px serif`; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillStyle='rgba(255,255,255,.82)'; ctx.fillText(emoji,cx,cy);
+    ctx.font=`400 ${Math.max(10,Math.round(h*.066))}px "Noto Sans KR",sans-serif`;
+    ctx.fillStyle=`rgba(${r},${g},${b},.75)`; ctx.fillText(lbl,cx,h*.78);
+    const cl=Math.min(w,h)*.055, m=5;
+    ctx.strokeStyle=`rgba(${r},${g},${b},.45)`; ctx.lineWidth=1.5;
+    [[m,m+cl,m,m,m+cl,m],[w-m-cl,m,w-m,m,w-m,m+cl],
+     [m,h-m-cl,m,h-m,m+cl,h-m],[w-m-cl,h-m,w-m,h-m,w-m,h-m-cl]].forEach(([x1,y1,x2,y2,x3,y3])=>{
+      ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.lineTo(x3,y3);ctx.stroke();
+    });
+  }
+  function _mkPH(emoji,lbl,color,w,h){
+    const c=document.createElement('canvas'); c.width=w||400; c.height=h||140;
+    _drawPH(c.getContext('2d'),c.width,c.height,emoji,lbl,color); return c;
+  }
+  function _replImg(img){
+    if(img._ph)return; img._ph=true;
+    if(img.id==='m-img') return; // modal handles itself via onerror→showCanvas
+    const c=_mkPH(img.dataset.e||'🏠',img.dataset.l||img.alt||'',img.dataset.c||'#4d7cff',400,140);
+    c.className=img.className;
+    img.replaceWith(c);
+  }
+  document.addEventListener('error',e=>{ if(e.target.tagName==='IMG') _replImg(e.target); },true);
+  </script>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+<div id="scanlines"></div>
+
+<!-- ══ LANDING ══ -->
+<div id="landing" onclick="enterShelter()">
+  <img id="landing-img" src="별빛쉘터 외경.png" alt="별빛쉘터 외경"
+       data-e="🏢" data-l="별빛쉘터 외경" data-c="#4d7cff">
+
+  <div class="landing-center">
+    <div class="landing-badge">ZONE-01 · STARLIGHT SHELTER COMPLEX</div>
+    <div class="landing-title" data-t="별빛쉘터">별빛쉘터</div>
+    <div class="landing-en">STARLIGHT SHELTER</div>
+    <div class="landing-enter">
+      <div class="enter-btn">입장하기</div>
+      <div class="enter-hint">Click anywhere to enter</div>
+    </div>
+  </div>
+
+  <div class="landing-coord">
+    37°33′N 127°02′E<br>
+    ALT · 42m<br>
+    SECTOR · LOOP-01
+  </div>
+  <div class="landing-scan">
+    <span></span><span></span><span></span>
+  </div>
+</div>
+
+<div id="app">
+
+  <!-- ══ TOP BAR ══ -->
+  <div id="topbar">
+    <div class="tb-left">
+      <div class="logo">
+        <span class="logo-ko" data-t="별빛쉘터">별빛쉘터</span>
+        <span class="logo-en">STARLIGHT SHELTER</span>
+      </div>
+      <div class="tb-sep"></div>
+      <div class="stat-strip">
+        <div class="stat-item">
+          <span class="stat-lbl">루프 상태</span>
+          <span class="stat-val ok" id="st-loop">STABLE</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-lbl">시스템 전력</span>
+          <span class="stat-val ok" id="st-pwr">98.4%</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-lbl">입주율</span>
+          <span class="stat-val warn" id="st-res">82%</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-lbl">현재 시각</span>
+          <span class="stat-val ok" id="st-time">--:--:--</span>
+        </div>
+      </div>
+    </div>
+    <div class="tb-right">
+      <button class="cbtn" onclick="goBack()" style="border-color:rgba(200,215,255,.18); gap:.38rem;">
+        ← 외경
+      </button>
+      <a href="members.html" style="
+        display:inline-flex; align-items:center; gap:.38rem;
+        padding:.35rem .8rem;
+        background:rgba(77,124,255,.08); border:1px solid rgba(77,124,255,.35); border-radius:6px;
+        color:#a0b4ff; font-family:var(--mono); font-size:.62rem;
+        text-decoration:none; letter-spacing:.06em;
+        transition:all .2s;
+      " onmouseover="this.style.borderColor='var(--neon)';this.style.color='#fff'"
+         onmouseout="this.style.borderColor='rgba(77,124,255,.35)';this.style.color='#a0b4ff'">
+        👥 가족 소개
+      </a>
+      <button class="cbtn" id="btn-bgm" onclick="Audio.toggleBGM(this)">
+        <span class="led"></span>BGM
+      </button>
+      <button class="cbtn" id="btn-sfx" onclick="Audio.toggleSFX(this)">
+        <span class="led"></span>SFX
+      </button>
+    </div>
+  </div>
+
+  <!-- ══ MAIN ══ -->
+  <div id="content">
+
+    <!-- ── Building Sidebar ── -->
+    <nav id="bldg" aria-label="층 선택">
+      <div class="bldg-label">Building Map</div>
+
+      <button class="fbtn" data-f="rf" onclick="selectFloor('rf',this)">
+        <span class="fbtn-code">RF</span>
+        <div class="fbtn-info"><div class="fbtn-name">옥상층</div></div>
+        <div class="wins"><div class="w"></div><div class="w"></div></div>
+        <span class="fbtn-rooms">4</span>
+      </button>
+
+      <button class="fbtn" data-f="3f" onclick="selectFloor('3f',this)">
+        <span class="fbtn-code">3F</span>
+        <div class="fbtn-info"><div class="fbtn-name">정보&분석</div></div>
+        <div class="wins"><div class="w"></div><div class="w"></div><div class="w"></div></div>
+        <span class="fbtn-rooms">5</span>
+      </button>
+
+      <button class="fbtn" data-f="2f" onclick="selectFloor('2f',this)">
+        <span class="fbtn-code">2F</span>
+        <div class="fbtn-info"><div class="fbtn-name">주거공간</div></div>
+        <div class="wins"><div class="w"></div><div class="w"></div><div class="w"></div></div>
+        <span class="fbtn-rooms">3</span>
+      </button>
+
+      <button class="fbtn active" data-f="1f" onclick="selectFloor('1f',this)">
+        <span class="fbtn-code">1F</span>
+        <div class="fbtn-info"><div class="fbtn-name">공공허브</div></div>
+        <div class="wins"><div class="w"></div><div class="w"></div><div class="w"></div><div class="w"></div></div>
+        <span class="fbtn-rooms">5</span>
+      </button>
+
+      <div class="ground"></div>
+
+      <button class="fbtn" data-f="b1" onclick="selectFloor('b1',this)">
+        <span class="fbtn-code">B1</span>
+        <div class="fbtn-info"><div class="fbtn-name">핵심인프라</div></div>
+        <div class="wins"><div class="w"></div><div class="w"></div></div>
+        <span class="fbtn-rooms">4</span>
+      </button>
+
+      <div class="bldg-ext">
+        <img src="별빛쉘터 배치도.png" alt="쉘터 배치도" data-e="🗺️" data-l="배치도" data-c="#4d7cff">
+        <div class="bldg-ext-label">Floor Layout</div>
+      </div>
+    </nav>
+
+    <!-- ── Floor Content ── -->
+    <div id="fcontent">
+
+      <!-- ════ 1F ════ -->
+      <section class="fsec active" id="sec-1f">
+        <div class="fhdr">
+          <div>
+            <div class="fhdr-path">별빛쉘터 › <span>1F · 1층</span></div>
+            <div class="fhdr-title">1층 — 공공 & 운영 허브</div>
+            <div class="fhdr-en">GROUND FLOOR · PUBLIC HUB</div>
+            <div class="fhdr-desc">쉘터의 관문이자 커뮤니티 중심지. 스타라이트 로비를 비롯해 방송국·카페·보건실 등 주요 공공 시설이 집약된 층으로, 입주자와 방문자 모두 자유롭게 이용할 수 있습니다.</div>
+            <div class="fhdr-stats">
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl">구역 수</span><span class="fhdr-stat-val">5</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl">접근 등급</span><span class="fhdr-stat-val">PUBLIC</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl">운영 상태</span><span class="fhdr-stat-val" style="color:var(--green)">OPEN</span></div>
+            </div>
+          </div>
+          <img class="fhdr-img" src="1층 인테리어.png" alt="1층 전경" data-e="🏠" data-l="1층" data-c="#f472b6">
+        </div>
+        <div class="sdiv"><span>구역 목록</span></div>
+        <div class="rgrid">
+          <div class="rcard" onclick="openModal('lobby')">
+            <img class="rcard-img" src="별빛쉘터 로비.png" alt="스타라이트 로비" data-e="✨" data-l="스타라이트 로비" data-c="#f472b6">
+            <span class="rcard-hint">자세히 보기</span>
+            <div class="rcard-body">
+              <span class="rbadge b-pub">MAIN LOBBY</span>
+              <div class="rcard-name">스타라이트 로비</div>
+              <div class="rcard-desc">별빛쉘터의 첫인상. 입주자와 방문자를 환영하는 메인 로비</div>
+            </div>
+            <div class="rcard-bar"></div>
+          </div>
+          <div class="rcard" onclick="openModal('jobn')">
+            <img class="rcard-img" src="1F JOBN.png" alt="JOBN 방송국" data-e="📻" data-l="JOBN 방송국" data-c="#fb923c">
+            <span class="rcard-hint">자세히 보기</span>
+            <div class="rcard-body">
+              <span class="rbadge b-cast">BROADCAST</span>
+              <div class="rcard-name">JOBN 방송국</div>
+              <div class="rcard-desc">쉘터 내 소식과 음악을 24시간 전하는 공식 방송 스튜디오</div>
+            </div>
+            <div class="rcard-bar"></div>
+          </div>
+          <div class="rcard" onclick="openModal('sec-room')">
+            <img class="rcard-img" src="1층 보안회의실 .png" alt="보안회의실" data-e="🛡️" data-l="보안 회의실" data-c="#ef4444">
+            <span class="rcard-hint">자세히 보기</span>
+            <div class="rcard-body">
+              <span class="rbadge b-sec">SECURE</span>
+              <div class="rcard-name">보안 회의실</div>
+              <div class="rcard-desc">운영진·보안팀 전용 방음 차단 회의 공간</div>
+            </div>
+            <div class="rcard-bar"></div>
+          </div>
+          <div class="rcard" onclick="openModal('cafe')">
+            <img class="rcard-img" src="1F 카페.png" alt="쉘터 카페" data-e="☕" data-l="쉘터 카페" data-c="#1fd4a0">
+            <span class="rcard-hint">자세히 보기</span>
+            <div class="rcard-body">
+              <span class="rbadge b-liv">CAFÉ</span>
+              <div class="rcard-name">쉘터 카페</div>
+              <div class="rcard-desc">입주자들이 쉬어가며 소통하는 아늑한 커뮤니티 카페</div>
+            </div>
+            <div class="rcard-bar"></div>
+          </div>
+          <div class="rcard" onclick="openModal('medical')">
+            <img class="rcard-img" src="1층 보건소.png" alt="보건실" data-e="🏥" data-l="보건실" data-c="#f87171">
+            <span class="rcard-hint">자세히 보기</span>
+            <div class="rcard-body">
+              <span class="rbadge b-med">MEDICAL</span>
+              <div class="rcard-name">보건실</div>
+              <div class="rcard-desc">입주자 건강 관리 및 응급 처치를 담당하는 의료 지원 공간</div>
+            </div>
+            <div class="rcard-bar"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ════ B1 ════ -->
+      <section class="fsec" id="sec-b1">
+        <div class="fhdr">
+          <div>
+            <div class="fhdr-path">별빛쉘터 › <span>B1 · 지하층</span></div>
+            <div class="fhdr-title">지하층 — 핵심 인프라 구역</div>
+            <div class="fhdr-en">BASEMENT · CORE INFRASTRUCTURE</div>
+            <div class="fhdr-desc">쉘터의 심장부. 루프 코어를 중심으로 서버실·발전실·비상 격리구역이 배치되어 있으며, 일반 입주자는 원칙적으로 접근이 제한됩니다.</div>
+            <div class="fhdr-stats">
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl">구역 수</span><span class="fhdr-stat-val">4</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl">접근 등급</span><span class="fhdr-stat-val">RESTRICTED</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl">운영 상태</span><span class="fhdr-stat-val" style="color:var(--green)">ONLINE</span></div>
+            </div>
+          </div>
+          <img class="fhdr-img" src="B1.png" alt="B1 지하층" data-e="⚙️" data-l="B1 지하층" data-c="#818cf8">
+        </div>
+        <div class="sdiv"><span>구역 목록</span></div>
+        <div class="rgrid">
+          <div class="rcard" onclick="openModal('server')">
+            <img class="rcard-img" src="지하층 서버실.png" alt="서버실" data-e="🖥️" data-l="서버실" data-c="#6fa3ff">
+            <span class="rcard-hint">자세히 보기</span>
+            <div class="rcard-body">
+              <span class="rbadge b-sys">SYSTEM</span>
+              <div class="rcard-name">서버실</div>
+              <div class="rcard-desc">쉘터 전체 데이터 및 네트워크를 관리하는 핵심 서버 인프라</div>
+            </div>
+            <div class="rcard-bar"></div>
+          </div>
+          <div class="rcard" onclick="openModal('loopcore')">
+            <img class="rcard-img" src="지하층 루프코어.png" alt="루프 코어" data-e="⚡" data-l="루프 코어" data-c="#00ccff">
+            <span class="rcard-hint">자세히 보기</span>
+            <div class="rcard-body">
+              <span class="rbadge b-core">CORE</span>
+              <div class="rcard-name">루프 코어</div>
+              <div class="rcard-desc">쉘터 존재의 근간. 루프 시스템 중앙 제어 장치가 집약된 공간</div>
+            </div>
+            <div class="rcard-bar"></div>
+          </div>
+          <div class="rcard" onclick="openModal('power')">
+            <img class="rcard-img" src="지하층 발전실.png" alt="발전실" data-e="🔋" data-l="발전실" data-c="#f87171">
+            <span class="rcard-hint">자세히 보기</span>
+            <div class="rcard-body">
+              <span class="rbadge b-pow">POWER</span>
+              <div class="rcard-name">발전실</div>
+              <div class="rcard-desc">쉘터 전력 공급 주 설비 및 비상 전원 시스템</div>
+            </div>
+            <div class="rcard-bar"></div>
+          </div>
+          <div class="rcard" onclick="openModal('isolation')">
+            <img class="rcard-img" src="지하층 비상격리구역.png" alt="비상격리구역" data-e="⚠️" data-l="비상 격리구역" data-c="#ef4444">
+            <span class="rcard-hint">자세히 보기</span>
+            <div class="rcard-body">
+              <span class="rbadge b-sec">RESTRICTED</span>
+              <div class="rcard-name">비상 격리구역</div>
+              <div class="rcard-desc">위기 상황 발생 시 활성화되는 봉쇄 전용 특수 구역</div>
+            </div>
+            <div class="rcard-bar"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ════ 2F ════ -->
+      <section class="fsec" id="sec-2f">
+        <div class="fhdr">
+          <div>
+            <div class="fhdr-path">별빛쉘터 › <span>2F · 2층</span></div>
+            <div class="fhdr-title">2층 — 주거 & 생활 공간</div>
+            <div class="fhdr-en">SECOND FLOOR · RESIDENTIAL ZONE</div>
+            <div class="fhdr-desc">입주자들의 일상이 이루어지는 공간. 개인 방부터 공용 주방·세탁실까지 쾌적한 거주 환경을 제공합니다.</div>
+            <div class="fhdr-stats">
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl">구역 수</span><span class="fhdr-stat-val">3</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl">접근 등급</span><span class="fhdr-stat-val">RESIDENT</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl">입주 현황</span><span class="fhdr-stat-val" style="color:var(--green)">운영 중</span></div>
+            </div>
+          </div>
+          <img class="fhdr-img" src="2층 인테리어.png" alt="2층 전경" data-e="🏠" data-l="2층" data-c="#1fd4a0">
+        </div>
+        <div class="sdiv"><span>구역 목록</span></div>
+        <div class="rgrid">
+          <div class="rcard" onclick="openModal('personal')">
+            <img class="rcard-img" src="2층 개인 방.png" alt="개인방 구역" data-e="🛏️" data-l="개인방 구역" data-c="#1fd4a0">
+            <span class="rcard-hint">자세히 보기</span>
+            <div class="rcard-body">
+              <span class="rbadge b-liv">LIVING</span>
+              <div class="rcard-name">개인방 구역</div>
+              <div class="rcard-desc">각 입주자에게 배정된 개인 숙소. 프라이버시가 보장된 공간</div>
+            </div>
+            <div class="rcard-bar"></div>
+          </div>
+          <div class="rcard" onclick="openModal('kitchen')">
+            <img class="rcard-img" src="2층 공용주방.png" alt="공용주방" data-e="🍳" data-l="공용 주방" data-c="#1fd4a0">
+            <span class="rcard-hint">자세히 보기</span>
+            <div class="rcard-body">
+              <span class="rbadge b-liv">KITCHEN</span>
+              <div class="rcard-name">공용 주방</div>
+              <div class="rcard-desc">입주자 모두가 이용할 수 있는 넓고 쾌적한 공용 조리 공간</div>
+            </div>
+            <div class="rcard-bar"></div>
+          </div>
+          <div class="rcard" onclick="openModal('laundry')">
+            <img class="rcard-img" alt="세탁실" data-e="🧺" data-l="세탁실" data-c="#1fd4a0" data-no-src>
+            <span class="rcard-hint">자세히 보기</span>
+            <div class="rcard-body">
+              <span class="rbadge b-liv">UTILITY</span>
+              <div class="rcard-name">세탁실</div>
+              <div class="rcard-desc">세탁기·건조기 등 세탁 설비가 갖춰진 공용 세탁 공간</div>
+            </div>
+            <div class="rcard-bar"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ════ 3F ════ -->
+      <section class="fsec" id="sec-3f">
+        <div class="fhdr">
+          <div>
+            <div class="fhdr-path">별빛쉘터 › <span>3F · 3층</span></div>
+            <div class="fhdr-title">3층 — 정보 & 분석 센터</div>
+            <div class="fhdr-en">THIRD FLOOR · INFORMATION &amp; ANALYSIS</div>
+            <div class="fhdr-desc">쉘터의 두뇌. 방대한 기록이 보존되는 아카이브, 정밀 분석실, 열람실·회의실 그리고 실시간 모니터링 시스템이 집약된 층입니다.</div>
+            <div class="fhdr-stats">
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl">구역 수</span><span class="fhdr-stat-val">5</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl">접근 등급</span><span class="fhdr-stat-val">STAFF</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl">아카이브</span><span class="fhdr-stat-val" style="color:var(--acc2)">온라인</span></div>
+            </div>
+          </div>
+          <img class="fhdr-img" src="3층 인테리어.png" alt="3층 전경" data-e="📚" data-l="3층" data-c="#fbbf24">
+        </div>
+        <div class="sdiv"><span>구역 목록</span></div>
+        <div class="rgrid">
+          <div class="rcard" onclick="openModal('archive')">
+            <img class="rcard-img" src="3층 아카이브 룸.png" alt="아카이브 룸" data-e="🗄️" data-l="아카이브 룸" data-c="#fbbf24">
+            <span class="rcard-hint">자세히 보기</span>
+            <div class="rcard-body">
+              <span class="rbadge b-info">ARCHIVE</span>
+              <div class="rcard-name">아카이브 룸</div>
+              <div class="rcard-desc">쉘터 역사와 루프 관련 모든 기록이 보존되는 데이터 아카이브</div>
+            </div>
+            <div class="rcard-bar"></div>
+          </div>
+          <div class="rcard" onclick="openModal('analysis')">
+            <img class="rcard-img" src="3층 분석실.png" alt="분석실" data-e="🔬" data-l="분석실" data-c="#fbbf24">
+            <span class="rcard-hint">자세히 보기</span>
+            <div class="rcard-body">
+              <span class="rbadge b-info">ANALYSIS</span>
+              <div class="rcard-name">분석실</div>
+              <div class="rcard-desc">수집된 데이터와 현상을 면밀히 분석하는 전문 연구 공간</div>
+            </div>
+            <div class="rcard-bar"></div>
+          </div>
+          <div class="rcard" onclick="openModal('reading')">
+            <img class="rcard-img" src="3층 열람실.png" alt="열람실" data-e="📖" data-l="열람실" data-c="#fbbf24">
+            <span class="rcard-hint">자세히 보기</span>
+            <div class="rcard-body">
+              <span class="rbadge b-info">LIBRARY</span>
+              <div class="rcard-name">열람실</div>
+              <div class="rcard-desc">자료를 열람하고 공부할 수 있는 조용한 집중 공간</div>
+            </div>
+            <div class="rcard-bar"></div>
+          </div>
+          <div class="rcard" onclick="openModal('conf3f')">
+            <img class="rcard-img" src="3층 회의실.png" alt="회의실" data-e="🗂️" data-l="회의실" data-c="#f472b6">
+            <span class="rcard-hint">자세히 보기</span>
+            <div class="rcard-body">
+              <span class="rbadge b-pub">MEETING</span>
+              <div class="rcard-name">회의실</div>
+              <div class="rcard-desc">팀 단위 협업 및 전략 회의를 위한 다목적 회의 공간</div>
+            </div>
+            <div class="rcard-bar"></div>
+          </div>
+          <div class="rcard" onclick="openModal('monitor')">
+            <img class="rcard-img" src="3층 서버모니터링실.png" alt="서버 모니터링실" data-e="📡" data-l="모니터링실" data-c="#6fa3ff">
+            <span class="rcard-hint">자세히 보기</span>
+            <div class="rcard-body">
+              <span class="rbadge b-sys">MONITOR</span>
+              <div class="rcard-name">서버 모니터링실</div>
+              <div class="rcard-desc">쉘터 전역 상황을 실시간 감시하는 통합 모니터링 센터</div>
+            </div>
+            <div class="rcard-bar"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ════ RF ════ -->
+      <section class="fsec" id="sec-rf">
+        <div class="fhdr">
+          <div>
+            <div class="fhdr-path">별빛쉘터 › <span>RF · 옥상층</span></div>
+            <div class="fhdr-title">옥상층 — 하늘과 맞닿은 공간</div>
+            <div class="fhdr-en">ROOFTOP · OPEN SKY ZONE</div>
+            <div class="fhdr-desc">별빛 아래 숨 쉬는 공간들. 옥상정원의 초록빛과 천체관측실의 망원경, 탁 트인 야외 방송 무대까지 — 쉘터 생활에 여유와 낭만을 더해줍니다.</div>
+            <div class="fhdr-stats">
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl">구역 수</span><span class="fhdr-stat-val">4</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl">접근 등급</span><span class="fhdr-stat-val">OPEN</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl">날씨</span><span class="fhdr-stat-val" style="color:var(--acc2)">청명 ★</span></div>
+            </div>
+          </div>
+          <img class="fhdr-img" src="옥상층.png" alt="옥상층 전경" data-e="🌙" data-l="옥상층" data-c="#a78bfa">
+        </div>
+        <div class="sdiv"><span>구역 목록</span></div>
+        <div class="rgrid">
+          <div class="rcard" onclick="openModal('garden')">
+            <img class="rcard-img" src="RF 옥상정원.png" alt="옥상 정원" data-e="🌿" data-l="옥상 정원" data-c="#a78bfa">
+            <span class="rcard-hint">자세히 보기</span>
+            <div class="rcard-body">
+              <span class="rbadge b-lei">GARDEN</span>
+              <div class="rcard-name">옥상 정원</div>
+              <div class="rcard-desc">식물과 바람이 함께하는 옥상 녹지 공간. 자연 속 힐링 산책로</div>
+            </div>
+            <div class="rcard-bar"></div>
+          </div>
+          <div class="rcard" onclick="openModal('obs')">
+            <img class="rcard-img" src="RF 천체관측실.png" alt="천체관측실" data-e="🔭" data-l="천체관측실" data-c="#a78bfa">
+            <span class="rcard-hint">자세히 보기</span>
+            <div class="rcard-body">
+              <span class="rbadge b-lei">OBSERVATORY</span>
+              <div class="rcard-name">천체관측실</div>
+              <div class="rcard-desc">별빛쉘터 이름을 품은 공간. 밤하늘을 관측하는 천문 시설</div>
+            </div>
+            <div class="rcard-bar"></div>
+          </div>
+          <div class="rcard" onclick="openModal('lounge')">
+            <img class="rcard-img" src="RF 휴식라운지.png" alt="휴식 라운지" data-e="🛋️" data-l="휴식 라운지" data-c="#a78bfa">
+            <span class="rcard-hint">자세히 보기</span>
+            <div class="rcard-body">
+              <span class="rbadge b-lei">LOUNGE</span>
+              <div class="rcard-name">휴식 라운지</div>
+              <div class="rcard-desc">야외 하늘 아래에서 편안히 쉬어갈 수 있는 개방형 휴게 공간</div>
+            </div>
+            <div class="rcard-bar"></div>
+          </div>
+          <div class="rcard" onclick="openModal('outdoor')">
+            <img class="rcard-img" src="RF 야외방송공간.png" alt="야외 방송공간" data-e="🎙️" data-l="야외 방송공간" data-c="#fb923c">
+            <span class="rcard-hint">자세히 보기</span>
+            <div class="rcard-body">
+              <span class="rbadge b-cast">OUTDOOR</span>
+              <div class="rcard-name">야외 방송공간</div>
+              <div class="rcard-desc">하늘을 배경으로 열리는 야외 공연 및 방송 이벤트 무대</div>
+            </div>
+            <div class="rcard-bar"></div>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /fcontent -->
+  </div><!-- /content -->
+</div><!-- /app -->
+
+<!-- ══ MODAL ══ -->
+<div id="mbdp" onclick="closeOnBdp(event)">
+  <div id="modal">
+    <button class="m-close" onclick="closeModal()">✕</button>
+    <img id="m-img" src="" alt="">
+    <canvas id="m-canvas"></canvas>
+    <div class="mbody">
+      <div class="m-path">별빛쉘터 › <em id="m-path-em"></em></div>
+      <div id="m-title"></div>
+      <div id="m-en"></div>
+      <div class="mhr"></div>
+      <div id="m-desc"></div>
+      <div id="m-meta"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════
+   LANDING → ENTER
+══════════════════════════════════════════════ */
+(function(){
+  // 로드 후 줌 아웃 애니메이션 시작
+  const landing = document.getElementById('landing');
+  requestAnimationFrame(()=> setTimeout(()=> landing.classList.add('ready'), 50));
+})();
+
+function enterShelter(){
+  const landing = document.getElementById('landing');
+  const app     = document.getElementById('app');
+  if(landing.classList.contains('exiting')) return;
+
+  Audio.click();
+  landing.classList.add('exiting');
+
+  setTimeout(()=>{
+    landing.style.display = 'none';
+    app.classList.add('entered');
+  }, 600);
+}
+
+function goBack(){
+  const landing = document.getElementById('landing');
+  const app     = document.getElementById('app');
+
+  Audio.click();
+
+  // 앱 페이드 아웃
+  app.classList.remove('entered');
+
+  setTimeout(()=>{
+    // 랜딩 복구
+    landing.style.display = '';
+    landing.classList.remove('exiting');
+    // 줌 아웃 재시작
+    landing.classList.remove('ready');
+    requestAnimationFrame(()=> setTimeout(()=> landing.classList.add('ready'), 50));
+  }, 400);
+}
+
+/* ══════════════════════════════════════════════
+   STARS
+══════════════════════════════════════════════ */
+(function(){
+  const cv=document.getElementById('stars'), ctx=cv.getContext('2d');
+  let stars=[];
+  function resize(){
+    cv.width=innerWidth; cv.height=innerHeight;
+    stars=Array.from({length:180},()=>({
+      x:Math.random()*cv.width, y:Math.random()*cv.height,
+      r:Math.random()*1.5+.2, a:Math.random(),
+      da:(Math.random()-.5)*.005
+    }));
+  }
+  function draw(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    // Nebula glow
+    const nb=ctx.createRadialGradient(cv.width*.3,cv.height*.25,0,cv.width*.3,cv.height*.25,cv.width*.4);
+    nb.addColorStop(0,'rgba(77,60,180,.06)'); nb.addColorStop(1,'transparent');
+    ctx.fillStyle=nb; ctx.fillRect(0,0,cv.width,cv.height);
+    const nb2=ctx.createRadialGradient(cv.width*.75,cv.height*.6,0,cv.width*.75,cv.height*.6,cv.width*.35);
+    nb2.addColorStop(0,'rgba(0,100,180,.04)'); nb2.addColorStop(1,'transparent');
+    ctx.fillStyle=nb2; ctx.fillRect(0,0,cv.width,cv.height);
+    stars.forEach(s=>{
+      s.a+=s.da;
+      if(s.a<=.05||s.a>=1) s.da*=-1;
+      ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(200,215,255,${s.a})`; ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  addEventListener('resize',resize); resize(); draw();
+})();
+
+/* ══════════════════════════════════════════════
+   CLOCK & STATUS ANIMATION
+══════════════════════════════════════════════ */
+(function(){
+  function pad(n){return String(n).padStart(2,'0');}
+  function tick(){
+    const d=new Date();
+    document.getElementById('st-time').textContent=
+      `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  }
+  setInterval(tick,1000); tick();
+
+  // Subtle numeric drift
+  let pwr=98.4, loop=0;
+  setInterval(()=>{
+    pwr=Math.max(97,Math.min(99.9,pwr+(Math.random()-.48)*.15));
+    document.getElementById('st-pwr').textContent=pwr.toFixed(1)+'%';
+    loop++;
+    const states=['STABLE','STABLE','STABLE','STABLE','NOMINAL'];
+    document.getElementById('st-loop').textContent=states[loop%states.length];
+  },3800);
+})();
+
+/* ══════════════════════════════════════════════
+   FLOOR NAVIGATION
+══════════════════════════════════════════════ */
+let _curFloor='1f';
+function selectFloor(id, btn){
+  if(id===_curFloor) return;
+  Audio.floorChange(); Audio.click();
+  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.fsec').forEach(s=>s.classList.remove('active'));
+  (btn||document.querySelector(`.fbtn[data-f="${id}"]`)).classList.add('active');
+  document.getElementById('sec-'+id).classList.add('active');
+  document.getElementById('fcontent').scrollTop=0;
+  _curFloor=id;
+}
+
+/* ══════════════════════════════════════════════
+   ROOM DATA
+══════════════════════════════════════════════ */
+const ROOMS = {
+  /* ── 1F ── */
+  lobby:{
+    img:'별빛쉘터 로비.png', e:'✨', c:'#f472b6',
+    path:'1F · 1층', title:'스타라이트 로비', en:'STARLIGHT LOBBY',
+    desc:'별빛쉘터의 얼굴이자 출발점. 높은 천장과 차가운 금속 구조물 사이로 따스한 조명이 퍼지는 이 공간은 입주자와 방문자 모두를 포근하게 맞이합니다. 중앙 안내 데스크에서는 쉘터 생활 전반에 관한 도움을 받을 수 있으며, 게시판에는 쉘터 소식과 공지사항이 수시로 업데이트됩니다.',
+    meta:[['위치','1F — 1층'],['접근 등급','PUBLIC'],['운영 시간','24시간'],['담당','안내 데스크']]
+  },
+  jobn:{
+    img:'1F JOBN.png', e:'📻', c:'#fb923c',
+    path:'1F · 1층', title:'JOBN 방송국', en:'JOBN BROADCASTING STATION',
+    desc:'Just One Beautiful Night — 별빛쉘터의 공식 방송국. 쉘터 내부 소식·음악·각종 프로그램을 24시간 방송하며 입주자들의 귀를 즐겁게 합니다. 방음 스튜디오와 최신 장비를 갖추고 있으며, 입주자 누구나 신청을 통해 게스트 방송에 참여할 수 있습니다.',
+    meta:[['위치','1F — 1층'],['채널','JOBN FM'],['운영','24시간 방송'],['참여','게스트 신청 가능']]
+  },
+  'sec-room':{
+    img:'1층 보안회의실 .png', e:'🛡️', c:'#ef4444',
+    path:'1F · 1층', title:'보안 회의실', en:'SECURITY CONFERENCE ROOM',
+    desc:'쉘터 운영진과 보안팀이 기밀 사안을 논의하는 전용 공간. 완전 방음 처리와 전파 차단 설비를 갖추고 있어 내부 대화가 외부로 유출되지 않습니다. 회의 예약제로 운영되며 사전 승인된 인원만 입실할 수 있습니다.',
+    meta:[['위치','1F — 1층'],['접근 등급','AUTHORIZED'],['방음 등급','CLASS B'],['운영','예약제']]
+  },
+  cafe:{
+    img:'1F 카페.png', e:'☕', c:'#1fd4a0',
+    path:'1F · 1층', title:'쉘터 카페', en:'SHELTER CAFÉ',
+    desc:'바쁜 쉘터 생활 속 잠시 숨 고르는 공간. 향긋한 커피 한 잔과 함께 입주자들이 자유롭게 모여 담소를 나눕니다. 음료와 간단한 식사를 제공하며, 테이블마다 콘센트와 개인 조명이 마련되어 있어 작업 공간으로도 활용됩니다.',
+    meta:[['위치','1F — 1층'],['접근 등급','PUBLIC'],['운영 시간','07:00 — 23:00'],['제공','음료·스낵']]
+  },
+  medical:{
+    img:'1층 보건소.png', e:'🏥', c:'#f87171',
+    path:'1F · 1층', title:'보건실', en:'MEDICAL ROOM',
+    desc:'입주자의 건강을 지키는 의료 지원 공간. 상비 의약품과 기본 진료 장비를 갖추고 있으며 전담 의료 인력이 정기적으로 상주합니다. 긴급 상황 시 1차 처치 후 외부 기관과 연계하는 체계를 갖추고 있습니다.',
+    meta:[['위치','1F — 1층'],['접근 등급','PUBLIC'],['운영 시간','09:00 — 21:00'],['긴급 시','24시간 대기']]
+  },
+  /* ── B1 ── */
+  server:{
+    img:'지하층 서버실.png', e:'🖥️', c:'#6fa3ff',
+    path:'B1 · 지하층', title:'서버실', en:'SERVER ROOM',
+    desc:'별빛쉘터의 모든 디지털 신호가 흘러드는 공간. 수십 개의 랙에 빼곡히 들어찬 서버들이 쉴 새 없이 작동하며 쉘터 전체 네트워크·데이터 저장·내부 통신 시스템을 유지합니다. 실내 온도는 항상 18°C 이하로 유지되며, 허가받은 기술 인력만 출입할 수 있습니다.',
+    meta:[['위치','B1 — 지하층'],['접근 등급','RESTRICTED'],['온도 유지','≤ 18°C'],['운영','24/7 상시 가동']]
+  },
+  loopcore:{
+    img:'지하층 루프코어.png', e:'⚡', c:'#00ccff',
+    path:'B1 · 지하층', title:'루프 코어', en:'LOOP CORE',
+    desc:'별빛쉘터가 존재할 수 있는 이유. 쉘터를 루프 상태로 유지시키는 핵심 장치가 이곳에 집약되어 있습니다. 육중한 장비들 사이로 미묘하게 맥동하는 에너지가 느껴지며, 이 공간에 대한 정보는 대부분 기밀로 분류됩니다. 오직 최고 권한 관리자만이 전체 시스템에 접근할 수 있습니다.',
+    meta:[['위치','B1 — 지하층'],['접근 등급','CLASSIFIED'],['시스템','루프 유지 장치'],['상태','활성']]
+  },
+  power:{
+    img:'지하층 발전실.png', e:'🔋', c:'#f87171',
+    path:'B1 · 지하층', title:'발전실', en:'POWER GENERATION ROOM',
+    desc:'쉘터 전역에 안정적인 전력을 공급하는 심장부. 주 발전 설비와 함께 정전 시 즉시 가동되는 비상 발전 시스템을 갖추고 있습니다. 72시간 이상의 자체 전력 비축이 가능하며, 예비 연료 탱크와 배터리 배열이 이중 안전망을 제공합니다.',
+    meta:[['위치','B1 — 지하층'],['접근 등급','RESTRICTED'],['비상 전력','72시간 이상'],['운영','자동화 관리']]
+  },
+  isolation:{
+    img:'지하층 비상격리구역.png', e:'⚠️', c:'#ef4444',
+    path:'B1 · 지하층', title:'비상 격리구역', en:'EMERGENCY ISOLATION ZONE',
+    desc:'위기 상황 발생 시 활성화되는 특수 목적 구역. 외부와 완전히 차단된 환경을 형성할 수 있으며, 생화학·전자기 차폐 기능을 갖추고 있습니다. 평시에는 봉인 상태이며 내부 세부 사항은 공개되지 않습니다. 경보 레벨 3 이상 시 자동으로 봉쇄 프로토콜이 가동됩니다.',
+    meta:[['위치','B1 — 지하층'],['접근 등급','EMERGENCY ONLY'],['차폐 등급','CLASS A'],['활성 조건','경보 레벨 ≥ 3']]
+  },
+  /* ── 2F ── */
+  personal:{
+    img:'2층 개인 방.png', e:'🛏️', c:'#1fd4a0',
+    path:'2F · 2층', title:'개인방 구역', en:'PERSONAL ROOM ZONE',
+    desc:'입주자 한 명 한 명에게 배정된 개인 공간. 최소한의 가구와 조명으로 꾸며진 소박하지만 따뜻한 방들이 복도를 따라 늘어서 있습니다. 자신만의 물건으로 방을 꾸밀 수 있으며, 완전한 프라이버시가 보장됩니다.',
+    meta:[['위치','2F — 2층'],['접근 등급','RESIDENT ONLY'],['수용 인원','1인실'],['편의시설','침대·책상·수납']]
+  },
+  kitchen:{
+    img:'2층 공용주방.png', e:'🍳', c:'#1fd4a0',
+    path:'2F · 2층', title:'공용 주방', en:'COMMUNAL KITCHEN',
+    desc:'입주자들이 함께 음식을 만들고 나누는 공간. 넓은 조리대와 여러 대의 가스레인지·오븐·냉장고가 갖추어져 있으며, 개인 음식 보관 칸이 별도로 구분되어 있습니다. 가끔 자발적인 합동 식사 자리가 이 공간을 활기차게 만들기도 합니다.',
+    meta:[['위치','2F — 2층'],['접근 등급','RESIDENT'],['이용 시간','06:00 — 24:00'],['수용 인원','동시 8인']]
+  },
+  laundry:{
+    img:null, e:'🧺', c:'#1fd4a0',
+    path:'2F · 2층', title:'세탁실', en:'LAUNDRY ROOM',
+    desc:'입주자 전용 세탁 공간. 드럼세탁기와 건조기가 다수 구비되어 있으며 세제는 공동 비치되어 있습니다. 세탁 예약 앱을 통해 기기 사용 현황을 미리 확인하고 예약할 수 있습니다.',
+    meta:[['위치','2F — 2층'],['접근 등급','RESIDENT'],['이용 시간','07:00 — 23:00'],['기기','세탁기·건조기 다수']]
+  },
+  /* ── 3F ── */
+  archive:{
+    img:'3층 아카이브 룸.png', e:'🗄️', c:'#fbbf24',
+    path:'3F · 3층', title:'아카이브 룸', en:'ARCHIVE ROOM',
+    desc:'쉘터의 역사와 루프에 관련된 모든 기록이 보존되는 공간. 디지털 데이터베이스와 물리적 문서가 함께 보관되며, 체계적인 분류 시스템으로 필요한 정보를 빠르게 탐색할 수 있습니다. 일부 기록은 열람 등급에 따라 접근이 제한됩니다.',
+    meta:[['위치','3F — 3층'],['접근 등급','STAFF+'],['보존 방식','디지털·물리 병행'],['분류 체계','루프 기준 연대기']]
+  },
+  analysis:{
+    img:'3층 분석실.png', e:'🔬', c:'#fbbf24',
+    path:'3F · 3층', title:'분석실', en:'ANALYSIS ROOM',
+    desc:'수집된 데이터를 면밀히 검토하고 패턴을 찾아내는 전문 공간. 고성능 분석 워크스테이션과 대형 디스플레이가 설치되어 있으며, 팀 단위 공동 분석 작업도 가능합니다. 각종 시뮬레이션 소프트웨어와 통계 도구가 구비되어 있습니다.',
+    meta:[['위치','3F — 3층'],['접근 등급','STAFF'],['장비','분석 워크스테이션'],['용도','데이터·루프 분석']]
+  },
+  reading:{
+    img:'3층 열람실.png', e:'📖', c:'#fbbf24',
+    path:'3F · 3층', title:'열람실', en:'READING ROOM',
+    desc:'조용히 집중하고 싶을 때 찾는 공간. 아카이브 자료의 열람 및 개인 연구를 위한 독립 열람대가 마련되어 있으며, 낮은 조명과 방음 설계로 최적의 집중 환경을 제공합니다.',
+    meta:[['위치','3F — 3층'],['접근 등급','RESIDENT+'],['운영 시간','08:00 — 24:00'],['정원','20석']]
+  },
+  conf3f:{
+    img:'3층 회의실.png', e:'🗂️', c:'#f472b6',
+    path:'3F · 3층', title:'회의실', en:'CONFERENCE ROOM — 3F',
+    desc:'팀 단위 협업과 전략 논의를 위한 다목적 회의 공간. 대형 스크린과 화상 회의 시스템이 갖춰져 있어 원격 참석자와의 연결도 가능합니다. 화이트보드와 포스트잇이 벽면에 늘 준비되어 있어 아이디어를 자유롭게 펼칠 수 있습니다.',
+    meta:[['위치','3F — 3층'],['접근 등급','STAFF'],['수용 인원','최대 12인'],['운영','예약제']]
+  },
+  monitor:{
+    img:'3층 서버모니터링실.png', e:'📡', c:'#6fa3ff',
+    path:'3F · 3층', title:'서버 모니터링실', en:'SERVER MONITORING CENTER',
+    desc:'쉘터 전역의 상태를 실시간으로 감시하는 통합 관제 센터. 수십 개의 모니터가 각 구역의 CCTV 영상·시스템 상태·환경 데이터를 표시합니다. 이상 징후 감지 시 자동 경보 시스템이 가동되며, 당직 운영 인력이 상시 대기합니다.',
+    meta:[['위치','3F — 3층'],['접근 등급','OPS STAFF'],['운영','24시간 당직'],['커버리지','쉘터 전 구역']]
+  },
+  /* ── RF ── */
+  garden:{
+    img:'RF 옥상정원.png', e:'🌿', c:'#a78bfa',
+    path:'RF · 옥상층', title:'옥상 정원', en:'ROOFTOP GARDEN',
+    desc:'콘크리트와 금속으로 이루어진 쉘터 속 작은 자연. 계절에 따라 변하는 식물들이 화분과 화단에 가득하며, 텃밭 구역에서는 쉘터 카페에 납품되는 허브도 재배됩니다. 바람이 좋은 날에는 많은 입주자가 이곳에서 산책하거나 책을 읽습니다.',
+    meta:[['위치','RF — 옥상층'],['접근 등급','PUBLIC'],['운영 시간','일출 — 일몰'],['특징','텃밭·산책로']]
+  },
+  obs:{
+    img:'RF 천체관측실.png', e:'🔭', c:'#a78bfa',
+    path:'RF · 옥상층', title:'천체관측실', en:'ASTRONOMICAL OBSERVATORY',
+    desc:'별빛쉘터라는 이름의 기원. 돔 형태의 관측실 안에는 고성능 망원경이 설치되어 있으며, 날씨가 맑은 밤이면 입주자들이 줄을 지어 별을 바라봅니다. 이 공간에서 별을 바라보는 일은 쉘터 생활의 작은 의식이 되었습니다.',
+    meta:[['위치','RF — 옥상층'],['접근 등급','PUBLIC'],['장비','고성능 천체 망원경'],['운영','야간 (맑은 날)']]
+  },
+  lounge:{
+    img:'RF 휴식라운지.png', e:'🛋️', c:'#a78bfa',
+    path:'RF · 옥상층', title:'휴식 라운지', en:'REST LOUNGE',
+    desc:'하늘을 천장 삼아 늘어지는 공간. 소파와 야외 의자가 배치된 개방형 라운지로, 낮에는 햇볕을 쬐고 밤에는 별빛 아래 담소를 나눌 수 있습니다. 간단한 음료 자판기가 구비되어 있으며, 날씨가 좋지 않은 날을 위한 반투명 차양막도 설치되어 있습니다.',
+    meta:[['위치','RF — 옥상층'],['접근 등급','PUBLIC'],['운영 시간','24시간'],['시설','야외 소파·차양막']]
+  },
+  outdoor:{
+    img:'RF 야외방송공간.png', e:'🎙️', c:'#fb923c',
+    path:'RF · 옥상층', title:'야외 방송공간', en:'OUTDOOR BROADCAST STAGE',
+    desc:'하늘을 배경으로 펼쳐지는 특별한 이벤트 공간. 소규모 공연·야외 방송·기념 행사 등이 이 공간에서 진행됩니다. 이동식 음향 장비와 조명 시설이 구비되어 있으며, 쉘터에서 가장 활기찬 밤을 만들어내는 무대입니다.',
+    meta:[['위치','RF — 옥상층'],['접근 등급','PUBLIC'],['용량','소규모 공연'],['운영','이벤트 예약제']]
+  },
+};
+
+/* ══════════════════════════════════════════════
+   MODAL
+══════════════════════════════════════════════ */
+function openModal(id){
+  const d=ROOMS[id]; if(!d) return;
+  Audio.modalOpen(); Audio.click();
+
+  const imgEl=document.getElementById('m-img');
+  const cvEl=document.getElementById('m-canvas');
+  imgEl._ph=false; // allow fresh error handling for each room
+
+  function showCanvas(){
+    imgEl.style.display='none';
+    cvEl.style.display='block';
+    cvEl.width=760; cvEl.height=300;
+    _drawPH(cvEl.getContext('2d'),760,300,d.e,d.title,d.c||'#4d7cff');
+  }
+
+  if(d.img){
+    cvEl.style.display='none';
+    imgEl.style.display='block';
+    imgEl.alt=d.title; imgEl.dataset.e=d.e; imgEl.dataset.l=d.title; imgEl.dataset.c=d.c||'#4d7cff';
+    imgEl.onerror=showCanvas;
+    imgEl.src=d.img;
+  } else { showCanvas(); }
+
+  document.getElementById('m-path-em').textContent=d.path;
+  document.getElementById('m-title').textContent=d.title;
+  document.getElementById('m-en').textContent=d.en;
+  document.getElementById('m-desc').textContent=d.desc;
+  document.getElementById('m-meta').innerHTML=
+    d.meta.map(([k,v])=>`<div class="mmc"><div class="mmk">${k}</div><div class="mmv">${v}</div></div>`).join('');
+
+  document.getElementById('mbdp').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeModal(){
+  Audio.modalClose();
+  document.getElementById('mbdp').classList.remove('open');
+  document.body.style.overflow='';
+}
+function closeOnBdp(e){ if(e.target===document.getElementById('mbdp')) closeModal(); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
+
+/* ── no-src images → placeholder ── */
+document.addEventListener('DOMContentLoaded',()=>{
+  document.querySelectorAll('img[data-no-src]').forEach(img=>_replImg(img));
+});
+
+/* ══════════════════════════════════════════════
+   AUDIO ENGINE  (Web Audio API — generative ambient)
+══════════════════════════════════════════════ */
+const Audio = (function(){
+  let ctx=null, master=null, bgGain=null, sfxGain=null;
+  let bgmOn=false, sfxOn=false;
+  let _pads=null;
+
+  function init(){
+    if(ctx) return;
+    ctx = new (window.AudioContext||window.webkitAudioContext)();
+
+    master = ctx.createGain(); master.gain.value=0.55;
+    master.connect(ctx.destination);
+
+    bgGain = ctx.createGain(); bgGain.gain.value=0;
+    bgGain.connect(master);
+
+    sfxGain = ctx.createGain(); sfxGain.gain.value=0.45;
+    sfxGain.connect(master);
+
+    _reverb = _makeReverb();
+    _reverb.connect(bgGain);
+    _startSpacePad();
+    _startCosmicNoise();
+    _scheduleChord();
+  }
+
+  /* ── 리버브 (합성 임펄스 응답, 4초) ── */
+  let _reverb = null;
+  function _makeReverb(){
+    const conv = ctx.createConvolver();
+    const secs = 4, len = ctx.sampleRate * secs;
+    const buf  = ctx.createBuffer(2, len, ctx.sampleRate);
+    for(let ch=0; ch<2; ch++){
+      const d = buf.getChannelData(ch);
+      for(let i=0; i<len; i++)
+        d[i] = (Math.random()*2-1) * Math.pow(1 - i/len, 2.2);
+    }
+    conv.buffer = buf;
+    return conv;
+  }
+
+  /* ── 상시 우주 패드 (Cmaj7, 극저속 LFO) ── */
+  function _startSpacePad(){
+    // C3~G4 — 어둡지 않은 중음역 코드
+    [130.8, 164.8, 196.0, 246.9, 261.6, 329.6].forEach((f, i) => {
+      const osc=ctx.createOscillator(), g=ctx.createGain();
+      const lfo=ctx.createOscillator(), lg=ctx.createGain();
+      osc.type='sine';
+      osc.frequency.value = f;
+      osc.detune.value = (Math.random()-.5)*7;
+      lfo.type='sine'; lfo.frequency.value = 0.025 + i*0.012; // 매우 느린 숨결
+      lg.gain.value = 0.14;
+      lfo.connect(lg); lg.connect(g.gain);
+      g.gain.value = 0.018 - i*0.002;
+      osc.connect(g);
+      g.connect(_reverb); // 리버브로 공간감
+      g.connect(bgGain);
+      osc.start(); lfo.start();
+    });
+  }
+
+  /* ── 우주 노이즈 (밴드패스 필터 + 극저속 스윕) ── */
+  function _startCosmicNoise(){
+    const len = ctx.sampleRate * 3;
+    const nbuf = ctx.createBuffer(1, len, ctx.sampleRate);
+    const d = nbuf.getChannelData(0);
+    for(let i=0; i<len; i++) d[i] = Math.random()*2-1;
+
+    const src = ctx.createBufferSource();
+    src.buffer = nbuf; src.loop = true;
+
+    const filt = ctx.createBiquadFilter();
+    filt.type='bandpass'; filt.frequency.value=280; filt.Q.value=0.6;
+
+    const flfo=ctx.createOscillator(), flg=ctx.createGain();
+    flfo.type='sine'; flfo.frequency.value=0.015;
+    flg.gain.value=120;
+    flfo.connect(flg); flg.connect(filt.frequency);
+
+    const ng=ctx.createGain(); ng.gain.value=0.006;
+    src.connect(filt); filt.connect(ng); ng.connect(bgGain);
+    src.start(); flfo.start();
+  }
+
+  /* ── 코드 체인지 (12~18초마다 천천히 페이드) ── */
+  function _scheduleChord(){
+    if(!ctx){ setTimeout(_scheduleChord,5000); return; }
+    const chords=[
+      [261.6,329.6,392.0,493.9], // Cmaj7
+      [220.0,261.6,329.6,392.0], // Am7
+      [196.0,246.9,293.7,369.9], // Gmaj7
+      [174.6,220.0,261.6,329.6], // Fmaj7
+    ];
+    const chord = chords[Math.floor(Math.random()*chords.length)];
+    const now = ctx.currentTime;
+    const dur = 14 + Math.random()*6; // 14~20초
+
+    chord.forEach(freq=>{
+      const osc=ctx.createOscillator(), g=ctx.createGain();
+      osc.type='sine'; osc.frequency.value=freq;
+      g.gain.setValueAtTime(0,now);
+      g.gain.linearRampToValueAtTime(0.022, now+3.5); // 긴 어택
+      g.gain.setValueAtTime(0.018, now+dur-3);
+      g.gain.linearRampToValueAtTime(0, now+dur);
+      osc.connect(g);
+      g.connect(_reverb);
+      g.connect(bgGain);
+      osc.start(now); osc.stop(now+dur+0.5);
+    });
+    setTimeout(_scheduleChord, (dur-3)*1000);
+  }
+
+  /* ── SFX helpers ── */
+  function _beep(freq,endFreq,dur,vol,type){
+    if(!sfxOn||!ctx) return;
+    const osc=ctx.createOscillator(), g=ctx.createGain();
+    const now=ctx.currentTime;
+    osc.type=type||'sine';
+    osc.frequency.setValueAtTime(freq,now);
+    if(endFreq) osc.frequency.exponentialRampToValueAtTime(endFreq,now+dur);
+    g.gain.setValueAtTime(vol||0.18,now);
+    g.gain.exponentialRampToValueAtTime(0.0001,now+dur+.02);
+    osc.connect(g); g.connect(sfxGain);
+    osc.start(now); osc.stop(now+dur+.05);
+  }
+
+  return {
+    toggleBGM(btn){
+      init();
+      bgmOn=!bgmOn;
+      const now=ctx.currentTime;
+      bgGain.gain.cancelScheduledValues(now);
+      bgGain.gain.linearRampToValueAtTime(bgmOn?.38:0, now+1.8);
+      btn.classList.toggle('on',bgmOn);
+    },
+    toggleSFX(btn){
+      init();
+      sfxOn=!sfxOn;
+      btn.classList.toggle('on',sfxOn);
+      if(sfxOn) _beep(600,900,.12,.15);
+    },
+    click(){ _beep(700,400,.1,.14); },
+    floorChange(){
+      if(!sfxOn||!ctx) return;
+      [0,.08,.16].forEach((t,i)=>{
+        setTimeout(()=>_beep(300+i*180,null,.12,.1),t*1000);
+      });
+    },
+    modalOpen(){
+      if(!sfxOn||!ctx) return;
+      [440,554,659].forEach((f,i)=>{
+        setTimeout(()=>_beep(f,null,.15,.09),i*80);
+      });
+    },
+    modalClose(){
+      if(!sfxOn||!ctx) return;
+      [659,554,440].forEach((f,i)=>{
+        setTimeout(()=>_beep(f,null,.12,.07),i*60);
+      });
+    },
+  };
+})();
+</script>
+</body>
+</html>
