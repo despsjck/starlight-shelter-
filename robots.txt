@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://DESPSJCK.github.io/starlight-shelter-/sitemap.xml
