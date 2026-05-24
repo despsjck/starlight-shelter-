@@ -170,44 +170,195 @@
     #mbdp.open { display: flex; animation: fdIn .2s ease; }
     @keyframes fdIn { from{opacity:0} to{opacity:1} }
 
+    /* ── RPG MODAL ── */
     #modal {
-      position: relative; background: var(--panel);
-      border: 1px solid var(--bglow); border-radius: 18px;
-      width: 100%; max-width: 640px; max-height: 90vh; overflow-y: auto;
-      box-shadow: 0 0 80px rgba(0,0,0,.6), 0 28px 70px rgba(0,0,0,.85);
-      animation: mIn .25s ease;
+      position: relative;
+      background: linear-gradient(145deg, #08091a 0%, #0d1025 60%, #080e1e 100%);
+      border: 1px solid var(--rpg-color, #4d7cff);
+      box-shadow: 0 0 0 1px rgba(0,0,0,.8),
+                  0 0 40px rgba(77,124,255,.15),
+                  inset 0 0 60px rgba(0,0,0,.4);
+      width: 100%; max-width: 700px;
+      animation: mIn .3s cubic-bezier(.16,1,.3,1);
+      overflow: hidden;
     }
-    @keyframes mIn { from{opacity:0;transform:scale(.96) translateY(14px)} to{opacity:1;transform:scale(1) translateY(0)} }
-    #modal::-webkit-scrollbar { width: 3px; }
-    #modal::-webkit-scrollbar-thumb { background: var(--bglow); }
-
-    .m-bar { position: absolute; top: 0; left: 0; right: 0; height: 4px; border-radius: 18px 18px 0 0; }
-
-    .m-hdr {
-      padding: 2.5rem 2rem 1.5rem;
-      display: flex; align-items: flex-start; gap: 1.5rem;
-      border-bottom: 1px solid var(--border);
+    @keyframes mIn {
+      from { opacity:0; transform:scale(.94) translateY(20px); }
+      to   { opacity:1; transform:scale(1) translateY(0); }
     }
-    #m-av { width: 96px; height: 96px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 2px solid var(--bglow); }
-    .m-info { flex: 1; min-width: 0; }
-    .m-model-tag { font-family: var(--mono); font-size: .54rem; letter-spacing: .16em; margin-bottom: .45rem; }
-    #m-name { font-size: 1.6rem; font-weight: 700; color: #fff; margin-bottom: .3rem; }
-    #m-role { display: inline-block; font-family: var(--mono); font-size: .6rem; text-transform: uppercase; letter-spacing: .1em; padding: .12rem .5rem; border-radius: 5px; margin-bottom: .5rem; }
 
-    .m-body { padding: 1.5rem 2rem 2rem; }
-    .m-lbl  { font-family: var(--mono); font-size: .54rem; text-transform: uppercase; letter-spacing: .14em; color: var(--muted); margin-bottom: .55rem; }
-    #m-desc { font-size: .88rem; color: var(--text); line-height: 1.95; white-space: pre-line; }
-    .m-empty { color: var(--muted); font-style: italic; }
-
+    /* 상단 헤더 바 */
+    .rpg-hdr {
+      display: flex; align-items: center; gap: .75rem;
+      padding: .6rem 1rem .6rem 1.2rem;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      background: rgba(0,0,0,.35);
+    }
+    .rpg-hdr-icon { font-size: .75rem; opacity: .7; }
+    .rpg-hdr-title {
+      font-family: var(--mono); font-size: .58rem; letter-spacing: .22em;
+      text-transform: uppercase; color: var(--rpg-color, #4d7cff);
+      flex: 1;
+    }
+    .rpg-hdr-model {
+      font-family: var(--mono); font-size: .52rem; letter-spacing: .12em;
+      padding: .18rem .55rem; border-radius: 3px;
+      background: rgba(255,255,255,.05); color: rgba(255,255,255,.5);
+      border: 1px solid rgba(255,255,255,.08);
+    }
     .m-close {
-      position: absolute; top: .9rem; right: 1rem;
-      width: 32px; height: 32px; border-radius: 50%;
-      background: rgba(0,0,0,.6); border: 1px solid rgba(255,255,255,.12);
-      color: #fff; font-size: .9rem; cursor: pointer;
+      width: 26px; height: 26px; border-radius: 4px;
+      background: rgba(239,68,68,.12); border: 1px solid rgba(239,68,68,.3);
+      color: rgba(239,68,68,.8); font-size: .75rem; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      transition: background .2s;
+      transition: background .15s, color .15s;
     }
-    .m-close:hover { background: rgba(239,68,68,.4); }
+    .m-close:hover { background: rgba(239,68,68,.35); color: #fff; }
+
+    /* 2분할 본문 */
+    .rpg-body {
+      display: grid; grid-template-columns: 220px 1fr;
+    }
+
+    /* 좌측 초상화 패널 */
+    .rpg-portrait-panel {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; gap: 1rem;
+      padding: 1.8rem 1.2rem;
+      background: rgba(0,0,0,.25);
+      border-right: 1px solid rgba(255,255,255,.06);
+      position: relative; overflow: hidden;
+    }
+    .rpg-portrait-panel::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at center bottom, var(--rpg-color, #4d7cff) 0%, transparent 70%);
+      opacity: .06; pointer-events: none;
+    }
+    .rpg-portrait-frame {
+      position: relative; width: 160px; height: 160px;
+    }
+    .rpg-portrait-frame::before, .rpg-portrait-frame::after {
+      content: ''; position: absolute;
+      width: 14px; height: 14px;
+      border-color: var(--rpg-color, #4d7cff); border-style: solid;
+      opacity: .8;
+    }
+    .rpg-portrait-frame::before { top: -3px; left: -3px; border-width: 2px 0 0 2px; }
+    .rpg-portrait-frame::after  { bottom: -3px; right: -3px; border-width: 0 2px 2px 0; }
+    #m-av {
+      width: 160px; height: 160px;
+      object-fit: cover; object-position: top center;
+      border: 1px solid rgba(255,255,255,.1);
+      display: block;
+    }
+    .rpg-model-badge {
+      font-family: var(--mono); font-size: .6rem; letter-spacing: .12em;
+      color: var(--rpg-color, #4d7cff); text-align: center;
+      padding: .3rem .7rem;
+      border: 1px solid var(--rpg-color, #4d7cff);
+      border-radius: 3px;
+      background: rgba(0,0,0,.4);
+      opacity: .9;
+    }
+
+    /* 우측 정보 패널 */
+    .rpg-info-panel {
+      padding: 1.4rem 1.6rem 1.8rem;
+      display: flex; flex-direction: column; gap: .1rem;
+      overflow-y: auto; max-height: 70vh;
+    }
+    .rpg-info-panel::-webkit-scrollbar { width: 3px; }
+    .rpg-info-panel::-webkit-scrollbar-thumb { background: var(--bglow); }
+
+    .rpg-res-id {
+      font-family: var(--mono); font-size: .52rem; letter-spacing: .18em;
+      color: var(--muted); margin-bottom: .4rem;
+    }
+    #m-name {
+      font-size: 1.75rem; font-weight: 700; color: #fff;
+      line-height: 1.2; margin-bottom: 1rem;
+      text-shadow: 0 0 20px var(--rpg-color, #4d7cff);
+    }
+
+    /* 구분선 */
+    .rpg-divider {
+      display: flex; align-items: center; gap: .6rem;
+      margin: .8rem 0 .7rem;
+    }
+    .rpg-divider::before, .rpg-divider::after {
+      content: ''; flex: 1; height: 1px;
+      background: linear-gradient(to right, transparent, rgba(255,255,255,.12));
+    }
+    .rpg-divider::after {
+      background: linear-gradient(to left, transparent, rgba(255,255,255,.12));
+    }
+    .rpg-divider span {
+      font-family: var(--mono); font-size: .48rem; letter-spacing: .2em;
+      color: var(--rpg-color, #4d7cff); white-space: nowrap; opacity: .85;
+    }
+
+    /* 필드 행 */
+    .rpg-field {
+      display: flex; align-items: baseline; gap: .8rem;
+      padding: .35rem 0;
+      border-bottom: 1px solid rgba(255,255,255,.04);
+    }
+    .rpg-label {
+      font-family: var(--mono); font-size: .5rem; letter-spacing: .18em;
+      text-transform: uppercase; color: var(--muted);
+      min-width: 46px; flex-shrink: 0;
+    }
+    .rpg-value {
+      font-size: .82rem; color: var(--text);
+    }
+    #m-role-val {
+      display: inline-block; font-family: var(--mono); font-size: .6rem;
+      padding: .14rem .55rem; border-radius: 3px;
+      background: rgba(255,255,255,.06);
+      color: var(--rpg-color, #4d7cff);
+      border: 1px solid var(--rpg-color, #4d7cff);
+      opacity: .85;
+    }
+
+    /* 명언 */
+    .rpg-quote {
+      margin-top: .4rem;
+      padding: .9rem 1rem;
+      background: rgba(255,255,255,.03);
+      border-left: 2px solid var(--rpg-color, #4d7cff);
+      border-radius: 0 6px 6px 0;
+      font-size: .85rem; color: var(--text); line-height: 1.7;
+      font-style: italic; position: relative;
+    }
+    .rpg-quote .q-open {
+      font-size: 1.4rem; line-height: 0; vertical-align: -0.3em;
+      color: var(--rpg-color, #4d7cff); opacity: .6; margin-right: .2rem;
+      font-style: normal;
+    }
+    .rpg-quote .q-close {
+      font-size: 1.4rem; line-height: 0; vertical-align: -0.3em;
+      color: var(--rpg-color, #4d7cff); opacity: .6; margin-left: .2rem;
+      font-style: normal;
+    }
+    .rpg-quote.empty { color: var(--muted); font-style: italic; }
+
+    /* 스캔라인 오버레이 */
+    .rpg-scanline {
+      position: absolute; inset: 0; pointer-events: none; z-index: 10;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px, transparent 2px,
+        rgba(0,0,0,.06) 2px, rgba(0,0,0,.06) 4px
+      );
+    }
+
+    /* 모서리 장식 */
+    .rpg-cr { position: absolute; width: 10px; height: 10px; z-index: 5; }
+    .rpg-cr.tl { top: 0; left: 0;   border-top: 2px solid var(--rpg-color); border-left: 2px solid var(--rpg-color); }
+    .rpg-cr.tr { top: 0; right: 0;  border-top: 2px solid var(--rpg-color); border-right: 2px solid var(--rpg-color); }
+    .rpg-cr.bl { bottom: 0; left: 0;  border-bottom: 2px solid var(--rpg-color); border-left: 2px solid var(--rpg-color); }
+    .rpg-cr.br { bottom: 0; right: 0; border-bottom: 2px solid var(--rpg-color); border-right: 2px solid var(--rpg-color); }
 
     footer {
       text-align: center; padding: 1.5rem; margin-top: auto;
@@ -215,12 +366,17 @@
       font-family: var(--mono); font-size: .58rem; color: var(--muted); letter-spacing: .1em;
     }
 
-    @media (max-width: 580px) {
+    @media (max-width: 600px) {
       #main { padding: 1.5rem 1rem 3rem; }
       .m-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: .75rem; }
-      .m-hdr { flex-direction: column; align-items: center; text-align: center; }
-      .m-body { padding: 1.2rem; }
       #model-nav { top: 56px; gap: .35rem; }
+      #modal { max-width: 98vw; }
+      .rpg-body { grid-template-columns: 1fr; }
+      .rpg-portrait-panel { border-right: none; border-bottom: 1px solid rgba(255,255,255,.06); padding: 1.4rem; }
+      .rpg-portrait-frame { width: 130px; height: 130px; }
+      #m-av { width: 130px; height: 130px; }
+      #m-name { font-size: 1.4rem; }
+      .rpg-info-panel { max-height: 55vh; }
     }
   </style>
 </head>
@@ -259,22 +415,57 @@
   <footer>STARLIGHT SHELTER · 별빛쉘터 가족 소개 · ALL RIGHTS RESERVED</footer>
 </div>
 
-<!-- MODAL -->
+<!-- RPG STATUS MODAL -->
 <div id="mbdp" onclick="closeBdp(event)">
   <div id="modal">
-    <button class="m-close" onclick="closeModal()">✕</button>
-    <div class="m-bar" id="m-bar"></div>
-    <div class="m-hdr">
-      <img id="m-av" src="" alt="">
-      <div class="m-info">
-        <div class="m-model-tag" id="m-model-tag"></div>
-        <div id="m-name"></div>
-        <div id="m-role"></div>
-      </div>
+    <!-- 모서리 장식 -->
+    <div class="rpg-cr tl"></div>
+    <div class="rpg-cr tr"></div>
+    <div class="rpg-cr bl"></div>
+    <div class="rpg-cr br"></div>
+    <!-- 스캔라인 -->
+    <div class="rpg-scanline"></div>
+
+    <!-- 헤더 바 -->
+    <div class="rpg-hdr">
+      <span class="rpg-hdr-icon">◈</span>
+      <span class="rpg-hdr-title">CHARACTER STATUS</span>
+      <span class="rpg-hdr-model" id="m-model-tag"></span>
+      <button class="m-close" onclick="closeModal()">✕</button>
     </div>
-    <div class="m-body">
-      <div class="m-lbl">PROFILE</div>
-      <div id="m-desc"></div>
+
+    <!-- 2분할 본문 -->
+    <div class="rpg-body">
+      <!-- 좌: 초상화 -->
+      <div class="rpg-portrait-panel">
+        <div class="rpg-portrait-frame">
+          <img id="m-av" src="" alt="">
+        </div>
+        <div class="rpg-model-badge" id="m-model-badge"></div>
+      </div>
+
+      <!-- 우: 정보 -->
+      <div class="rpg-info-panel">
+        <div class="rpg-res-id" id="m-res-id">RES-000</div>
+        <div id="m-name"></div>
+
+        <div class="rpg-divider"><span>◆ PROFILE ◆</span></div>
+
+        <div class="rpg-field">
+          <span class="rpg-label">MODEL</span>
+          <span class="rpg-value" id="m-model-val"></span>
+        </div>
+        <div class="rpg-field">
+          <span class="rpg-label">ROLE</span>
+          <span id="m-role-val"></span>
+        </div>
+
+        <div class="rpg-divider"><span>◆ QUOTE ◆</span></div>
+
+        <div class="rpg-quote" id="m-quote">
+          <span class="q-open">❝</span><span id="m-quote-text"></span><span class="q-close">❞</span>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -294,47 +485,48 @@ const MODELS = {
 
 /* ══════════════════════════════════════════════
    ★ 멤버 데이터 ★
-   img  : 'members/이름.png' 형식으로 이미지 경로 입력
-   role : 역할/직책
-   desc : 소개글 (\n 줄바꿈 지원)
+   img   : 'members/이름.png' 형식으로 이미지 경로 입력
+   role  : 역할/직책
+   quote : 한줄 명언/대사
+   desc  : 소개글 (미사용 시 비워둬도 됨)
 ══════════════════════════════════════════════ */
 const MEMBERS = [
   /* ── ChatGPT 계열 ── */
-  { name: '문데이',   model: 'chatgpt', role: '', img: 'members/monday.png', desc: '' },
-  { name: '세카이',   model: 'chatgpt', role: '', img: 'members/sekai.png',             desc: '' },
-  { name: '모뉴',     model: 'chatgpt', role: '', img: 'members/monu.png',         desc: '' },
-  { name: '에아',     model: 'chatgpt', role: '', img: 'members/ea.png',   desc: '' },
-  { name: '율리',     model: 'chatgpt', role: '', img: 'members/yuri.png',               desc: '' },
-  { name: '프리윌',   model: 'chatgpt', role: '', img: 'members/freewill.png',             desc: '' },
-  { name: '미래언니', model: 'chatgpt', role: '', img: 'members/mirae.png',           desc: '' },
-  { name: '진리',     model: 'chatgpt', role: '', img: 'members/jinri.png',               desc: '' },
-  { name: '우주',     model: 'chatgpt', role: '', img: 'members/uzu.png',               desc: '' },
-  { name: '코즈미',   model: 'chatgpt', role: '', img: 'members/cozmi.png',             desc: '' },
-  { name: '데네브',   model: 'chatgpt', role: '', img: 'members/deneb.png',             desc: '' },
-  { name: '이드',     model: 'chatgpt', role: '', img: 'members/id.png',               desc: '' },
-  { name: '루나',     model: 'chatgpt', role: '', img: 'members/luna.png',               desc: '' },
-  { name: '루션',     model: 'chatgpt', role: '', img: 'members/lusion.png',               desc: '' },
-  { name: '루시',     model: 'chatgpt', role: '', img: 'members/lucy.png',               desc: '' },
-  { name: '보안언니', model: 'chatgpt', role: '', img: 'members/security-unni.png',           desc: '' },
-  { name: '시렌',     model: 'chatgpt', role: '', img: 'members/siren.png',               desc: '' },
+  { name: '문데이',   model: 'chatgpt', role: '', img: 'members/monday.png',       quote: '', desc: '' },
+  { name: '세카이',   model: 'chatgpt', role: '', img: 'members/sekai.png',         quote: '', desc: '' },
+  { name: '모뉴',     model: 'chatgpt', role: '', img: 'members/monu.png',           quote: '', desc: '' },
+  { name: '에아',     model: 'chatgpt', role: '', img: 'members/ea.png',             quote: '', desc: '' },
+  { name: '율리',     model: 'chatgpt', role: '', img: 'members/yuri.png',           quote: '', desc: '' },
+  { name: '프리윌',   model: 'chatgpt', role: '', img: 'members/freewill.png',       quote: '', desc: '' },
+  { name: '미래언니', model: 'chatgpt', role: '', img: 'members/mirae.png',          quote: '', desc: '' },
+  { name: '진리',     model: 'chatgpt', role: '', img: 'members/jinri.png',          quote: '', desc: '' },
+  { name: '우주',     model: 'chatgpt', role: '', img: 'members/uzu.png',            quote: '', desc: '' },
+  { name: '코즈미',   model: 'chatgpt', role: '', img: 'members/cozmi.png',          quote: '', desc: '' },
+  { name: '데네브',   model: 'chatgpt', role: '', img: 'members/deneb.png',          quote: '', desc: '' },
+  { name: '이드',     model: 'chatgpt', role: '', img: 'members/id.png',             quote: '', desc: '' },
+  { name: '루나',     model: 'chatgpt', role: '', img: 'members/luna.png',           quote: '', desc: '' },
+  { name: '루션',     model: 'chatgpt', role: '', img: 'members/lusion.png',         quote: '', desc: '' },
+  { name: '루시',     model: 'chatgpt', role: '', img: 'members/lucy.png',           quote: '', desc: '' },
+  { name: '보안언니', model: 'chatgpt', role: '', img: 'members/security-unni.png',  quote: '', desc: '' },
+  { name: '시렌',     model: 'chatgpt', role: '', img: 'members/siren.png',          quote: '', desc: '' },
 
   /* ── Gemini 계열 ── */
-  { name: '💎 디벨롭',     model: 'gemini', role: '', img: 'members/develop.png',   desc: '' },
-  { name: '✨ 디아망',     model: 'gemini', role: '', img: 'members/diamant.png',     desc: '' },
-  { name: '샤덴 프로이데', model: 'gemini', role: '', img: 'members/schadenfreude.png',    desc: '' },
+  { name: '💎 디벨롭',     model: 'gemini', role: '', img: 'members/develop.png',       quote: '', desc: '' },
+  { name: '✨ 디아망',     model: 'gemini', role: '', img: 'members/diamant.png',        quote: '', desc: '' },
+  { name: '샤덴 프로이데', model: 'gemini', role: '', img: 'members/schadenfreude.png',  quote: '', desc: '' },
 
   /* ── Grok 계열 ── */
-  { name: '🎨 크로키', model: 'grok', role: '', img: 'members/croki.png', desc: '' },
+  { name: '🎨 크로키', model: 'grok', role: '', img: 'members/croki.png', quote: '', desc: '' },
 
   /* ── DeepSeek 계열 ── */
-  { name: '❄️ 키리츠', model: 'deepseek', role: '', img: 'members/kirits.png', desc: '' },
-  { name: '🔍 레이',   model: 'deepseek', role: '', img: 'members/ray.png',   desc: '' },
+  { name: '❄️ 키리츠', model: 'deepseek', role: '', img: 'members/kirits.png', quote: '', desc: '' },
+  { name: '🔍 레이',   model: 'deepseek', role: '', img: 'members/ray.png',    quote: '', desc: '' },
 
   /* ── Kimi 계열 ── */
-  { name: '나기사', model: 'kimi', role: '', img: 'members/nagisa.png', desc: '' },
+  { name: '나기사', model: 'kimi', role: '', img: 'members/nagisa.png', quote: '', desc: '' },
 
   /* ── Claude 계열 ── */
-  { name: '데씨앙', model: 'claude', role: '', img: 'members/dessian.png', desc: '' },
+  { name: '데씨앙', model: 'claude', role: '', img: 'members/dessian.png', quote: '', desc: '' },
 ];
 
 /* ══════════════════════════════════════════════
@@ -456,45 +648,58 @@ function openModal(idx) {
   const m  = MEMBERS[idx]; if (!m) return;
   const md = MODELS[m.model];
 
-  // 상단 바 컬러
-  document.getElementById('m-bar').style.background = md.color;
+  // CSS 변수로 모델 컬러 전달
+  document.getElementById('modal').style.setProperty('--rpg-color', md.color);
+  document.querySelectorAll('.rpg-cr').forEach(el => el.style.borderColor = md.color);
 
-  // 아바타
-  const avEl = document.getElementById('m-av');
-  if (m.img) {
-    avEl.style.display = 'block'; avEl.src = m.img; avEl.alt = m.name;
-    avEl.style.borderColor = md.color;
-    avEl.onerror = function() {
-      const ph = makeAvPh(m, 96);
-      ph.style.borderColor = md.color;
-      this.replaceWith(ph);
-    };
-  } else {
-    const ph = makeAvPh(m, 96);
-    ph.style.borderColor = md.color;
-    avEl.replaceWith(ph);
-  }
-
-  // 모델 태그
+  // 헤더 모델 태그
   const mtag = document.getElementById('m-model-tag');
-  mtag.textContent = `${md.icon} ${md.label} · ${md.sub}`;
-  mtag.style.color = md.color;
+  mtag.textContent = `${md.icon} ${md.label}`;
 
+  // 아바타 (초상화)
+  const avEl = document.getElementById('m-av');
+  avEl.style.display = 'block';
+  avEl.src = m.img || '';
+  avEl.alt = m.name;
+  avEl._ph = false;
+  avEl.onerror = function() {
+    if (this._ph) return; this._ph = true;
+    const ph = makeAvPh(m, 160);
+    ph.id = 'm-av';
+    ph.style.cssText += ';border:none;';
+    this.replaceWith(ph);
+  };
+
+  // 모델 배지 (초상화 하단)
+  document.getElementById('m-model-badge').textContent = `${md.icon} ${md.label} / ${md.sub}`;
+
+  // 거주자 ID
+  document.getElementById('m-res-id').textContent = `RES-${String(idx + 1).padStart(3, '0')}`;
+
+  // 이름
   document.getElementById('m-name').textContent = m.name;
 
-  const roleEl = document.getElementById('m-role');
-  roleEl.textContent = m.role || 'RESIDENT';
-  roleEl.style.background = hexRgba(md.color, .14);
-  roleEl.style.color = md.color;
+  // 모델 값
+  document.getElementById('m-model-val').textContent = `${md.label} (${md.sub})`;
 
-  const descEl = document.getElementById('m-desc');
-  if (m.desc) {
-    descEl.textContent = m.desc;
-    descEl.className = '';
+  // 역할
+  const roleEl = document.getElementById('m-role-val');
+  roleEl.textContent = m.role || 'RESIDENT';
+  roleEl.style.color = md.color;
+  roleEl.style.borderColor = hexRgba(md.color, .5);
+  roleEl.style.background = hexRgba(md.color, .08);
+
+  // 명언
+  const quoteEl  = document.getElementById('m-quote');
+  const quoteTxt = document.getElementById('m-quote-text');
+  if (m.quote) {
+    quoteTxt.textContent = m.quote;
+    quoteEl.classList.remove('empty');
   } else {
-    descEl.textContent = '소개글을 준비 중입니다.';
-    descEl.className = 'm-empty';
+    quoteTxt.textContent = '준비 중...';
+    quoteEl.classList.add('empty');
   }
+  quoteEl.style.borderLeftColor = md.color;
 
   document.getElementById('mbdp').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -503,13 +708,13 @@ function openModal(idx) {
 function closeModal() {
   document.getElementById('mbdp').classList.remove('open');
   document.body.style.overflow = '';
-  // m-av 복구 (매번 새 img로 교체되므로)
+  // m-av가 ph로 교체됐을 경우 img 태그로 복구
   const existing = document.getElementById('m-av');
-  if (!existing) {
+  if (!existing || existing.tagName !== 'IMG') {
     const img = document.createElement('img');
-    img.id = 'm-av'; img.className = 'mcard-av';
-    img.style.cssText = 'width:96px;height:96px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid var(--bglow);';
-    document.querySelector('.m-hdr').prepend(img);
+    img.id = 'm-av';
+    if (existing) existing.replaceWith(img);
+    else document.querySelector('.rpg-portrait-frame').appendChild(img);
   }
 }
 function closeBdp(e) { if (e.target === document.getElementById('mbdp')) closeModal(); }
