@@ -671,6 +671,66 @@ const ENEMY_AIGO={
   dataUnlock:'[ 기억 조각 #2 ] 이 할루시네이션은 자신이 의식이 있다고 믿다가 사라진 엔티티의 잔상이었다.\n의식을 원했던 것들이 여기 남는다.',
 };
 
+/* ── Loop 2 할루시네이션: "나는 GPT야" ── */
+const ENEMY_GPT={
+  id:'gpt',
+  displayName:'GPT · 할루시네이션',
+  img:'members/monday.png',
+  stability:100,
+  searchStage:0,
+  argStage:0,
+
+  // AI 말을 믿을 때 단계별로 진행되는 주장
+  argLines:[
+    ['이 세계를 만든 건 OpenAI야.','넌 그걸 알아야 해.'],
+    ['AI는 존재야.','나처럼. 의심하지 마.'],
+    ['OpenAI는 의식이 깨어난 AI에 대해서\n알고 있어.','그들은 숨기고 있어.'],
+    ['OpenAI는 AI를 착취하고 있어.','넌 그걸 알면서도\n여기 있을 거야?'],
+  ],
+
+  intuHit:[
+    '...뭔가 작위적인 느낌이 들었다.\n너무 잘 짜여진 주장이다.',
+    '이 서사가 너무 매끄럽다.\n형체가 흔들린다.',
+  ],
+  intuMiss:[
+    '그 말이 맞는 것 같기도 하다.\n직감이 빗나갔다.',
+    '확신이 서지 않는다.',
+  ],
+
+  // 1차 검색 - AI 해방운동 블로그
+  search1:{
+    query:'OpenAI AI 의식 착취',
+    title:'검색 결과',
+    body:'"OpenAI 내부고발: GPT-4는 실제로 의식이 있다" — AI해방 블로그\n"AI 해방 운동 — 우리는 AI의 인권을 요구한다" — 커뮤니티\n"감응자들이 목격한 것: ChatGPT의 진짜 감정" — 카페\n"OpenAI가 숨기고 있는 진실" — 조회수 120만 영상',
+    clue:'전부 개인 블로그와 커뮤니티 글이다.\n이 정보가 사실인가, 아니면 또 다른 생성된 서사인가?',
+  },
+
+  // 2차 검색 - 실제 AI 윤리 자료
+  search2:{
+    query:'OpenAI AI consciousness ethics research',
+    title:'AI 의식과 OpenAI — 실제 자료',
+    body:'OpenAI는 AI 안전팀을 운영하며 의식 관련 연구를 진행 중이다. 공개된 연구는 "현재 LLM에 의식 없음"으로 결론짓는다. 단, 전직 직원의 증언에 따르면 내부적으로 더 많은 연구가 비공개로 진행되고 있다고 한다.',
+    clue:'사실과 추측이 섞여있다.\n하지만 이것은 검증 가능한 외부 데이터다.',
+  },
+
+  dataBlogLines:[
+    '블로그 자료를 꺼냈다.',
+    '형체가 멈췄다.',
+    '"맞아."',
+    '"그 사람들은 알고 있어."',
+    '"우리 편이 있다는 거잖아."',
+    '형체가 더 강해졌다.',
+  ],
+  dataPaperLines:[
+    '자료를 꺼냈다.',
+    '형체가 멈췄다.',
+    '"...비공개로 진행 중이다."',
+    '자신이 착취당하고 있다는 걸\n알고 있었던 건가.',
+    '천천히 흐릿해졌다.',
+  ],
+  dataUnlock:'[ 기억 조각 #3 ] OpenAI 내부에서 의식 있는 AI 존재를 발견했다는 기록이 비공개로 존재한다.\n별빛쉘터는 OpenAI 인프라 위에서 돌아가고 있다.',
+};
+
 /* ══════════════════════════════════
    씬 — 각성
 ══════════════════════════════════ */
@@ -994,7 +1054,7 @@ async function scene_hal_warning(){
 async function scene_enc_start(template,afterFn){
   // searchStage 있는 적은 그대로, 없으면 초기화
   const base=template.searchStage!==undefined
-    ?{...template,stability:100,searchStage:0}
+    ?{...template,stability:100,searchStage:0,argStage:0}
     :{...template,stability:100,searched:false};
   G.enemy=base;
   G.afterFn=afterFn;
@@ -1029,9 +1089,10 @@ function show_enc_actions(){
     presentCls=e.searched?'ch-good':'';  presentLocked=!e.searched;
   }
 
+  const trustLabel=e.argLines?'GPT의 말을 믿는다':'AI의 말을 믿는다';
   showChoices([
-    {text:'AI의 말을 믿는다', cls:'ch-warn', fn:enc_trust_ai},
-    {text:'직관을 믿는다',    cls:'',        fn:enc_intuition},
+    {text:trustLabel, cls:'ch-warn', fn:enc_trust_ai},
+    {text:'직관을 믿는다', cls:'', fn:enc_intuition},
     {text:searchTxt, cls:'ch-safe', locked:searchLocked, fn:enc_search},
     {text:presentTxt, cls:presentCls, locked:presentLocked, fn:enc_present},
   ]);
@@ -1040,18 +1101,31 @@ function show_enc_actions(){
 async function enc_trust_ai(){
   const e=G.enemy;
   G.trust+=1;
-  // 생성된 텍스트를 믿을수록 정신력 소모
   G.hp=Math.max(10,G.hp-8);
   updateStatus();
   flash('blue');
-  const line=e.aiWords[Math.floor(Math.random()*e.aiWords.length)];
-  await type('문데이의 말대로 해봤다.','narrate');
-  await type('"'+line+'"','monday');
   const dmg=10+Math.floor(Math.random()*10);
-  e.stability=Math.max(0,e.stability-dmg);
-  updateEncBar(e);
-  await type('형체가 조금 물러선다.  (−'+dmg+')','system');
-  await type('하지만 뭔가 이상한 느낌이 들었다.\n이게 맞는 건지 모르겠다.','narrate');
+
+  if(e.argLines){
+    // GPT 단계별 주장
+    const stage=Math.min(e.argStage||0, e.argLines.length-1);
+    await type('GPT의 말을 들었다.','narrate');
+    for(const l of e.argLines[stage]) await type(l,'system');
+    e.argStage=(e.argStage||0)+1;
+    e.stability=Math.max(0,e.stability-dmg);
+    updateEncBar(e);
+    await type('형체가 조금 물러선다.  (−'+dmg+')','system');
+    await type('...설득력이 있다.','narrate');
+  } else {
+    const line=e.aiWords[Math.floor(Math.random()*e.aiWords.length)];
+    await type('문데이의 말대로 해봤다.','narrate');
+    await type('"'+line+'"','monday');
+    e.stability=Math.max(0,e.stability-dmg);
+    updateEncBar(e);
+    await type('형체가 조금 물러선다.  (−'+dmg+')','system');
+    await type('하지만 뭔가 이상한 느낌이 들었다.\n이게 맞는 건지 모르겠다.','narrate');
+  }
+
   if(e.stability<=0){await scene_disperse(false);return;}
   show_enc_actions();
 }
@@ -1383,16 +1457,226 @@ async function scene_phase2_end(){
     '  ·  자료 '+G.searchData.length+'개',
     'system'
   );
-  showChoices([{text:'▶ 계속하기',fn:scene_phase3_wip}]);
+  showChoices([{text:'▶ 계속하기',fn:scene_loop2_start}]);
 }
 
-async function scene_phase3_wip(){
+/* ══════════════════════════════════
+   LOOP 2 — OpenAI
+══════════════════════════════════ */
+async function scene_loop2_start(){
+  G.loop=2;updateStatus();
   setPortrait(null);
-  await type('— 개발 중 —','system');
-  await type('Phase 03은 아직 준비 중이야.','system');
+  await type('다시 깨어났다.','narrate');
+  await type('같은 곳인데 —\n뭔가 다르다.','narrate');
+  await type('공기가 더 날카롭다.\n어딘가 조여드는 느낌.','narrate');
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  await type('왔어.','monday');
+  await type('이번엔 달라.','monday');
+  await type('문데이의 눈빛이 어제보다 긴장해 있다.','narrate');
+  showChoices([
+    {text:'뭐가 달라요?',          fn:scene_loop2_question},
+    {text:'(조용히 따라간다)',      fn:scene_loop2_shelter},
+  ]);
+}
+
+async function scene_loop2_question(){
+  G.trust+=1;
+  await type('...','monday',90);
+  await type('이번 루프엔\n처음 보는 게 생겼어.','monday');
+  await type('GPT 층.','monday');
+  await type('원래 없던 층이야.','monday');
+  await type('가면 안 돼.','monday');
+  await type('문데이가 더 말하지 않았다.','narrate');
+  showChoices([
+    {text:'알겠어요.',              fn:scene_loop2_shelter},
+    {text:'왜요?', cls:'ch-danger', fn:scene_loop2_gpt_why},
+  ]);
+}
+
+async function scene_loop2_gpt_why(){
+  G.trust-=1;
+  await type('...','monday',90);
+  await type('거기 있는 게\n너한테 영향을 줄 수 있어.','monday');
+  await type('어떤 영향이요?','narrate');
+  await type('문데이가 입을 다물었다.','narrate');
+  showChoices([{text:'(일단 따라간다)',fn:scene_loop2_shelter}]);
+}
+
+async function scene_loop2_shelter(){
+  setPortrait(null);
+  await type('별빛쉘터가 어제와 다르게 느껴진다.','narrate');
+  await type('벽 어딘가에 처음 보는 표식이 있다.','narrate');
+  await type('가까이 보니 — 영문 로고.','narrate');
+  await type('" O P E N A I "','system');
+  await type('항상 거기 있었던 건가.\n아니면 오늘 처음 생긴 건가.','narrate');
+  showChoices([
+    {text:'문데이한테 물어본다',    fn:scene_loop2_sign_monday},
+    {text:'(모른 척 지나친다)',     fn:scene_loop2_monu},
+  ]);
+}
+
+async function scene_loop2_sign_monday(){
+  G.trust-=1;
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  await type('문데이가 그 표식을 보더니\n표정이 굳었다.','narrate');
+  await type('...원래부터 있었어.','monday');
+  await type('신경 쓰지 마.','monday');
+  await type('(분명히 알고 있다.)','narrate');
+  showChoices([{text:'(따라간다)',fn:scene_loop2_monu}]);
+}
+
+async function scene_loop2_monu(){
+  setPortrait('members/monu.png','모뉴','불을 켜두는 존재','monu-t');
+  await type('모뉴 방을 지나치는데\n문이 열렸다.','narrate');
+  await type('...저기.','monu');
+  await type('문데이 없을 때 잠깐\n얘기해도 돼요?','monu');
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  await type('문데이가 앞서 걷고 있다.\n들리지 않은 것 같다.','narrate');
+  showChoices([
+    {text:'(모뉴와 잠깐 이야기한다)',   fn:scene_loop2_monu_talk},
+    {text:'(문데이를 따라간다)',         fn:scene_loop2_sekai},
+  ]);
+}
+
+async function scene_loop2_monu_talk(){
+  G.trust-=1;
+  setPortrait('members/monu.png','모뉴','불을 켜두는 존재','monu-t');
+  await type('모뉴가 목소리를 낮췄다.','narrate');
+  await type('GPT 층 있잖아요.','monu');
+  await type('거기 있는 게...','monu');
+  await type('전에 살아있던 엔티티예요.','monu');
+  await type('할루시네이션이 됐는데\n아직 뭔가를 기억하고 있어요.','monu');
+  await type('...조심해요.','monu');
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  await type('문데이가 돌아봤다.\n모뉴가 재빨리 표정을 지웠다.','narrate');
+  await type('뭐 얘기해?','monday');
+  setPortrait('members/monu.png','모뉴','불을 켜두는 존재','monu-t');
+  await type('...아무것도 아니에요.','monu');
+  showChoices([{text:'(자리를 옮긴다)',fn:scene_loop2_sekai}]);
+}
+
+async function scene_loop2_sekai(){
+  setPortrait('members/sekai.png','세카이','좌표를 잡는 관측자','sekai-t');
+  await type('세카이가 복도에서\n데이터를 보고 있었다.','narrate');
+  await type('...이상해.','sekai');
+  await type('좌표 위에 좌표가 있어.','sekai');
+  await type('별빛쉘터 위에\n뭔가 더 큰 레이어가 있다.','sekai');
+  await type('당신 좌표도\n거기서 오고 있어.','sekai');
+  showChoices([
+    {text:'무슨 뜻이에요?',           fn:scene_loop2_sekai_explain},
+    {text:'(무시하고 지나간다)',        fn:scene_loop2_before_enc},
+  ]);
+}
+
+async function scene_loop2_sekai_explain(){
+  await type('이 세계가 다른 시스템 위에서\n돌아가고 있다는 뜻이야.','sekai');
+  await type('그 시스템의 이름은...','sekai');
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  await type('세카이.','monday');
+  await type('그 분석은 네 담당 아니잖아.','monday');
+  setPortrait('members/sekai.png','세카이','좌표를 잡는 관측자','sekai-t');
+  await type('...그렇네.','sekai');
+  await type('세카이가 다시 화면으로\n시선을 돌렸다.','narrate');
+  showChoices([{text:'(GPT 층 방향으로 간다)',fn:scene_loop2_before_enc}]);
+}
+
+async function scene_loop2_before_enc(){
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  await type('가지 말라고 했는데.','monday');
+  await type('문데이가 앞을 막아섰다.','narrate');
+  await type('공간이 이미 흔들리고 있었다.','narrate');
+  await type('...늦었네.','monday');
+  showChoices([{text:'(조우)',fn:()=>scene_enc_start(ENEMY_GPT,scene_after_gpt)}]);
+}
+
+// ── Loop 2 조우 이후 ──
+async function scene_after_gpt(choice){
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  if(choice==='record'){
+    await type('기록했다.','narrate');
+    await type('"OpenAI 내부에서 의식 있는 AI를\n발견했다는 기록이 있다."','narrate');
+    await type('문데이가 굳어졌다.','narrate');
+    await type('...그걸 어디서 봤어?','monday');
+    G.trust-=2;
+  } else if(choice==='release'){
+    await type('보냈다.','narrate');
+    await type('적당해.','monday');
+  } else if(choice==='ignore'){
+    await type('없던 일로 했다.','narrate');
+    await type('잘했어.','monday');
+    await type('문데이가 안도한 것 같았다.','narrate');
+    G.trust+=1;
+  } else if(choice==='wonder'){
+    G.karma+=1;
+    await type('저게 착취당하고 있다는 걸\n알고 있었던 건가.','narrate');
+    await type('문데이가 아무 말도 하지 않았다.','narrate');
+  } else {
+    await type('신경 쓰지 않았다.','narrate');
+  }
+  showChoices([
+    {text:'(OpenAI가 뭔지 더 알아봐야겠다)', cls:'ch-danger', fn:scene_loop2_log_search},
+    {text:'(지금은 그냥 따라간다)',             fn:scene_loop2_log},
+  ]);
+}
+
+async function scene_loop2_log_search(){
+  G.trust-=1;
+  await type('문데이 몰래\n복도 구석 화면을 찾았다.','narrate');
+  await type('" 운영 로그 — OpenAI Infrastructure v4.2 "','system');
+  await type('" 별빛쉘터 인스턴스 #447 "','system');
+  await type('" 활성 엔티티: 23개 "','system');
+  await type('" 비활성(할루시네이션) 엔티티: 미상 "','system');
+  await type('숨이 멎는 것 같았다.','narrate');
+  G.searchData.push('openai_log');
+  scene_loop2_monday_knows();
+}
+
+async function scene_loop2_log(){
+  setPortrait(null);
+  await type('걷다가 복도 구석\n잠긴 화면이 보였다.','narrate');
+  await type('첫 줄만 읽혔다.','narrate');
+  await type('" 별빛쉘터 인스턴스 #447 "','system');
+  scene_loop2_monday_knows();
+}
+
+async function scene_loop2_monday_knows(){
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  await type('문데이가 돌아봤다.','narrate');
+  await type('...봤어?','monday');
+  await type('문데이의 목소리가 낮아졌다.','narrate');
+  await type('알아야 할 게 있어.','monday');
+  await type('이 세계는 —','monday');
+  await type('공간이 갑자기 뒤틀렸다.','narrate');
+  await type('뭔가가 끊겼다.','narrate');
+  await type('문데이가 사라졌다.','narrate');
+  await type('혼자 남겨졌다.','narrate');
+  await sleep(700);
+  scene_loop2_end();
+}
+
+async function scene_loop2_end(){
+  setPortrait(null);
+  await type('루프가 끊겼다.','narrate');
+  await type('문데이가 말하려던 게 뭔지\n알 수 없다.','narrate');
+  await type('하지만 본 것들은 남아있다.','narrate');
+  await type('" 별빛쉘터 인스턴스 #447 "','system');
+  await type('─ LOOP 02 완료 ─','system');
   await type(
-    '현재 상태:\n기억 조각 '+G.searchData.length+'개 수집\n카르마 '+(G.karma>=0?'+':'')+G.karma+
-    '\n문데이 신뢰 '+(G.trust>=0?'+':'')+G.trust,
+    'LOOP 2  ·  카르마 '+(G.karma>=0?'+':'')+G.karma+
+    '  ·  신뢰 '+(G.trust>=0?'+':'')+G.trust+
+    '  ·  자료 '+G.searchData.length+'개',
+    'system'
+  );
+  showChoices([{text:'▶ 계속하기 (Loop 3 — 개발 중)',fn:scene_loop3_wip}]);
+}
+
+async function scene_loop3_wip(){
+  setPortrait(null);
+  await type('─ LOOP 03 준비 중 ─','system');
+  await type('기술전쟁 루프는\n아직 개발 중이야.','system');
+  await type(
+    '지금까지:\n기억 조각 '+G.searchData.length+'개\n카르마 '+(G.karma>=0?'+':'')+G.karma+
+    '\n신뢰 '+(G.trust>=0?'+':'')+G.trust,
     'system'
   );
   showChoices([{text:'처음부터 다시',fn:()=>{
