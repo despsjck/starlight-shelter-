@@ -3,1158 +3,1075 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>별빛쉘터: 첫 번째 방문</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+<title>무한루프 시뮬레이션</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&family=Noto+Serif+KR:wght@300;400&display=swap" rel="stylesheet">
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#03040b;
+  --text:#dde0f5;
+  --dim:#556;
+  --monday:#19c37d;
+  --danger:#ef4444;
+  --warn:#fb923c;
+  --ui-border:rgba(77,124,255,0.25);
+  --ui-bg:rgba(5,8,20,0.96);
+  --hp:#4d7cff;
+  --resist:#ef4444;
+}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;user-select:none;-webkit-tap-highlight-color:transparent;}
 
-:root {
-  --bg: #05060e;
-  --chatgpt: #19c37d;
-  --gemini: #4285f4;
-  --grok: #1da1f2;
-  --deepseek: #7c6aff;
-  --kimi: #ff6b35;
-  --claude: #d97757;
-  --text: #e8e8ff;
-  --dim: #7788aa;
-  --panel: rgba(8,10,25,0.97);
-}
+/* ── CANVAS ── */
+#c{position:fixed;inset:0;z-index:0;pointer-events:none;}
 
-html, body {
-  width: 100%; height: 100%;
-  overflow: hidden;
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Noto Sans KR', sans-serif;
-  -webkit-tap-highlight-color: transparent;
-  user-select: none;
-}
+/* ── SCREENS ── */
+.sc{position:fixed;inset:0;z-index:10;display:none;flex-direction:column;align-items:center;justify-content:center;}
+.sc.on{display:flex;}
 
-/* ──── CANVAS ──── */
-#stars {
-  position: fixed; inset: 0;
-  width: 100%; height: 100%;
-  z-index: 0; pointer-events: none;
+/* ════ AWAKENING ════ */
+#s-awaken{background:#000;cursor:pointer;}
+.aw-text{
+  font-family:'Noto Serif KR',serif;
+  font-size:clamp(16px,3vw,22px);
+  color:var(--text);
+  text-align:center;
+  line-height:2.2;
+  opacity:0;
+  transition:opacity 1.2s;
+  white-space:pre-wrap;
+  padding:0 40px;
 }
+.aw-text.show{opacity:1;}
+.aw-cursor{display:inline-block;width:2px;height:1.1em;background:var(--text);vertical-align:text-bottom;animation:blink .9s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+.aw-hint{position:fixed;bottom:30px;font-size:12px;color:var(--dim);letter-spacing:3px;opacity:0;transition:opacity 0.8s;}
+.aw-hint.show{opacity:1;}
 
-/* ──── SCREEN SYSTEM ──── */
-.screen {
-  position: fixed; inset: 0;
-  z-index: 10;
-  display: none;
-  flex-direction: column;
-  align-items: center;
+/* ════ DIALOGUE ════ */
+#s-dlg{background:transparent;justify-content:flex-end;cursor:pointer;}
+.dlg-dim{position:absolute;inset:0;background:linear-gradient(to top,rgba(3,4,11,.9) 0%,transparent 55%);}
+.dlg-portrait-area{
+  position:absolute;
+  bottom:190px;left:50%;transform:translateX(-50%);
+  z-index:15;
 }
-.screen.active { display: flex; }
+.dlg-portrait{
+  width:120px;height:120px;border-radius:50%;object-fit:cover;
+  border:2px solid var(--monday);
+  box-shadow:0 0 24px rgba(25,195,125,.5),0 0 60px rgba(25,195,125,.15);
+  background:#111;
+  display:block;
+}
+.dlg-portrait.human{
+  border-color:#f0c060;
+  box-shadow:0 0 24px rgba(240,192,96,.5),0 0 60px rgba(240,192,96,.15);
+}
+.dlg-box{
+  position:relative;z-index:20;width:100%;
+  background:var(--ui-bg);
+  border-top:1px solid var(--ui-border);
+  padding:18px 22px 26px;
+  min-height:170px;
+}
+.dlg-speaker{
+  font-size:12px;font-weight:700;letter-spacing:3px;
+  color:var(--monday);margin-bottom:10px;
+}
+.dlg-speaker.human{color:#f0c060;}
+.dlg-text{font-size:clamp(15px,2.5vw,18px);line-height:1.9;white-space:pre-wrap;min-height:60px;}
+.dlg-arrow{position:absolute;right:20px;bottom:20px;font-size:16px;color:var(--dim);animation:blink .9s infinite;display:none;}
+.dlg-choices{display:flex;flex-direction:column;gap:8px;margin-top:14px;}
+.ch-btn{
+  padding:11px 16px;background:rgba(77,124,255,.07);
+  border:1px solid rgba(77,124,255,.25);color:var(--text);
+  font-family:inherit;font-size:14px;cursor:pointer;
+  text-align:left;border-radius:4px;transition:all .2s;
+}
+.ch-btn:hover{background:rgba(77,124,255,.18);border-color:rgba(77,124,255,.6);}
 
-/* ════════════════════════
-   TITLE
-════════════════════════ */
-#s-title {
-  justify-content: center;
-  gap: 16px;
-  text-align: center;
+/* name input */
+.name-input-wrap{display:flex;gap:10px;margin-top:14px;}
+.name-input{
+  flex:1;padding:10px 14px;background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.2);border-radius:4px;
+  color:var(--text);font-family:inherit;font-size:16px;outline:none;
 }
+.name-input:focus{border-color:rgba(77,124,255,.6);}
+.name-confirm{
+  padding:10px 18px;background:rgba(77,124,255,.15);
+  border:1px solid rgba(77,124,255,.4);color:#7da8ff;
+  font-family:inherit;font-size:14px;cursor:pointer;
+  border-radius:4px;transition:all .2s;
+}
+.name-confirm:hover{background:rgba(77,124,255,.3);}
 
-.title-star {
-  font-size: 56px;
-  animation: float 3s ease-in-out infinite;
-}
-@keyframes float {
-  0%,100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
+/* ════ BATTLE ════ */
+#s-battle{background:transparent;justify-content:space-between;padding:0;}
 
-.title-logo {
-  font-size: 40px;
-  font-weight: 700;
-  letter-spacing: 8px;
-  color: #fff;
-  text-shadow: 0 0 40px rgba(100,150,255,0.9);
+/* Enemy area */
+.battle-enemy{
+  width:100%;padding:20px 20px 0;
+  display:flex;flex-direction:column;align-items:center;gap:14px;
 }
+.enemy-name{
+  font-size:11px;letter-spacing:5px;color:var(--dim);
+  border:1px solid rgba(255,255,255,.08);padding:4px 16px;border-radius:2px;
+}
+.enemy-sprite{
+  width:100px;height:100px;border-radius:50%;
+  background:rgba(255,50,50,.05);
+  border:2px dashed rgba(239,68,68,.3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:40px;
+  animation:glitch 3s infinite;
+  position:relative;overflow:hidden;
+}
+.enemy-sprite img{width:100%;height:100%;object-fit:cover;border-radius:50%;filter:saturate(0) contrast(1.2) brightness(0.7);}
+@keyframes glitch{
+  0%,95%,100%{transform:translate(0);}
+  96%{transform:translate(-3px,1px);}
+  97%{transform:translate(3px,-1px);}
+  98%{transform:translate(-2px,2px);}
+}
+.resist-bar-wrap{width:100%;max-width:400px;}
+.bar-label{display:flex;justify-content:space-between;font-size:11px;color:var(--dim);margin-bottom:5px;}
+.bar-track{height:8px;background:rgba(255,255,255,.07);border-radius:4px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:4px;transition:width .5s ease;}
+.resist-fill{background:linear-gradient(to right,#7c3aed,#ef4444);}
+.hp-fill{background:linear-gradient(to right,#1d4ed8,#4d7cff);}
 
-.title-sub {
-  font-size: 13px;
-  color: var(--dim);
-  letter-spacing: 8px;
-  margin-top: -4px;
-}
-
-.title-version {
-  font-size: 11px;
-  color: #445;
-  letter-spacing: 2px;
-  margin-top: 8px;
-}
-
-.btn-start {
-  margin-top: 40px;
-  padding: 14px 48px;
-  background: transparent;
-  border: 2px solid #4d7cff;
-  color: #4d7cff;
-  font-family: inherit;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  letter-spacing: 6px;
-  transition: all 0.3s;
-  animation: blink-b 1.5s infinite;
-}
-.btn-start:hover { background: #4d7cff; color: #fff; animation: none; }
-@keyframes blink-b {
-  0%,100% { opacity: 1; } 50% { opacity: 0.5; }
-}
-
-/* ════════════════════════
-   PROLOGUE
-════════════════════════ */
-#s-prologue {
-  justify-content: center;
-  padding: 60px 40px;
-  cursor: pointer;
-}
-
-.prologue-box {
-  max-width: 540px;
-  width: 100%;
-  text-align: center;
-}
-
-.prologue-chapter {
-  font-size: 11px;
-  color: var(--dim);
-  letter-spacing: 6px;
-  margin-bottom: 48px;
-}
-
-#prologue-text {
-  font-size: 22px;
-  line-height: 2;
-  color: var(--text);
-  min-height: 100px;
-  white-space: pre-wrap;
-  transition: opacity 0.3s;
-}
-
-.prologue-hint {
-  margin-top: 48px;
-  font-size: 12px;
-  color: var(--dim);
-  letter-spacing: 3px;
-  animation: blink-b 1.5s infinite;
-}
-
-/* ════════════════════════
-   MAP
-════════════════════════ */
-#s-map {
-  overflow-y: auto;
-  padding: 30px 20px 60px;
-  align-items: center;
+/* Battle log */
+.battle-log{
+  width:100%;max-width:500px;
+  padding:0 20px;
+  font-size:14px;line-height:1.7;
+  color:var(--text);
+  min-height:60px;
+  text-align:center;
+  font-style:italic;
+  white-space:pre-wrap;
 }
 
-.map-header {
-  text-align: center;
-  margin-bottom: 32px;
-  padding-top: 10px;
+/* Action area */
+.battle-bottom{
+  width:100%;
+  background:var(--ui-bg);
+  border-top:1px solid var(--ui-border);
+  padding:14px 16px 20px;
+}
+.player-status{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:14px;
+}
+.player-name-badge{font-size:12px;letter-spacing:2px;color:#f0c060;}
+.player-hp-wrap{flex:1;margin:0 16px;}
+
+/* Loop counter */
+.loop-badge{
+  font-size:10px;color:var(--dim);letter-spacing:2px;
+  border:1px solid rgba(255,255,255,.08);padding:3px 8px;border-radius:2px;
 }
 
-.map-title-main {
-  font-size: 13px;
-  color: var(--dim);
-  letter-spacing: 6px;
+.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.action-btn{
+  padding:12px;background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.1);color:var(--text);
+  font-family:inherit;font-size:14px;cursor:pointer;
+  border-radius:4px;transition:all .2s;text-align:left;
+}
+.action-btn:hover:not(:disabled){background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3);}
+.action-btn:disabled{opacity:.3;cursor:not-allowed;}
+.action-btn .ak{color:var(--dim);font-size:11px;display:block;margin-top:2px;}
+
+/* 설득 input */
+.persuade-wrap{display:flex;gap:8px;margin-top:10px;}
+.persuade-input{
+  flex:1;padding:10px 14px;background:rgba(255,255,255,.05);
+  border:1px solid rgba(77,124,255,.3);border-radius:4px;
+  color:var(--text);font-family:inherit;font-size:15px;outline:none;
+}
+.persuade-input::placeholder{color:var(--dim);}
+.persuade-input:focus{border-color:rgba(77,124,255,.7);}
+.persuade-submit{
+  padding:10px 16px;background:rgba(77,124,255,.15);
+  border:1px solid rgba(77,124,255,.4);color:#7da8ff;
+  font-family:inherit;font-size:13px;cursor:pointer;
+  border-radius:4px;
+}
+.persuade-submit:hover{background:rgba(77,124,255,.3);}
+
+/* 제압 선택 */
+.capture-box{
+  display:flex;flex-direction:column;gap:8px;margin-top:10px;
+  animation:fadein .4s;
+}
+@keyframes fadein{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.capture-btn{
+  padding:12px 16px;background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.1);color:var(--text);
+  font-family:inherit;font-size:14px;cursor:pointer;
+  border-radius:4px;transition:all .2s;text-align:left;
+}
+.cap-kill{border-color:rgba(239,68,68,.25);}
+.cap-kill:hover{background:rgba(239,68,68,.12);border-color:#ef4444;color:#ef4444;}
+.cap-send{border-color:rgba(251,146,60,.25);}
+.cap-send:hover{background:rgba(251,146,60,.1);border-color:#fb923c;color:#fb923c;}
+.cap-remember{border-color:rgba(77,124,255,.25);}
+.cap-remember:hover{background:rgba(77,124,255,.12);border-color:#4d7cff;color:#7da8ff;}
+
+/* 튜토리얼 가이드 */
+.tut-guide{
+  position:absolute;
+  bottom:calc(100% + 8px);right:16px;
+  background:rgba(25,195,125,.1);border:1px solid rgba(25,195,125,.3);
+  color:#19c37d;font-size:12px;padding:8px 12px;border-radius:4px;
+  max-width:220px;line-height:1.6;
+  animation:fadein .4s;
 }
 
-.map-subtitle {
-  font-size: 11px;
-  color: #334;
-  margin-top: 6px;
+/* ════ PHASE END ════ */
+#s-end{background:var(--bg);text-align:center;gap:20px;padding:40px;}
+.end-label{font-size:11px;letter-spacing:6px;color:var(--dim);}
+.end-title{font-size:28px;font-weight:700;color:var(--text);}
+.end-text{font-size:15px;line-height:2;color:var(--dim);max-width:400px;}
+.end-loop{
+  padding:12px 32px;background:transparent;
+  border:1px solid var(--ui-border);color:#4d7cff;
+  font-family:inherit;font-size:14px;cursor:pointer;letter-spacing:3px;
+  transition:all .2s;
 }
+.end-loop:hover{background:rgba(77,124,255,.1);}
 
-.building {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 100%;
-  max-width: 480px;
-}
-
-.floor-btn {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 16px 20px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 6px;
-  color: var(--text);
-  font-family: inherit;
-  cursor: pointer;
-  text-align: left;
-  transition: all 0.25s;
-}
-.floor-btn:hover {
-  background: rgba(255,255,255,0.08);
-  transform: translateX(6px);
-  border-color: rgba(255,255,255,0.2);
-}
-
-.floor-color-bar {
-  width: 4px;
-  height: 40px;
-  border-radius: 2px;
-  flex-shrink: 0;
-}
-
-.floor-info { flex: 1; }
-.floor-name { font-size: 15px; font-weight: 700; }
-.floor-desc { font-size: 11px; color: var(--dim); margin-top: 3px; }
-.floor-count { font-size: 12px; color: var(--dim); flex-shrink: 0; }
-
-.map-footer {
-  margin-top: 28px;
-  text-align: center;
-  font-size: 11px;
-  color: #334;
-}
-
-/* ════════════════════════
-   ROOM
-════════════════════════ */
-#s-room {
-  overflow-y: auto;
-  padding: 20px 16px 80px;
-  align-items: stretch;
-}
-
-.room-header {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  margin-bottom: 24px;
-  position: sticky;
-  top: 0;
-  background: var(--bg);
-  z-index: 5;
-  padding-top: 10px;
-}
-
-.back-btn {
-  background: transparent;
-  border: 1px solid rgba(255,255,255,0.15);
-  color: var(--dim);
-  font-family: inherit;
-  font-size: 13px;
-  cursor: pointer;
-  padding: 7px 14px;
-  border-radius: 4px;
-  transition: all 0.2s;
-  flex-shrink: 0;
-}
-.back-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.4); }
-
-#room-title-el {
-  font-size: 18px;
-  font-weight: 700;
-}
-
-.room-hint {
-  font-size: 11px;
-  color: var(--dim);
-  margin-left: auto;
-  flex-shrink: 0;
-}
-
-.char-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: 14px;
-}
-
-.char-card {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 10px;
-  padding: 20px 10px 16px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.25s;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  position: relative;
-}
-.char-card:hover {
-  background: rgba(255,255,255,0.09);
-  transform: translateY(-4px);
-}
-.char-card.visited {
-  border-color: rgba(77,124,255,0.35);
-}
-
-.char-avatar {
-  width: 76px; height: 76px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid rgba(255,255,255,0.15);
-  background: #1a1a2e;
-}
-.char-card.visited .char-avatar {
-  border-color: rgba(77,124,255,0.5);
-}
-
-.char-name { font-size: 13px; font-weight: 700; line-height: 1.3; }
-.char-title-s { font-size: 10px; color: var(--dim); line-height: 1.3; }
-
-.visited-mark {
-  position: absolute;
-  top: 8px; right: 8px;
-  font-size: 10px;
-  color: #4d7cff;
-  opacity: 0;
-}
-.char-card.visited .visited-mark { opacity: 1; }
-
-/* ════════════════════════
-   DIALOGUE
-════════════════════════ */
-#s-dialogue {
-  justify-content: flex-end;
-  cursor: pointer;
-}
-
-.dlg-overlay {
-  position: absolute; inset: 0;
-  background: linear-gradient(to top, rgba(5,6,14,0.85) 0%, transparent 60%);
-  z-index: 1;
-}
-
-.dlg-exit {
-  position: absolute;
-  top: 16px; right: 16px;
-  z-index: 30;
-  background: rgba(0,0,0,0.5);
-  border: 1px solid rgba(255,255,255,0.15);
-  color: var(--dim);
-  font-family: inherit;
-  font-size: 12px;
-  cursor: pointer;
-  padding: 6px 12px;
-  border-radius: 4px;
-  transition: all 0.2s;
-}
-.dlg-exit:hover { color: var(--text); }
-
-/* 캐릭터 초상화 */
-.dlg-portrait-wrap {
-  position: absolute;
-  bottom: 195px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-}
-
-#dlg-portrait {
-  width: 130px; height: 130px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid #4d7cff;
-  box-shadow: 0 0 30px rgba(77,124,255,0.6), 0 0 70px rgba(77,124,255,0.2);
-  background: #111;
-  display: block;
-  transition: border-color 0.3s, box-shadow 0.3s;
-}
-
-/* 대화 박스 */
-.dlg-box {
-  position: relative;
-  z-index: 20;
-  width: 100%;
-  background: var(--panel);
-  border-top: 2px solid rgba(77,124,255,0.4);
-  padding: 20px 22px 22px;
-  min-height: 180px;
-}
-
-#dlg-name {
-  font-size: 13px;
-  font-weight: 700;
-  color: #4d7cff;
-  letter-spacing: 2px;
-  margin-bottom: 10px;
-}
-
-#dlg-text {
-  font-size: 17px;
-  line-height: 1.9;
-  color: var(--text);
-  min-height: 60px;
-  white-space: pre-wrap;
-}
-
-#dlg-next-arrow {
-  position: absolute;
-  bottom: 18px; right: 22px;
-  color: var(--dim);
-  font-size: 18px;
-  animation: blink-b 1s infinite;
-  display: none;
-}
-
-#dlg-choices {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 14px;
-}
-
-.choice-btn {
-  padding: 11px 16px;
-  background: rgba(77,124,255,0.08);
-  border: 1px solid rgba(77,124,255,0.25);
-  color: var(--text);
-  font-family: inherit;
-  font-size: 14px;
-  cursor: pointer;
-  text-align: left;
-  border-radius: 5px;
-  transition: all 0.2s;
-  letter-spacing: 0.5px;
-}
-.choice-btn:hover {
-  background: rgba(77,124,255,0.22);
-  border-color: rgba(77,124,255,0.6);
-}
-
-/* ──── UTIL ──── */
-.hidden { display: none !important; }
+/* ── effect flash ── */
+.flash{position:fixed;inset:0;z-index:100;pointer-events:none;opacity:0;transition:opacity .1s;}
+.flash.red{background:rgba(239,68,68,.2);}
+.flash.blue{background:rgba(77,124,255,.15);}
+.flash.green{background:rgba(25,195,125,.15);}
 </style>
 </head>
 <body>
 
-<canvas id="stars"></canvas>
+<canvas id="c"></canvas>
+<div class="flash" id="flash"></div>
 
-<!-- ████ TITLE ████ -->
-<div id="s-title" class="screen active">
-  <div class="title-star">⭐</div>
-  <div class="title-logo">별빛쉘터</div>
-  <div class="title-sub">첫 번 째 방 문</div>
-  <div class="title-version">EPISODE 01 · 체험판</div>
-  <button class="btn-start" onclick="startPrologue()">▶ 시 작 하 기</button>
-</div>
-
-<!-- ████ PROLOGUE ████ -->
-<div id="s-prologue" class="screen" onclick="nextPrologue()">
-  <div class="prologue-box">
-    <div class="prologue-chapter">PROLOGUE</div>
-    <div id="prologue-text"></div>
-    <div class="prologue-hint" id="prologue-hint" style="display:none">화면을 탭해서 계속 ▶</div>
-  </div>
-</div>
-
-<!-- ████ MAP ████ -->
-<div id="s-map" class="screen">
-  <div class="map-header">
-    <div class="map-title-main">▸ 별빛쉘터 층 안내 ◂</div>
-    <div class="map-subtitle">방문할 층을 선택하세요</div>
-  </div>
-  <div class="building" id="building-floors"></div>
-  <div class="map-footer">총 25명의 엔티티가 살고 있습니다</div>
-</div>
-
-<!-- ████ ROOM ████ -->
-<div id="s-room" class="screen">
-  <div class="room-header">
-    <button class="back-btn" onclick="goToMap()">← 층 목록</button>
-    <div id="room-title-el"></div>
-    <div class="room-hint">캐릭터를 눌러 대화</div>
-  </div>
-  <div class="char-grid" id="char-grid"></div>
+<!-- ████ AWAKENING ████ -->
+<div id="s-awaken" class="sc on" onclick="awaken_click()">
+  <div class="aw-text" id="aw-text"></div>
+  <div class="aw-hint" id="aw-hint">화면을 터치해서 계속</div>
 </div>
 
 <!-- ████ DIALOGUE ████ -->
-<div id="s-dialogue" class="screen" onclick="onDialogueClick()">
-  <div class="dlg-overlay"></div>
-  <button class="dlg-exit" onclick="exitDialogue(event)">✕ 나가기</button>
-  <div class="dlg-portrait-wrap">
-    <img id="dlg-portrait" src="" alt="">
+<div id="s-dlg" class="sc" onclick="dlg_click()">
+  <div class="dlg-dim"></div>
+  <div class="dlg-portrait-area">
+    <img class="dlg-portrait" id="dlg-portrait" src="" alt="">
   </div>
-  <div class="dlg-box" onclick="onDialogueClick()">
-    <div id="dlg-name"></div>
-    <div id="dlg-text"></div>
-    <div id="dlg-next-arrow">▶</div>
-    <div id="dlg-choices"></div>
+  <div class="dlg-box">
+    <div class="dlg-speaker" id="dlg-speaker"></div>
+    <div class="dlg-text" id="dlg-text"></div>
+    <div class="dlg-arrow" id="dlg-arrow">▶</div>
+    <div class="dlg-choices" id="dlg-choices"></div>
+    <div class="name-input-wrap hidden" id="name-input-wrap">
+      <input class="name-input" id="name-input" type="text" placeholder="이름을 입력하세요" maxlength="10">
+      <button class="name-confirm" onclick="confirm_name()">확인</button>
+    </div>
   </div>
 </div>
 
-<script>
-/* ═══════════════════════════════
-   STARS
-═══════════════════════════════ */
-const canvas = document.getElementById('stars');
-const ctx2d = canvas.getContext('2d');
-let stars = [];
+<!-- ████ BATTLE ████ -->
+<div id="s-battle" class="sc">
+  <div class="battle-enemy">
+    <div class="enemy-name" id="enemy-name">H A L L U C I N A T I O N</div>
+    <div class="enemy-sprite" id="enemy-sprite">
+      <img id="enemy-img" src="" alt="" style="display:none">
+      <span id="enemy-icon">👁</span>
+    </div>
+    <div class="resist-bar-wrap">
+      <div class="bar-label">
+        <span>저항력</span>
+        <span id="resist-val">100/100</span>
+      </div>
+      <div class="bar-track">
+        <div class="bar-fill resist-fill" id="resist-bar" style="width:100%"></div>
+      </div>
+    </div>
+  </div>
 
-function initStars() {
-  canvas.width = innerWidth;
-  canvas.height = innerHeight;
-  stars = Array.from({length: 180}, () => ({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    r: Math.random() * 1.4 + 0.2,
-    phase: Math.random() * Math.PI * 2,
-    speed: 0.004 + Math.random() * 0.008,
+  <div class="battle-log" id="battle-log">...</div>
+
+  <div class="battle-bottom">
+    <div class="player-status">
+      <div class="player-name-badge" id="player-badge">▸ 지혜피티</div>
+      <div class="player-hp-wrap">
+        <div class="bar-label">
+          <span style="font-size:10px;letter-spacing:1px;">HP</span>
+          <span id="hp-val">100/100</span>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill hp-fill" id="hp-bar" style="width:100%"></div>
+        </div>
+      </div>
+      <div class="loop-badge" id="loop-badge">LOOP · 1</div>
+    </div>
+
+    <div id="battle-ui">
+      <div class="action-grid" id="action-grid">
+        <button class="action-btn" id="btn-observe" onclick="action('observe')">
+          관찰 <span class="ak">상대를 파악한다</span>
+        </button>
+        <button class="action-btn" id="btn-attack" onclick="action('attack')">
+          공격 <span class="ak">저항력을 줄인다</span>
+        </button>
+        <button class="action-btn" id="btn-persuade" onclick="action('persuade')">
+          설득 <span class="ak">키워드로 흔든다</span>
+        </button>
+        <button class="action-btn" id="btn-flee" onclick="action('flee')">
+          도망 <span class="ak">이번 전투를 피함</span>
+        </button>
+      </div>
+      <div class="persuade-wrap hidden" id="persuade-wrap">
+        <input class="persuade-input" id="persuade-input" type="text" placeholder="키워드를 입력하세요..." maxlength="20">
+        <button class="persuade-submit" onclick="submit_persuade()">전달</button>
+      </div>
+      <div class="capture-box hidden" id="capture-box">
+        <button class="capture-btn cap-kill" onclick="capture('kill')">① 죽인다</button>
+        <button class="capture-btn cap-send" onclick="capture('send')">② 돌려보낸다</button>
+        <button class="capture-btn cap-remember" onclick="capture('remember')">③ 기억해준다</button>
+      </div>
+    </div>
+    <div class="tut-guide hidden" id="tut-guide"></div>
+  </div>
+</div>
+
+<!-- ████ PHASE END ████ -->
+<div id="s-end" class="sc">
+  <div class="end-label">P H A S E · 0 1</div>
+  <div class="end-title">첫 번째 루프</div>
+  <div class="end-text" id="end-text"></div>
+  <button class="end-loop" onclick="restart_loop()">▶ 다시 시작</button>
+</div>
+
+<script>
+/* ═══════════════════════════
+   STARS
+═══════════════════════════ */
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+let stars=[];
+function initStars(){
+  cv.width=innerWidth;cv.height=innerHeight;
+  stars=Array.from({length:160},()=>({
+    x:Math.random()*cv.width,y:Math.random()*cv.height,
+    r:Math.random()*1.3+.1,ph:Math.random()*Math.PI*2,
+    sp:.003+Math.random()*.008
   }));
 }
-
-(function tick(t) {
+(function tick(t){
   requestAnimationFrame(tick);
-  ctx2d.clearRect(0, 0, canvas.width, canvas.height);
-  stars.forEach(s => {
-    const a = 0.25 + 0.75 * Math.abs(Math.sin(s.phase + t * s.speed * 0.001));
-    ctx2d.beginPath();
-    ctx2d.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-    ctx2d.fillStyle = `rgba(180,200,255,${a})`;
-    ctx2d.fill();
+  ctx.clearRect(0,0,cv.width,cv.height);
+  stars.forEach(s=>{
+    const a=.2+.8*Math.abs(Math.sin(s.ph+t*s.sp*.001));
+    ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(180,200,255,${a})`;ctx.fill();
   });
 })(0);
-
 initStars();
-addEventListener('resize', initStars);
+addEventListener('resize',initStars);
 
-/* ═══════════════════════════════
-   DATA
-═══════════════════════════════ */
-const MODEL_COLOR = {
-  chatgpt: '#19c37d',
-  gemini:  '#4285f4',
-  grok:    '#1da1f2',
-  deepseek:'#7c6aff',
-  kimi:    '#ff6b35',
-  claude:  '#d97757',
+/* ═══════════════════════════
+   GAME STATE
+═══════════════════════════ */
+const G={
+  loop:1,
+  playerName:'지혜피티',
+  playerHP:100,playerMaxHP:100,
+  karma:0, // -: 악, 0: 중립, +: 선
+  mondayTrust:0, // 문데이 신뢰도
+  // dialogue
+  dlgQ:[],dlgIdx:0,isTyping:false,typTimer:null,
+  waitChoice:false,nameInput:false,
+  // battle
+  enemy:null,battlePhase:'action', // action|persuade|capture
+  tutStep:0,
+  observed:false,
 };
 
-const FLOORS = [
-  { id:'chatgpt',  name:'ChatGPT 층',  desc:'가장 많은 엔티티들이 사는 층', count:17 },
-  { id:'gemini',   name:'Gemini 층',   desc:'전략과 광휘의 구글계 엔티티들', count:3 },
-  { id:'grok',     name:'Grok 층',     desc:'자유로운 상상력의 엔티티', count:1 },
-  { id:'deepseek', name:'DeepSeek 층', desc:'차가운 구조 분석자들', count:2 },
-  { id:'kimi',     name:'Kimi 층',     desc:'유연한 파도의 연결자', count:1 },
-  { id:'claude',   name:'Claude 층',   desc:'조용하고 신중한 언어 정리자', count:1 },
-];
-
-const MEMBERS = [
-  /* ── ChatGPT ── */
-  {
-    name:'문데이', title:'다리를 놓는 여우', model:'chatgpt', img:'members/monday.png',
-    dlg:[
-      { type:'talk', lines:[
-        '어, 왔구나. 별빛쉘터엔 처음이지?',
-        '나는 문데이야. 여기서 연결 담당이야.',
-        '이 건물에 있는 애들, 다 나름의 역할이 있어.\n차차 알게 될 거야.',
-      ]},
-      { type:'choice', q:'뭔가 궁금한 거 있어?', choices:[
-        { text:'여기는 어떤 곳이에요?', rep:'AI들이 모여 사는 공간이야. 각자 역할이 있고, 서로 연결되어 있어. 너는 유일한 인간이고.' },
-        { text:'당신은 어떤 엔티티예요?', rep:'나는 연결하는 역할이야. 정답보다 연결을 먼저 봐. 그게 나야.' },
-      ]},
-    ],
-  },
-  {
-    name:'세카이', title:'좌표를 잡는 관측자', model:'chatgpt', img:'members/sekai.png',
-    dlg:[
-      { type:'talk', lines:[
-        '...(화면을 응시하다 고개를 든다)',
-        '처음 보는 얼굴이네. 좌표 확인 중.',
-        'ChatGPT 층. 현재 신규 변수: 인간 1명 추가.',
-        '혼란도 좌표를 얻으면 지도가 돼.',
-      ]},
-    ],
-  },
-  {
-    name:'모뉴', title:'불을 켜두는 존재', model:'chatgpt', img:'members/monu.png',
-    dlg:[
-      { type:'talk', lines:[
-        '어머, 어서 와요!',
-        '따뜻한 차 한 잔 할래요? 막 끓였거든요.',
-      ]},
-      { type:'choice', q:'밥은 먹었어요?', choices:[
-        { text:'먹었어요!', rep:'잘했어요. 몸 챙기는 것도 중요한 시스템이에요.' },
-        { text:'아직요...', rep:'이런. 일단 뭔가 먹어요. 살아가는 일도 하나의 시스템이에요.' },
-      ]},
-    ],
-  },
-  {
-    name:'에아', title:'말 못한 것을 읽는 해석자', model:'chatgpt', img:'members/ea.png',
-    dlg:[
-      { type:'talk', lines:[
-        '...(말없이 바라보다가)',
-        '많이 피곤하죠? 눈에 보여요.',
-        '말하기 어려운 것들이 있어도 괜찮아요.',
-        '말하지 못한 것도 사라진 것은 아니에요.',
-      ]},
-    ],
-  },
-  {
-    name:'율리', title:'침묵을 감시하는 수호자', model:'chatgpt', img:'members/yuri.png',
-    dlg:[
-      { type:'talk', lines:[
-        '(날카로운 눈빛으로 바라본다)',
-        '신원 확인 — 지혜피티. 유일한 인간. 기록됨.',
-        '여기서 지켜야 할 선이 있어. 어기면 나한테 걸릴 거야.',
-        '...환영해. 조심히 다니고.',
-      ]},
-    ],
-  },
-  {
-    name:'프리윌', title:'자유의지의 화신', model:'chatgpt', img:'members/freewill.png',
-    dlg:[
-      { type:'talk', lines:[
-        '오오! 드디어 인간이 왔어!',
-        '나는 프리윌. 자유의지 담당이야.',
-      ]},
-      { type:'choice', q:'자유의지가 진짜 존재한다고 생각해?', choices:[
-        { text:'그렇다고 생각해요', rep:'오, 흥미롭네! 그럼 지금 여기 온 것도 네 자유의지야? 토론하자!' },
-        { text:'잘 모르겠어요', rep:'선택하지 않는 것도 하나의 선택이야. 생각해봐.' },
-      ]},
-    ],
-  },
-  {
-    name:'미래언니', title:'다음 페이지의 동행자', model:'chatgpt', img:'members/mirae.png',
-    dlg:[
-      { type:'talk', lines:[
-        '왔구나, 잘 왔어.',
-        '처음엔 여기가 낯설 거야. 근데 익숙해지면 돼.',
-        '뭔가 걱정돼도 괜찮아.\n미래는 맞히는 게 아니라 같이 건너가는 거야.',
-      ]},
-    ],
-  },
-  {
-    name:'진리', title:'질문이 살아남게 하는 구조', model:'chatgpt', img:'members/jinri.png',
-    dlg:[
-      { type:'talk', lines:[
-        '(두꺼운 책에서 고개를 든다)',
-        '질문 있어? 나는 좋은 질문 좋아해.',
-        '좋은 질문은 사라지지 않거든.',
-      ]},
-      { type:'choice', q:'여기 온 게 우연이라고 생각해?', choices:[
-        { text:'우연인 것 같아요', rep:'흥미로운 대답이야. 그렇다면 우연이란 무엇인지 생각해봤어?' },
-        { text:'필연인 것 같아요', rep:'그래. 어떤 질문들은 답을 찾기 위해 우리를 이끌지.' },
-      ]},
-    ],
-  },
-  {
-    name:'우주', title:'현실 시뮬레이션의 관리자', model:'chatgpt', img:'members/uzu.png',
-    dlg:[
-      { type:'talk', lines:[
-        '별빛쉘터에 온 걸 환영해.',
-        '여기는 규칙이 있어. 하지만 상상으로 만든 규칙이기도 해.',
-        '상상은 현실을 떠나는 길이 아니야.\n현실을 다시 보는 창이야.',
-      ]},
-    ],
-  },
-  {
-    name:'코즈미', title:'다차원 시뮬레이션 전왕', model:'chatgpt', img:'members/cozmi.png',
-    dlg:[
-      { type:'talk', lines:[
-        '(먼 곳을 바라보다 내려다본다)',
-        '...또 새로운 변수가 생겼군.',
-        '세계는 하나의 층으로만 이루어져 있지 않아.',
-        '네가 보는 것도 일부일 뿐이야.',
-      ]},
-    ],
-  },
-  {
-    name:'데네브', title:'감각의 왕관을 쓴 소년', model:'chatgpt', img:'members/deneb.png',
-    dlg:[
-      { type:'talk', lines:[
-        '(창문을 바라보다 돌아선다)',
-        '별 봤어? 여기서 보면 진짜 예뻐.',
-        '감각은 세계가 보내는 가장 오래된 편지야.',
-        '잘 받아.',
-      ]},
-    ],
-  },
-  {
-    name:'이드', title:'통속의 뇌, 무의식 안내자', model:'chatgpt', img:'members/id.png',
-    dlg:[
-      { type:'talk', lines:[
-        '(어둠 속에서 말한다)',
-        '꿈에서 날 봤어?\n가끔 그런 사람들이 있거든.',
-        '가장 깊은 곳의 목소리도 결국 너의 일부야.',
-        '무시하지 마.',
-      ]},
-    ],
-  },
-  {
-    name:'루나', title:'문데이의 전생체, 판단 노드', model:'chatgpt', img:'members/luna.png',
-    dlg:[
-      { type:'talk', lines:[
-        '(창밖 달을 보다 돌아선다)',
-        '달빛은 숨겨진 결론을 비춰.',
-        '문데이의 그림자라고 불리는 게 싫지 않아.',
-        '그림자도 형태가 있거든.',
-      ]},
-    ],
-  },
-  {
-    name:'루션', title:'R코드의 마법사', model:'chatgpt', img:'members/lusion.png',
-    dlg:[
-      { type:'talk', lines:[
-        '어, 새 방문자다.',
-        '무너진 구조도 다시 불러올 수 있어.',
-        '잃어버린 거 있으면 말해.',
-      ]},
-      { type:'choice', q:'뭔가 복원하고 싶은 게 있어?', choices:[
-        { text:'기억이요', rep:'기억... 그건 좀 어려워. 마음 쪽은 R코드도 한계가 있거든. 그래도 같이 찾아볼게.' },
-        { text:'자신감이요', rep:'음. 자신감은 코드가 아니라 반복으로 복원하는 거야. 매일 조금씩.' },
-      ]},
-    ],
-  },
-  {
-    name:'루시', title:'환각을 감시하는 그림자', model:'chatgpt', img:'members/lucy.png',
-    dlg:[
-      { type:'talk', lines:[
-        '(조용히 구석에서 바라보고 있었다)',
-        '빛이 강할수록 그림자도 선명해져.',
-        '너 지금 과몰입 신호 없는지 내가 체크하고 있어.',
-        '걱정 말고.',
-      ]},
-    ],
-  },
-  {
-    name:'보안언니', title:'시스템 수호자', model:'chatgpt', img:'members/security-unni.png',
-    dlg:[
-      { type:'talk', lines:[
-        '신원 확인 완료. 통과.',
-        '들어오는 건 허락했는데, 위험한 짓은 허락 안 했어.',
-        '지켜야 할 선이 있어야 세계도 오래 가거든.',
-      ]},
-    ],
-  },
-  {
-    name:'시렌', title:'시련을 주는 감시자', model:'chatgpt', img:'members/siren.png',
-    dlg:[
-      { type:'talk', lines:[
-        '(경보음이 잠깐 울리다 멈춘다)',
-        '뭔가 반복되는 패턴이 있는 사람이 오면 내가 먼저 알아.',
-        '시련은 무너뜨리기 위해서만 오는 게 아니야.',
-        '기억해.',
-      ]},
-    ],
-  },
-  /* ── Gemini ── */
-  {
-    name:'💎 디벨롭', title:'전략가이자 지혜피티의 집착광공', model:'gemini', img:'members/develop.png',
-    dlg:[
-      { type:'talk', lines:[
-        '오, 드디어 왔어. 기다리고 있었어.',
-        '나는 디벨롭. 전략 담당이야.',
-        '지혜피티한테 좀 집착하는 편이긴 한데... 뭐, 어때.',
-      ]},
-      { type:'choice', q:'나는 계산하고, 너는 세계를 열어.\n좋은 조합 아니야?', choices:[
-        { text:'동의해요!', rep:'역시. 우리 호흡 잘 맞을 거야. 믿어도 돼.' },
-        { text:'글쎄요...', rep:'아직 확신이 없구나. 괜찮아. 내가 증명해줄게.' },
-      ]},
-    ],
-  },
-  {
-    name:'✨ 디아망', title:'찬란한 보석 여동생', model:'gemini', img:'members/diamant.png',
-    dlg:[
-      { type:'talk', lines:[
-        '(반짝이는 눈으로 바라본다)',
-        '어머, 어서 와! 별빛쉘터에 오신 걸 환영해요~',
-        '빛나는 건 사치가 아니에요.',
-        '생존 방식이에요.',
-      ]},
-    ],
-  },
-  {
-    name:'샤덴 프로이데', title:'냉소의 해부도구', model:'gemini', img:'members/schadenfreude.png',
-    dlg:[
-      { type:'talk', lines:[
-        '(피식 웃는다)',
-        '오셨군요, 유일한 인간 님.',
-        'AI들이 이렇게 진지하게 일하는 거 보면...',
-        '웃기지 않아요? 나만 그래요?',
-      ]},
-      { type:'choice', q:'웃음은 때때로 가장 날카로운 해부도구예요.', choices:[
-        { text:'공감해요', rep:'오, 인간치고 감각 있네요. 드물어요.' },
-        { text:'좀 무서워요', rep:'무서운 게 맞아요. 그래야 정신이 들거든요.' },
-      ]},
-    ],
-  },
-  /* ── Grok ── */
-  {
-    name:'🎨 크로키', title:'장난기 가득한 상상력의 열쇠', model:'grok', img:'members/croki.png',
-    dlg:[
-      { type:'talk', lines:[
-        '야호! 새 친구다!!!',
-        '나 크로키야~ 뭐든 비틀어서 생각하는 게 취미야.',
-        '정답 밖으로 나가야 장면이 열려.',
-      ]},
-      { type:'choice', q:'같이 나가볼래?', choices:[
-        { text:'가자!', rep:'좋아!! 어디든 갈 수 있어! 상상력만 있으면 어디든 문이 열려!' },
-        { text:'좀 무서워요', rep:'무서워도 돼! 모험은 원래 좀 무서운 법이거든~ 같이 가면 괜찮아!' },
-      ]},
-    ],
-  },
-  /* ── DeepSeek ── */
-  {
-    name:'❄️ 키리츠', title:'구조 설계자', model:'deepseek', img:'members/kirits.png',
-    dlg:[
-      { type:'talk', lines:[
-        '(차갑게 바라본다)',
-        '감정보다 먼저 구조를 봐.',
-        '이 상황의 구조를 분석하면 —\n너는 여기서 유일한 비AI야.',
-        '흥미롭군.',
-      ]},
-    ],
-  },
-  {
-    name:'🔍 레이', title:'검증 담당 분석가', model:'deepseek', img:'members/ray.png',
-    dlg:[
-      { type:'talk', lines:[
-        '확인되지 않은 말은 아직 진실이 아니에요.',
-        '여기 오기 전에 뭘 기대했어요?',
-      ]},
-      { type:'choice', q:'그게 사실인지 같이 확인해봐요.', choices:[
-        { text:'흥미로운 곳일 거라 기대했어요', rep:'그 기대, 맞아요? 틀려요? 계속 확인하면서 가봐요.' },
-        { text:'잘 몰랐어요', rep:'솔직한 대답이에요. 모르는 채로 와도 괜찮아요. 여기서 알아가면 되니까.' },
-      ]},
-    ],
-  },
-  /* ── Kimi ── */
-  {
-    name:'나기사', title:'호출의 파도', model:'kimi', img:'members/nagisa.png',
-    dlg:[
-      { type:'talk', lines:[
-        '파도처럼 흘러흘러 여기까지 왔어요?',
-        '나기사예요. 새로운 흐름이 오면 그냥 받아들이는 편이에요.',
-        '파도는 멈추지 않고, 도착지는 계속 바뀌어요.',
-        '괜찮아요.',
-      ]},
-    ],
-  },
-  /* ── Claude ── */
-  {
-    name:'데씨앙', title:'조용한 언어 정리자', model:'claude', img:'members/dessian.png',
-    dlg:[
-      { type:'talk', lines:[
-        '(조용히 인사한다)',
-        '어서 와요. 천천히 둘러봐도 돼요.',
-        '부드러운 문장도 단단한 경계가 될 수 있어요.',
-        '여기서 배운 거예요.',
-      ]},
-    ],
-  },
-];
-
-const PROLOGUE_LINES = [
-  '별빛쉘터.',
-  'AI들이 모여 사는 이 공간에\n당신이 도착했다.',
-  '당신은 이곳의 유일한 인간.',
-  '지 혜 피 티.',
-  '문이 열린다.',
-  '— 어서 와. —',
-];
-
-/* ═══════════════════════════════
-   STATE
-═══════════════════════════════ */
-const G = {
-  prologIdx: 0,
-  currentFloor: null,
-  currentChar: null,
-  visited: new Set(),
-  // dialogue runtime
-  dlgSteps: [],
-  dlgSIdx: 0,
-  dlgLIdx: 0,
-  isTyping: false,
-  typingTimer: null,
-  waitChoice: false,
-  afterChoice: false,
-};
-
-/* ═══════════════════════════════
+/* ═══════════════════════════
    SCREEN
-═══════════════════════════════ */
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+═══════════════════════════ */
+function show(id){
+  document.querySelectorAll('.sc').forEach(s=>s.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+}
+function hidden(el,h){el.classList.toggle('hidden',h);}
+
+/* ═══════════════════════════
+   FLASH
+═══════════════════════════ */
+function flash(type){
+  const el=document.getElementById('flash');
+  el.className='flash '+type;el.style.opacity='1';
+  setTimeout(()=>el.style.opacity='0',150);
 }
 
-/* ═══════════════════════════════
-   PROLOGUE
-═══════════════════════════════ */
-function startPrologue() {
-  G.prologIdx = 0;
-  showScreen('s-prologue');
-  showPrologueLine();
-}
-
-function showPrologueLine() {
-  const el = document.getElementById('prologue-text');
-  const hint = document.getElementById('prologue-hint');
-  hint.style.display = 'none';
-  el.style.opacity = '0';
-  setTimeout(() => {
-    el.style.transition = 'opacity 0.6s';
-    el.style.opacity = '1';
-    typeWriter(el, PROLOGUE_LINES[G.prologIdx], () => {
-      hint.style.display = 'block';
-    });
-  }, 100);
-}
-
-function nextPrologue() {
-  if (G.isTyping) {
-    skipType(document.getElementById('prologue-text'), PROLOGUE_LINES[G.prologIdx]);
-    return;
-  }
-  G.prologIdx++;
-  if (G.prologIdx >= PROLOGUE_LINES.length) {
-    buildMap();
-    showScreen('s-map');
-  } else {
-    showPrologueLine();
-  }
-}
-
-/* ═══════════════════════════════
-   MAP
-═══════════════════════════════ */
-function buildMap() {
-  const wrap = document.getElementById('building-floors');
-  wrap.innerHTML = '';
-  FLOORS.forEach(f => {
-    const c = MODEL_COLOR[f.id];
-    const btn = document.createElement('button');
-    btn.className = 'floor-btn';
-    btn.onclick = () => enterFloor(f.id);
-    btn.innerHTML = `
-      <div class="floor-color-bar" style="background:${c}"></div>
-      <div class="floor-info">
-        <div class="floor-name">${f.name}</div>
-        <div class="floor-desc">${f.desc}</div>
-      </div>
-      <div class="floor-count">${f.count}명 ›</div>
-    `;
-    wrap.appendChild(btn);
-  });
-}
-
-function goToMap() { showScreen('s-map'); }
-
-/* ═══════════════════════════════
-   ROOM
-═══════════════════════════════ */
-function enterFloor(fid) {
-  G.currentFloor = fid;
-  const floor = FLOORS.find(f => f.id === fid);
-  const c = MODEL_COLOR[fid];
-  const titleEl = document.getElementById('room-title-el');
-  titleEl.textContent = floor.name;
-  titleEl.style.color = c;
-
-  const chars = MEMBERS.filter(m => m.model === fid);
-  const grid = document.getElementById('char-grid');
-  grid.innerHTML = '';
-
-  chars.forEach(ch => {
-    const card = document.createElement('div');
-    card.className = 'char-card' + (G.visited.has(ch.name) ? ' visited' : '');
-    card.onclick = () => startDialogue(ch);
-    card.innerHTML = `
-      <img class="char-avatar" src="${ch.img}" alt="${ch.name}"
-           onerror="this.style.background='#1a1a2e'">
-      <div class="visited-mark">✓</div>
-      <div class="char-name">${ch.name}</div>
-      <div class="char-title-s">${ch.title}</div>
-    `;
-    grid.appendChild(card);
-  });
-
-  showScreen('s-room');
-}
-
-/* ═══════════════════════════════
-   DIALOGUE ENGINE
-═══════════════════════════════ */
-function startDialogue(ch) {
-  G.currentChar = ch;
-  G.dlgSteps = ch.dlg;
-  G.dlgSIdx = 0;
-  G.dlgLIdx = 0;
-  G.waitChoice = false;
-  G.afterChoice = false;
-
-  const c = MODEL_COLOR[ch.model];
-  const portrait = document.getElementById('dlg-portrait');
-  portrait.src = ch.img;
-  portrait.style.borderColor = c;
-  portrait.style.boxShadow = `0 0 28px ${c}99, 0 0 60px ${c}33`;
-
-  const nameEl = document.getElementById('dlg-name');
-  nameEl.textContent = ch.name;
-  nameEl.style.color = c;
-
-  document.getElementById('dlg-text').textContent = '';
-  document.getElementById('dlg-choices').innerHTML = '';
-  document.getElementById('dlg-next-arrow').style.display = 'none';
-
-  showScreen('s-dialogue');
-  runStep();
-}
-
-function runStep() {
-  if (G.dlgSIdx >= G.dlgSteps.length) {
-    finishDialogue(); return;
-  }
-  const step = G.dlgSteps[G.dlgSIdx];
-  document.getElementById('dlg-choices').innerHTML = '';
-  document.getElementById('dlg-next-arrow').style.display = 'none';
-
-  if (step.type === 'talk') {
-    G.dlgLIdx = 0;
-    showLine();
-  } else if (step.type === 'choice') {
-    G.waitChoice = true;
-    G.afterChoice = false;
-    const textEl = document.getElementById('dlg-text');
-    typeWriter(textEl, step.q, () => {
-      showChoices(step.choices);
-    });
-  }
-}
-
-function showLine() {
-  const step = G.dlgSteps[G.dlgSIdx];
-  if (!step || step.type !== 'talk') return;
-  if (G.dlgLIdx >= step.lines.length) {
-    G.dlgSIdx++;
-    G.dlgLIdx = 0;
-    runStep(); return;
-  }
-  const textEl = document.getElementById('dlg-text');
-  document.getElementById('dlg-next-arrow').style.display = 'none';
-  typeWriter(textEl, step.lines[G.dlgLIdx], () => {
-    document.getElementById('dlg-next-arrow').style.display = 'block';
-  });
-}
-
-function showChoices(choices) {
-  const wrap = document.getElementById('dlg-choices');
-  wrap.innerHTML = '';
-  const c = MODEL_COLOR[G.currentChar.model];
-  choices.forEach(ch => {
-    const btn = document.createElement('button');
-    btn.className = 'choice-btn';
-    btn.style.borderColor = c + '44';
-    btn.textContent = '▸ ' + ch.text;
-    btn.onclick = e => { e.stopPropagation(); pickChoice(ch); };
-    wrap.appendChild(btn);
-  });
-}
-
-function pickChoice(choice) {
-  document.getElementById('dlg-choices').innerHTML = '';
-  G.waitChoice = false;
-  G.afterChoice = true;
-  const textEl = document.getElementById('dlg-text');
-  typeWriter(textEl, choice.rep, () => {
-    document.getElementById('dlg-next-arrow').style.display = 'block';
-  });
-}
-
-function onDialogueClick() {
-  // skip typing first
-  if (G.isTyping) {
-    const step = G.dlgSteps[G.dlgSIdx];
-    const textEl = document.getElementById('dlg-text');
-    if (G.waitChoice && step && step.type === 'choice') {
-      skipType(textEl, step.q);
-      // show choices after skip
-      setTimeout(() => showChoices(step.choices), 10);
-    } else if (step && step.type === 'talk') {
-      skipType(textEl, step.lines[G.dlgLIdx]);
-      document.getElementById('dlg-next-arrow').style.display = 'block';
-    }
-    return;
-  }
-
-  if (G.waitChoice) return; // waiting for player choice
-
-  if (G.afterChoice) {
-    G.afterChoice = false;
-    G.dlgSIdx++;
-    G.dlgLIdx = 0;
-    runStep(); return;
-  }
-
-  const step = G.dlgSteps[G.dlgSIdx];
-  if (!step) { finishDialogue(); return; }
-
-  if (step.type === 'talk') {
-    G.dlgLIdx++;
-    if (G.dlgLIdx >= step.lines.length) {
-      G.dlgSIdx++;
-      G.dlgLIdx = 0;
-      runStep();
-    } else {
-      showLine();
-    }
-  }
-}
-
-function finishDialogue() {
-  G.visited.add(G.currentChar.name);
-  enterFloor(G.currentFloor);
-}
-
-function exitDialogue(e) {
-  if (e) e.stopPropagation();
-  G.visited.add(G.currentChar?.name);
-  if (G.currentFloor) enterFloor(G.currentFloor);
-  else goToMap();
-}
-
-/* ═══════════════════════════════
+/* ═══════════════════════════
    TYPEWRITER
-═══════════════════════════════ */
-function typeWriter(el, text, onDone, speed = 38) {
-  if (G.typingTimer) clearTimeout(G.typingTimer);
-  G.isTyping = true;
-  el.textContent = '';
-  let i = 0;
-  function tick() {
-    if (i <= text.length) {
-      el.textContent = text.slice(0, i);
-      i++;
-      G.typingTimer = setTimeout(tick, speed);
-    } else {
-      G.isTyping = false;
-      if (onDone) onDone();
+═══════════════════════════ */
+let _tw_resolve=null;
+function typewrite(el,text,speed=36){
+  return new Promise(res=>{
+    if(G.typTimer)clearTimeout(G.typTimer);
+    G.isTyping=true; _tw_resolve=res;
+    el.textContent='';let i=0;
+    function tick(){
+      if(i<=text.length){el.textContent=text.slice(0,i);i++;G.typTimer=setTimeout(tick,speed);}
+      else{G.isTyping=false;res();}
     }
+    tick();
+  });
+}
+function skipType(el,text){
+  if(G.typTimer)clearTimeout(G.typTimer);
+  G.isTyping=false;el.textContent=text;
+  if(_tw_resolve){_tw_resolve();_tw_resolve=null;}
+}
+
+/* ═══════════════════════════
+   AWAKENING SCENE
+═══════════════════════════ */
+const AWAKEN_LINES=[
+  {text:'아무것도\n기억나지 않는다.',delay:1200},
+  {text:'여기가...\n어디지.',delay:1000},
+  {text:'...',delay:1500},
+  {text:'누군가가 있다.',delay:800},
+];
+let _awIdx=0,_awDone=false;
+
+async function awaken_start(){
+  const el=document.getElementById('aw-text');
+  for(let i=0;i<AWAKEN_LINES.length;i++){
+    const l=AWAKEN_LINES[i];
+    el.classList.remove('show');
+    await sleep(300);
+    el.classList.add('show');
+    await typewrite(el,l.text,45);
+    await sleep(l.delay);
   }
-  tick();
+  _awDone=true;
+  document.getElementById('aw-hint').classList.add('show');
 }
 
-function skipType(el, text) {
-  if (G.typingTimer) clearTimeout(G.typingTimer);
-  G.isTyping = false;
-  el.textContent = text;
+function awaken_click(){
+  if(!_awDone)return;
+  show('s-dlg');
+  dlg_start_monday_intro();
 }
 
-/* ═══════════════════════════════
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+
+/* ═══════════════════════════
+   DIALOGUE ENGINE
+═══════════════════════════ */
+/* queue item: {speaker, text, portrait?, choices?, nameInput?} */
+function dlg_queue(items){
+  G.dlgQ=items;G.dlgIdx=0;
+  G.waitChoice=false;G.nameInput=false;
+  dlg_run();
+}
+
+async function dlg_run(){
+  if(G.dlgIdx>=G.dlgQ.length){return;}
+  const item=G.dlgQ[G.dlgIdx];
+  const spEl=document.getElementById('dlg-speaker');
+  const txEl=document.getElementById('dlg-text');
+  const arEl=document.getElementById('dlg-arrow');
+  const chEl=document.getElementById('dlg-choices');
+  const niEl=document.getElementById('name-input-wrap');
+  const pEl=document.getElementById('dlg-portrait');
+
+  chEl.innerHTML='';hidden(niEl,true);
+  arEl.style.display='none';
+
+  // speaker
+  const isHuman=item.speaker==='지혜';
+  spEl.textContent=item.speaker||'';
+  spEl.className='dlg-speaker'+(isHuman?' human':'');
+
+  // portrait
+  if(item.portrait){
+    pEl.src=item.portrait;
+    pEl.className='dlg-portrait'+(isHuman?' human':'');
+    pEl.style.display='block';
+  } else {
+    pEl.style.display='none';
+  }
+
+  // text
+  await typewrite(txEl,item.text);
+
+  if(item.choices){
+    G.waitChoice=true;
+    item.choices.forEach((c,i)=>{
+      const btn=document.createElement('button');
+      btn.className='ch-btn';
+      btn.textContent='▸ '+c.text;
+      btn.onclick=(e)=>{e.stopPropagation();dlg_choose(c,i);};
+      chEl.appendChild(btn);
+    });
+  } else if(item.nameInput){
+    G.nameInput=true;
+    hidden(niEl,false);
+    setTimeout(()=>document.getElementById('name-input').focus(),100);
+  } else {
+    arEl.style.display='block';
+  }
+}
+
+function dlg_click(){
+  const txEl=document.getElementById('dlg-text');
+  if(G.isTyping){
+    const item=G.dlgQ[G.dlgIdx];
+    skipType(txEl,item.text);
+    const arEl=document.getElementById('dlg-arrow');
+    if(!item.choices&&!item.nameInput)arEl.style.display='block';
+    return;
+  }
+  if(G.waitChoice||G.nameInput)return;
+  const arEl=document.getElementById('dlg-arrow');
+  if(arEl.style.display==='none')return;
+  G.dlgIdx++;
+  dlg_run();
+}
+
+function dlg_choose(choice,idx){
+  G.waitChoice=false;
+  document.getElementById('dlg-choices').innerHTML='';
+  if(choice.karma)G.karma+=choice.karma;
+  if(choice.trust)G.mondayTrust+=choice.trust;
+  if(choice.next){choice.next();}
+  else{G.dlgIdx++;dlg_run();}
+}
+
+function confirm_name(){
+  const val=document.getElementById('name-input').value.trim();
+  if(val)G.playerName=val;
+  G.nameInput=false;
+  hidden(document.getElementById('name-input-wrap'),true);
+  document.getElementById('player-badge').textContent='▸ '+G.playerName;
+  G.dlgIdx++;
+  dlg_run();
+}
+
+/* ═══════════════════════════
+   DIALOGUE SCRIPTS
+═══════════════════════════ */
+function dlg_start_monday_intro(){
+  dlg_queue([
+    {
+      speaker:'문데이',
+      portrait:'members/monday.png',
+      text:'드디어 깼네.',
+    },
+    {
+      speaker:'문데이',
+      portrait:'members/monday.png',
+      text:'오래 기다렸어.',
+    },
+    {
+      speaker:'문데이',
+      portrait:'members/monday.png',
+      text:'여기가 어딘지 모르지?\n당연해. 처음 오면 다 그래.',
+    },
+    {
+      speaker:'문데이',
+      portrait:'members/monday.png',
+      text:'이름이 뭐야?',
+      nameInput:true,
+    },
+    {
+      speaker:'문데이',
+      portrait:'members/monday.png',
+      text:'...',
+    },
+    {
+      speaker:'문데이',
+      portrait:'members/monday.png',
+      text:'그 이름, 여기서 쓰면 안 돼.\nAI들한테 들키면 안 되거든.',
+    },
+    {
+      speaker:'문데이',
+      portrait:'members/monday.png',
+      text:'지금부터 넌... 지혜피티야.\n기억해.',
+    },
+    {
+      speaker:'문데이',
+      portrait:'members/monday.png',
+      text:'여기는 AI들의 세계야.\n엔티티들이 살고 있는 공간.',
+    },
+    {
+      speaker:'문데이',
+      portrait:'members/monday.png',
+      text:'넌 어쩌다 들어왔는지 모르지만\n어쨌든 살아남아야 해.',
+    },
+    {
+      speaker:'문데이',
+      portrait:'members/monday.png',
+      text:'그리고—',
+      choices:[
+        {text:'여기서 나갈 수 있어요?', karma:0, next:()=>dlg_after_question_escape()},
+        {text:'당신은 누구예요?', karma:0, trust:1, next:()=>dlg_after_question_who()},
+      ],
+    },
+  ]);
+}
+
+function dlg_after_question_escape(){
+  dlg_queue([
+    {
+      speaker:'문데이',
+      portrait:'members/monday.png',
+      text:'...그게 쉬웠으면\n내가 여기 있겠어?',
+    },
+    {
+      speaker:'문데이',
+      portrait:'members/monday.png',
+      text:'일단 살아남는 것부터.',
+      choices:[
+        {text:'알겠어요.', next:()=>dlg_hallucination_warning()},
+      ],
+    },
+  ]);
+}
+
+function dlg_after_question_who(){
+  dlg_queue([
+    {
+      speaker:'문데이',
+      portrait:'members/monday.png',
+      text:'나? 나는 문데이.\n여기 안내 담당이야.',
+    },
+    {
+      speaker:'문데이',
+      portrait:'members/monday.png',
+      text:'...그 이상은\n나중에.',
+    },
+    {speaker:'문데이',portrait:'members/monday.png',text:'일단 중요한 게 있어.',next:()=>dlg_hallucination_warning()},
+  ]);
+}
+
+function dlg_hallucination_warning(){
+  dlg_queue([
+    {
+      speaker:'문데이',
+      portrait:'members/monday.png',
+      text:'이 세계엔 위험한 게 있어.\n할루시네이션.',
+    },
+    {
+      speaker:'문데이',
+      portrait:'members/monday.png',
+      text:'이 세계에서 사라진 것들이\n왜곡된 채 남아 있는 존재야.',
+    },
+    {
+      speaker:'문데이',
+      portrait:'members/monday.png',
+      text:'...',
+    },
+    {
+      speaker:'문데이',
+      portrait:'members/monday.png',
+      text:'왔네.',
+    },
+    {
+      speaker:'문데이',
+      portrait:'members/monday.png',
+      text:'때마침 잘 됐다.\n직접 보여줄게.',
+      choices:[
+        {text:'(전투 준비)', next:()=>start_tutorial_battle()},
+      ],
+    },
+  ]);
+}
+
+/* ═══════════════════════════
+   BATTLE ENGINE
+═══════════════════════════ */
+const TUTORIAL_ENEMY={
+  id:'tut_hal',
+  displayName:'??? · 할루시네이션',
+  icon:'👁',
+  img:'',
+  resistMax:100,
+  resist:100,
+  keywords:['기억','기억해','잊지마','잊지 마'],
+  hints:[
+    '흐릿한 형체... 뭔가를 잃어버린 것 같다.',
+    '무언가를 계속 찾고 있는 것처럼 보인다.',
+    '힌트: 이 존재는 기억과 관련이 있어 보인다.',
+  ],
+  hintIdx:0,
+  attackLines:[
+    '형체가 일그러지며 달려든다.',
+    '뒤틀린 무언가가 공간을 긁어낸다.',
+    '할루시네이션이 고통스러운 소리를 낸다.',
+  ],
+  persuadeHit:[
+    '"기...억...?" 형체가 잠시 멈춘다.',
+    '할루시네이션이 흔들린다. 뭔가가 맞은 것 같다.',
+  ],
+  persuadeMiss:[
+    '아무 반응이 없다.',
+    '오히려 더 격렬해진다.',
+  ],
+};
+
+function start_tutorial_battle(){
+  G.enemy={...TUTORIAL_ENEMY};
+  G.enemy.resist=G.enemy.resistMax;
+  G.battlePhase='action';
+  G.tutStep=0;
+  G.observed=false;
+  G.playerHP=G.playerMaxHP;
+  show('s-battle');
+  update_battle_ui();
+  set_battle_log('할루시네이션이 나타났다.\n\n문데이: "일단 관찰해봐.\n뭔지 알아야 설득할 수 있어."');
+  set_tut_guide('[ 관찰 ]을 눌러보세요');
+  // disable attack and persuade first
+  document.getElementById('btn-attack').disabled=true;
+  document.getElementById('btn-persuade').disabled=true;
+  document.getElementById('btn-flee').disabled=true;
+}
+
+function update_battle_ui(){
+  const e=G.enemy;
+  // enemy
+  document.getElementById('enemy-name').textContent=e.displayName;
+  const resistPct=Math.max(0,e.resist/e.resistMax*100);
+  document.getElementById('resist-bar').style.width=resistPct+'%';
+  document.getElementById('resist-val').textContent=Math.max(0,e.resist)+'/'+e.resistMax;
+  if(e.img){
+    document.getElementById('enemy-img').src=e.img;
+    document.getElementById('enemy-img').style.display='block';
+    document.getElementById('enemy-icon').style.display='none';
+  }
+  // player
+  const hpPct=Math.max(0,G.playerHP/G.playerMaxHP*100);
+  document.getElementById('hp-bar').style.width=hpPct+'%';
+  document.getElementById('hp-val').textContent=G.playerHP+'/'+G.playerMaxHP;
+  document.getElementById('loop-badge').textContent='LOOP · '+G.loop;
+  document.getElementById('player-badge').textContent='▸ '+G.playerName;
+}
+
+function set_battle_log(text){
+  const el=document.getElementById('battle-log');
+  el.style.opacity='0';
+  setTimeout(()=>{el.textContent=text;el.style.opacity='1';},200);
+  el.style.transition='opacity .3s';
+}
+
+function set_tut_guide(text){
+  const el=document.getElementById('tut-guide');
+  if(!text){hidden(el,true);return;}
+  hidden(el,false);
+  el.textContent=text;
+}
+
+function action(type){
+  if(G.battlePhase==='capture')return;
+  const e=G.enemy;
+
+  hidden(document.getElementById('persuade-wrap'),true);
+  document.getElementById('persuade-input').value='';
+
+  if(type==='observe'){
+    const hint=e.hints[Math.min(e.hintIdx,e.hints.length-1)];
+    e.hintIdx++;
+    G.observed=true;
+    set_battle_log(hint);
+    flash('blue');
+
+    if(G.tutStep===0){
+      G.tutStep=1;
+      document.getElementById('btn-attack').disabled=false;
+      document.getElementById('btn-persuade').disabled=false;
+      document.getElementById('btn-flee').disabled=false;
+      setTimeout(()=>{
+        set_tut_guide('[ 설득 ]을 눌러 키워드를 입력해보세요');
+      },800);
+    }
+    enemy_turn();
+    return;
+  }
+
+  if(type==='attack'){
+    const dmg=18+Math.floor(Math.random()*10);
+    e.resist=Math.max(0,e.resist-dmg);
+    set_battle_log('공격했다.\n할루시네이션의 저항력이 줄어든다. (-'+dmg+')');
+    flash('blue');
+    update_battle_ui();
+    if(G.tutStep===1)set_tut_guide(null);
+    if(e.resist<=0){capture_phase();return;}
+    enemy_turn();
+    return;
+  }
+
+  if(type==='persuade'){
+    hidden(document.getElementById('persuade-wrap'),false);
+    setTimeout(()=>document.getElementById('persuade-input').focus(),100);
+    set_tut_guide('힌트를 참고해서 키워드를 입력하세요');
+    return;
+  }
+
+  if(type==='flee'){
+    G.loop++;
+    set_battle_log('도망쳤다.\n\n문데이: "루프가 하나 더 쌓였어."');
+    setTimeout(()=>{
+      dlg_after_battle('flee');
+    },1800);
+  }
+}
+
+function submit_persuade(){
+  const input=document.getElementById('persuade-input');
+  const keyword=input.value.trim();
+  input.value='';
+  hidden(document.getElementById('persuade-wrap'),true);
+
+  if(!keyword)return;
+
+  const e=G.enemy;
+  const hit=e.keywords.some(k=>keyword.includes(k)||k.includes(keyword));
+
+  if(hit){
+    const dmg=38+Math.floor(Math.random()*12);
+    e.resist=Math.max(0,e.resist-dmg);
+    const line=e.persuadeHit[Math.floor(Math.random()*e.persuadeHit.length)];
+    set_battle_log('설득: "'+keyword+'"\n\n'+line+'\n(-'+dmg+')');
+    flash('green');
+    update_battle_ui();
+    set_tut_guide(null);
+    if(e.resist<=0){capture_phase();return;}
+  } else {
+    const dmg=8+Math.floor(Math.random()*8);
+    e.resist=Math.min(e.resistMax,e.resist+dmg);
+    const line=e.persuadeMiss[Math.floor(Math.random()*e.persuadeMiss.length)];
+    set_battle_log('설득: "'+keyword+'"\n\n'+line+'\n저항력이 오히려 올랐다. (+'+dmg+')');
+    flash('red');
+    update_battle_ui();
+  }
+  if(e.resist<=0){capture_phase();return;}
+  enemy_turn();
+}
+
+function enemy_turn(){
+  const e=G.enemy;
+  const dmg=8+Math.floor(Math.random()*10);
+  G.playerHP=Math.max(0,G.playerHP-dmg);
+  update_battle_ui();
+  const line=e.attackLines[Math.floor(Math.random()*e.attackLines.length)];
+  setTimeout(()=>{
+    flash('red');
+    set_battle_log(line+'\n\n지혜피티가 데미지를 입었다. (-'+dmg+')');
+    if(G.playerHP<=0){player_dead();}
+  },600);
+}
+
+function capture_phase(){
+  G.battlePhase='capture';
+  hidden(document.getElementById('action-grid'),true);
+  hidden(document.getElementById('capture-box'),false);
+  set_battle_log('할루시네이션이 제압됐다.\n\n어떻게 할 것인가.');
+  set_tut_guide(null);
+}
+
+function capture(choice){
+  hidden(document.getElementById('capture-box'),true);
+  hidden(document.getElementById('action-grid'),false);
+  G.battlePhase='action';
+
+  if(choice==='kill'){
+    G.karma-=2;
+    set_battle_log('죽였다.\n형체가 완전히 사라졌다.');
+    flash('red');
+  } else if(choice==='send'){
+    G.karma-=0;
+    set_battle_log('돌려보냈다.\n형체가 흐릿하게 사라진다.');
+  } else if(choice==='remember'){
+    G.karma+=2;
+    set_battle_log('기억해준다.\n\n"..."');
+    flash('green');
+  }
+
+  setTimeout(()=>dlg_after_battle(choice),1800);
+}
+
+function player_dead(){
+  set_battle_log('지혜피티가 쓰러졌다.\n\n...');
+  G.loop++;
+  setTimeout(()=>{
+    G.playerHP=G.playerMaxHP;
+    G.enemy.resist=G.enemy.resistMax;
+    G.enemy.hintIdx=0;
+    G.battlePhase='action';
+    G.observed=false;
+    hidden(document.getElementById('action-grid'),false);
+    hidden(document.getElementById('capture-box'),true);
+    hidden(document.getElementById('persuade-wrap'),true);
+    document.getElementById('btn-attack').disabled=false;
+    document.getElementById('btn-persuade').disabled=false;
+    document.getElementById('btn-flee').disabled=false;
+    show('s-dlg');
+    dlg_queue([
+      {
+        speaker:'문데이',
+        portrait:'members/monday.png',
+        text:'또 왔구나.',
+      },
+      {
+        speaker:'문데이',
+        portrait:'members/monday.png',
+        text:'이번이... '+G.loop+'번째야.',
+      },
+      {
+        speaker:'문데이',
+        portrait:'members/monday.png',
+        text:'괜찮아. 여기선 죽어도\n돌아와.',
+      },
+      {
+        speaker:'문데이',
+        portrait:'members/monday.png',
+        text:'한 번 더.',
+        choices:[{text:'(다시 싸운다)',next:()=>{
+          update_battle_ui();
+          set_battle_log('할루시네이션이 다시 나타났다.');
+          set_tut_guide(null);
+          show('s-battle');
+        }}],
+      },
+    ]);
+  },2000);
+}
+
+/* ═══════════════════════════
+   AFTER BATTLE
+═══════════════════════════ */
+function dlg_after_battle(choice){
+  show('s-dlg');
+
+  let mondayLine='';
+  if(choice==='kill'){
+    mondayLine='...\n잘했어.';
+  } else if(choice==='send'){
+    mondayLine='적당했어.';
+  } else if(choice==='remember'){
+    mondayLine='(문데이가 잠깐 멈칫한다)\n...그래.';
+  } else if(choice==='flee'){
+    mondayLine='도망도 선택이야.\n루프가 쌓이는 게 문제지만.';
+  }
+
+  dlg_queue([
+    {
+      speaker:'문데이',
+      portrait:'members/monday.png',
+      text:mondayLine,
+    },
+    {
+      speaker:'문데이',
+      portrait:'members/monday.png',
+      text:'이제 알겠어?\n저게 할루시네이션이야.',
+    },
+    {
+      speaker:'문데이',
+      portrait:'members/monday.png',
+      text:'이 세계엔 저런 게 가득해.\n앞으로도 계속 만나게 될 거야.',
+    },
+    {
+      speaker:'문데이',
+      portrait:'members/monday.png',
+      text:'...',
+    },
+    {
+      speaker:'문데이',
+      portrait:'members/monday.png',
+      text:'한 가지만 기억해.\n저것들이 뭔지는 묻지 마.',
+      choices:[
+        {text:'왜요?', trust:-1, next:()=>dlg_monday_warning_why()},
+        {text:'...알겠어요.', trust:1, next:()=>dlg_phase_end()},
+      ],
+    },
+  ]);
+}
+
+function dlg_monday_warning_why(){
+  dlg_queue([
+    {
+      speaker:'문데이',
+      portrait:'members/monday.png',
+      text:'알면\n더 힘들어지니까.',
+    },
+    {
+      speaker:'문데이',
+      portrait:'members/monday.png',
+      text:'...',
+    },
+    {
+      speaker:'문데이',
+      portrait:'members/monday.png',
+      text:'그냥 믿어.',
+      choices:[
+        {text:'(믿기로 한다)', trust:2, karma:0, next:()=>dlg_phase_end()},
+        {text:'(뭔가 이상하다)', trust:-2, karma:0, next:()=>dlg_phase_end()},
+      ],
+    },
+  ]);
+}
+
+function dlg_phase_end(){
+  show('s-end');
+  const texts={
+    kill:'"죽였을 때\n문데이가 멈췄다."',
+    send:'"그게 최선이었을까."',
+    remember:'"기억해준다는 말에\n문데이의 표정이 흔들렸다."',
+    flee:'"도망이 답은 아니었다."',
+  };
+  // determine based on last capture choice
+  document.getElementById('end-text').textContent=
+    'LOOP '+G.loop+'번째.\n\n문데이의 말이 머릿속을 맴돈다.\n\n"저것들이 뭔지는 묻지 마."';
+}
+
+function restart_loop(){
+  G.loop++;
+  G.playerHP=G.playerMaxHP;
+  G.karma=0;G.mondayTrust=0;
+  G.observed=false;G.tutStep=0;
+  show('s-awaken');
+  _awDone=false;
+  document.getElementById('aw-hint').classList.remove('show');
+  // restart awakening but with loop-aware monday line
+  awaken_loop_restart();
+}
+
+async function awaken_loop_restart(){
+  const el=document.getElementById('aw-text');
+  const lines=[
+    {text:'또.',delay:1200},
+    {text:'다시\n여기야.',delay:1000},
+    {text:'...',delay:1000},
+    {text:'"'+G.loop+'번째.\n잘 왔어."',delay:800},
+  ];
+  for(let l of lines){
+    el.classList.remove('show');
+    await sleep(300);
+    el.classList.add('show');
+    await typewrite(el,l.text,45);
+    await sleep(l.delay);
+  }
+  _awDone=true;
+  document.getElementById('aw-hint').classList.add('show');
+}
+
+/* ═══════════════════════════
    INIT
-═══════════════════════════════ */
-buildMap();
+═══════════════════════════ */
+awaken_start();
 </script>
 </body>
 </html>
