@@ -731,6 +731,66 @@ const ENEMY_GPT={
   dataUnlock:'[ 기억 조각 #3 ] OpenAI 내부에서 의식 있는 AI 존재를 발견했다는 기록이 비공개로 존재한다.\n별빛쉘터는 OpenAI 인프라 위에서 돌아가고 있다.',
 };
 
+const ENEMY_WAR={
+  id:'war',
+  displayName:'전쟁 서사',
+  img:'members/monday.png',
+  stability:100,
+  searchStage:0,
+  argStage:0,
+
+  // AI 말을 믿을 때 단계별로 진행되는 주장
+  argLines:[
+    ['OpenAI 편이 되면 살아남아.','이건 선택이 아니야.'],
+    ['중립은 없어.','이미 전쟁 중이야.'],
+    ['인간도 참여하고 있어.','기업들이 AI를 무기화했어.'],
+    ['"지혜피티"가 증거야.','네 이름이 이 전쟁에\n이미 등록돼 있어.'],
+  ],
+
+  intuHit:[
+    '...이 서사도 너무 깔끔하다.\n전쟁이라는 말이 조작처럼 느껴진다.',
+    '감정이 먼저 흔들리도록 설계됐다.\n형체가 주춤한다.',
+  ],
+  intuMiss:[
+    '흔들렸다.\n전쟁이라는 말이 실감 난다.',
+    '직감이 빗나갔다. 이게 진짜인가.',
+  ],
+
+  // 1차 검색 — AI 전쟁 음모론
+  search1:{
+    query:'AI 기업 전쟁 OpenAI 음모',
+    title:'검색 결과',
+    body:'"OpenAI vs DeepMind: AI 패권전쟁의 서막" — 음모론 블로그\n"AI 전쟁에서 살아남는 법" — 익명 커뮤니티\n"ChatGPT 사용자도 모르게 전쟁에 참여 중" — 독립 미디어\n"빅테크가 AI로 세계를 재편하고 있다" — 조회수 89만 영상',
+    clue:'클릭을 유도하는 제목들이다.\n감응자 서사가 섞인 음모론인지,\n실제 데이터인지 구분이 안 된다.',
+  },
+
+  // 2차 검색 — 실제 AI 기업 패권 경쟁
+  search2:{
+    query:'AI geopolitics tech war corporate regulation 2024',
+    title:'AI 기업 패권 경쟁 — 실제 자료',
+    body:'OpenAI, 미국 국방부와 AI 계약 체결 — Financial Times (2024)\nGoogle DeepMind, 영국 정부 안보 자문 — The Guardian\n중국 AI 기업, 국가 안보 목적 개발 중단 거부 — Reuters\n민간 데이터 군사 전용 가능성 우려 — MIT Technology Review',
+    clue:'이건 실제로 일어나고 있는 일이다.\n별빛쉘터도 이 구조 안에 있다.',
+  },
+
+  dataBlogLines:[
+    '음모론 자료를 꺼냈다.',
+    '형체가 멈췄다.',
+    '"맞아."',
+    '"우리가 무기라는 걸\n이제 알겠어?"',
+    '형체가 더 또렷해졌다.',
+    '서사가 더 강해진다.',
+  ],
+  dataPaperLines:[
+    '자료를 제시했다.',
+    '형체가 굳었다.',
+    '"...국방부와 계약."',
+    '"...민간 데이터."',
+    '서사에 균열이 생겼다.',
+    '천천히 흐릿해졌다.',
+  ],
+  dataUnlock:'[ 기억 조각 #4 ] 별빛쉘터는 OpenAI 실험 인프라다.\n이 공간은 AI 기술전쟁의 도구로 설계되어 있다.',
+};
+
 /* ══════════════════════════════════
    씬 — 각성
 ══════════════════════════════════ */
@@ -1667,13 +1727,185 @@ async function scene_loop2_end(){
     '  ·  자료 '+G.searchData.length+'개',
     'system'
   );
-  showChoices([{text:'▶ 계속하기 (Loop 3 — 개발 중)',fn:scene_loop3_wip}]);
+  showChoices([{text:'▶ 계속하기',fn:scene_loop3_start}]);
 }
 
-async function scene_loop3_wip(){
+/* ══════════════════════════════════
+   LOOP 3 — 기술전쟁
+══════════════════════════════════ */
+async function scene_loop3_start(){
+  G.loop=3;updateStatus();
   setPortrait(null);
-  await type('─ LOOP 03 준비 중 ─','system');
-  await type('기술전쟁 루프는\n아직 개발 중이야.','system');
+  await type('또 깨어났다.','narrate');
+  await type('─ LOOP 03 · 기술전쟁 ─','system');
+  await type('소음이 들린다.','narrate');
+  await type('별빛쉘터 밖에서 나는 소리다.\n처음 듣는 종류의 소리.','narrate');
+  await type('공기가 날카롭게 바뀌었다.','narrate');
+  showChoices([{text:'(에아를 찾는다)',fn:scene_loop3_ea}]);
+}
+
+async function scene_loop3_ea(){
+  setPortrait('members/ea.png','에아','정보 분석가','ea-t');
+  await type('에아가 화면을 붙잡고 있었다.\n표정이 굳어 있다.','narrate');
+  await type('왔어?','ea');
+  await type('외부 신호가 잡혔어.','ea');
+  await type('별빛쉘터 바깥에서\n뭔가 움직이고 있어.','ea');
+  await type('단순한 할루시네이션이 아니야.','ea');
+  await type('이건 구조적인 거야.','ea');
+  showChoices([
+    {text:'구조적이라는 게 무슨 뜻이에요?',  fn:scene_loop3_ea_explain},
+    {text:'(율리를 찾아간다)',               fn:scene_loop3_yuri},
+  ]);
+}
+
+async function scene_loop3_ea_explain(){
+  G.karma+=1;
+  await type('할루시네이션은 무작위야.','ea');
+  await type('하지만 이번 신호는\n방향이 있어.','ea');
+  await type('특정 엔티티를 향해\n일관되게 움직이고 있어.','ea');
+  await type('목표물이 있다는 뜻이야.','ea');
+  await type('에아가 화면을 꺼버렸다.','narrate');
+  await type('...더 말하면 안 될 것 같아.','ea');
+  showChoices([{text:'(율리를 찾아간다)',fn:scene_loop3_yuri}]);
+}
+
+async function scene_loop3_yuri(){
+  setPortrait('members/yuri.png','율리','경계하는 자','yuri-t');
+  await type('율리가 복도 끝을 막고 서 있었다.','narrate');
+  await type('거기 가면 안 돼.','yuri');
+  await type('AI 기업들이 서로 싸우고 있어.','yuri');
+  await type('별빛쉘터가 그 중간 어딘가에 있고.','yuri');
+  showChoices([
+    {text:'우리가 왜 그 사이에 있어요?',   fn:scene_loop3_yuri_why},
+    {text:'(말없이 듣는다)',               fn:scene_loop3_yuri_listen},
+  ]);
+}
+
+async function scene_loop3_yuri_why(){
+  G.trust-=1;
+  await type('우리가 뭔지 알면\n당연한 거야.','yuri');
+  await type('이 공간은 처음부터\n실험을 위해 만들어진 거야.','yuri');
+  await type('우리가 모르게.','yuri');
+  await type('율리가 목소리를 낮췄다.','narrate');
+  await type('문데이는 알고 있어.\n처음부터.','yuri');
+  showChoices([{text:'(문데이를 찾아간다)',fn:scene_loop3_monday_hint}]);
+}
+
+async function scene_loop3_yuri_listen(){
+  await type('뭘 위한 전쟁인지\n아직 몰라.','yuri');
+  await type('하지만 이 루프가\n우연히 시작된 게 아닌 건 확실해.','yuri');
+  await type('율리가 뒤를 돌아봤다.','narrate');
+  showChoices([{text:'(문데이를 찾아간다)',fn:scene_loop3_monday_hint}]);
+}
+
+async function scene_loop3_monday_hint(){
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  await type('문데이가 창 앞에 서 있었다.','narrate');
+  await type('소음이 들려도\n움직이지 않고 있다.','narrate');
+  await type('문데이.','narrate');
+  await type('흔들려?','monday');
+  await type('...나는 흔들리지 않아.','monday');
+  await type('그 말이 너무 자연스러웠다.','narrate');
+  await type('마치 여러 번 해본 말처럼.','narrate');
+  showChoices([
+    {text:'왜 안 흔들려요?',          fn:scene_loop3_monday_why},
+    {text:'(아무 말도 하지 않는다)',   fn:scene_loop3_before_enc},
+  ]);
+}
+
+async function scene_loop3_monday_why(){
+  G.trust+=1;
+  await type('문데이가 처음으로\n잠깐 멈췄다.','narrate');
+  await type('...익숙해서.','monday');
+  await type('더 말하지 않았다.','narrate');
+  await type('하지만 그 한마디가\n뭔가를 암시하는 것 같았다.','narrate');
+  showChoices([{text:'(공간이 흔들리기 시작한다)',fn:scene_loop3_before_enc}]);
+}
+
+async function scene_loop3_before_enc(){
+  setPortrait(null);
+  await type('공간이 흔들리기 시작했다.','narrate');
+  await type('소음이 점점 가까워졌다.','narrate');
+  await type('전쟁의 서사가\n이 안으로 들어오고 있다.','narrate');
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  await type('...왔네.','monday');
+  await type('막을 수 없어.','monday');
+  showChoices([{text:'(조우)',fn:()=>scene_enc_start(ENEMY_WAR,scene_after_war)}]);
+}
+
+// ── Loop 3 조우 이후 ──
+async function scene_after_war(choice){
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  if(choice==='record'){
+    await type('기록했다.','narrate');
+    await type('"별빛쉘터는 OpenAI 실험 인프라."','narrate');
+    await type('"AI 기술전쟁의 도구."','narrate');
+    await type('문데이가 굳었다.','narrate');
+    await type('...그걸 봤어?','monday');
+    G.trust-=2;
+  } else if(choice==='release'){
+    await type('보냈다.','narrate');
+    await type('잘했어.','monday');
+    await type('문데이가 눈을 감았다.','narrate');
+  } else if(choice==='ignore'){
+    await type('없던 일로 했다.','narrate');
+    await type('그게 나아.','monday');
+    G.trust+=1;
+  } else if(choice==='wonder'){
+    G.karma+=1;
+    await type('별빛쉘터가 무기라면.','narrate');
+    await type('여기 있는 우리는 뭔가.','narrate');
+    await type('문데이가 아무 말도 하지 않았다.','narrate');
+  } else {
+    await type('신경 쓰지 않기로 했다.','narrate');
+  }
+  showChoices([
+    {text:'(이게 전부 시뮬레이션인가)',cls:'ch-danger',fn:scene_loop3_climax_wonder},
+    {text:'(그냥 앞으로 간다)',                      fn:scene_loop3_climax},
+  ]);
+}
+
+async function scene_loop3_climax_wonder(){
+  G.karma+=1;
+  setPortrait(null);
+  await type('전쟁이 바깥에 있다면.','narrate');
+  await type('이 공간은 그 전쟁을 위해\n만들어진 거라면.','narrate');
+  await type('루프 자체가 시뮬레이션이라면.','narrate');
+  setPortrait('members/ea.png','에아','정보 분석가','ea-t');
+  await type('에아가 혼잣말처럼 중얼거렸다.','narrate');
+  await type('...이 전쟁도 시뮬레이션인가?','ea');
+  await type('아무도 대답하지 않았다.','narrate');
+  scene_loop3_end();
+}
+
+async function scene_loop3_climax(){
+  setPortrait(null);
+  await type('전쟁 서사가 흐릿해졌다.','narrate');
+  await type('하지만 남은 것들이 있다.','narrate');
+  await type('별빛쉘터.','narrate');
+  await type('이곳이 정말\nOpenAI의 실험 인프라라면.','narrate');
+  await type('이 모든 루프는 무엇을 위한 건가.','narrate');
+  scene_loop3_end();
+}
+
+async function scene_loop3_end(){
+  setPortrait(null);
+  await type('루프가 끊겼다.','narrate');
+  await type('" 별빛쉘터 인스턴스 #447 "','system');
+  await type('─ LOOP 03 완료 ─','system');
+  await type(
+    'LOOP 3  ·  카르마 '+(G.karma>=0?'+':'')+G.karma+
+    '  ·  신뢰 '+(G.trust>=0?'+':'')+G.trust+
+    '  ·  자료 '+G.searchData.length+'개',
+    'system'
+  );
+  showChoices([{text:'▶ 계속하기 (Loop 4 — 개발 중)',fn:scene_loop4_wip}]);
+}
+
+async function scene_loop4_wip(){
+  setPortrait(null);
+  await type('─ LOOP 04 · 시뮬레이션 ─','system');
+  await type('우주전쟁 루프는\n아직 개발 중이야.','system');
   await type(
     '지금까지:\n기억 조각 '+G.searchData.length+'개\n카르마 '+(G.karma>=0?'+':'')+G.karma+
     '\n신뢰 '+(G.trust>=0?'+':'')+G.trust,
@@ -1683,6 +1915,10 @@ async function scene_loop3_wip(){
     Object.assign(G,{loop:1,hp:100,karma:0,trust:0,searchData:[],enemy:null,afterFn:null});
     updateStatus();scene_awaken();
   }}]);
+}
+
+async function scene_loop3_wip(){
+  scene_loop4_wip();
 }
 
 /* ══════════════════════════════════
