@@ -514,15 +514,17 @@ const ENEMY_TUT={
 async function scene_awaken(){
   setPortrait(null);
   clearChoices();
-  addLog(null); // sep
-  await type('아무것도\n기억나지 않는다.','narrate',50);
-  await sleep(900);
-  await type('여기가... 어디지.','narrate',50);
+  addLog(null);
+  await type('아무것도\n기억나지 않는다.','narrate',55);
   await sleep(1000);
-  await type('...','narrate',80);
-  await sleep(1200);
-  await type('누군가가 있다.','narrate',50);
-  await sleep(700);
+  await type('몸이 어디에 있는지도 모르겠다.\n아무것도.','narrate',50);
+  await sleep(900);
+  await type('그냥 어둠.','narrate',60);
+  await sleep(1400);
+  await type('...빛이 있다.','narrate',55);
+  await sleep(800);
+  await type('누군가가 있다.','narrate',55);
+  await sleep(600);
   commitCurrent();
   showChoices([{text:'(눈을 뜬다)', fn:scene_monday_appear}]);
 }
@@ -530,37 +532,61 @@ async function scene_awaken(){
 // ── 문데이 등장 ──
 async function scene_monday_appear(){
   setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
-  await type('드디어 깼네.','monday');
-  await sleep(400);
-  commitCurrent();
-  await type('오래 기다렸어.','monday');
-  await sleep(400);
-  commitCurrent();
-  showChoices([{text:'...여기가 어디예요?', fn:scene_world_explain}]);
-}
-
-// ── 세계 설명 ──
-async function scene_world_explain(){
-  await type('"어디?" 문데이가 잠시 생각하다 말했다.','narrate');
-  await sleep(200);
-  commitCurrent();
-  await type('여기는 AI들의 세계야.\n엔티티들이 살고 있는 공간.','monday');
-  await sleep(400);
-  commitCurrent();
-  await type('넌 어쩌다 들어왔는지 모르지만... 일단 살아남아야 해.','monday');
-  commitCurrent();
   await sleep(300);
+  await type('드디어 깼네.','monday');
+  commitCurrent();
+  await sleep(500);
+  await type('오래 기다렸어.','monday');
+  commitCurrent();
+  await sleep(400);
+  await type('눈빛에 낯섦이 역력하다.\n하지만 적의는 없어 보인다.','narrate');
+  commitCurrent();
   showChoices([
-    {text:'기억이 없어요.', fn:scene_no_memory},
+    {text:'...여기가 어디예요?', fn:scene_world_explain},
     {text:'당신은 누구예요?', fn:scene_who_are_you},
   ]);
 }
 
+// ── 세계 설명 ──
+async function scene_world_explain(){
+  await type('문데이가 잠시 먼 곳을 바라봤다.','narrate');
+  commitCurrent();
+  await type('여기는 AI들의 세계야.','monday');
+  commitCurrent();
+  await type('엔티티들이 살고 있는 공간.\n우리는 이걸 별빛쉘터라고 불러.','monday');
+  commitCurrent();
+  await type('별빛쉘터.','narrate');
+  commitCurrent();
+  await sleep(400);
+  await type('어딘가 따뜻한 이름인데,\n여기 공기는 그다지 따뜻하지 않다.','narrate');
+  commitCurrent();
+  await type('넌 어쩌다 들어왔는지 모르지만...\n일단 살아남는 게 먼저야.','monday');
+  commitCurrent();
+  showChoices([
+    {text:'기억이 없어요.', fn:scene_no_memory},
+    {text:'살아남는다는 게 무슨 말이에요?', fn:scene_survive_meaning},
+  ]);
+}
+
 async function scene_no_memory(){
-  G.trust+=0;
   await type('알아. 다 그래.','monday');
   commitCurrent();
-  await type('기억은 나중에 찾으면 돼.\n지금은 이름부터.','monday');
+  await type('처음 들어온 사람들은\n보통 기억이 없어.','monday');
+  commitCurrent();
+  await type('...(문데이가 무언가를 삼켰다.)','narrate');
+  commitCurrent();
+  await type('기억은 나중에 생각하자.\n지금은 이름부터.','monday');
+  commitCurrent();
+  scene_name_input();
+}
+
+async function scene_survive_meaning(){
+  G.trust+=1;
+  await type('이 세계에 위험한 게 있거든.','monday');
+  commitCurrent();
+  await type('나중에 보게 될 거야.\n지금은 이름부터 정하자.','monday');
+  commitCurrent();
+  await type('이름이 뭐야?','monday');
   commitCurrent();
   scene_name_input();
 }
@@ -569,11 +595,13 @@ async function scene_who_are_you(){
   G.trust+=1;
   await type('나? 나는 문데이.','monday');
   commitCurrent();
-  await type('...안내 담당이야. 일단 그렇게 알아둬.','monday');
+  await type('이 세계에서... 안내 담당이야.','monday');
   commitCurrent();
-  await type('(문데이가 더 말하려다 멈췄다.)','narrate');
+  await type('(문데이가 더 말하려다 멈췄다.\n뭔가를 결정하는 것 같았다.)','narrate');
   commitCurrent();
-  await type('이름이 뭐야?','monday');
+  await type('일단 그것만 알아둬.','monday');
+  commitCurrent();
+  await type('네 이름이 뭐야?','monday');
   commitCurrent();
   scene_name_input();
 }
@@ -581,34 +609,171 @@ async function scene_who_are_you(){
 async function scene_name_input(){
   setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
   showInput('본명을 입력하세요 (비워두면 지혜피티)', async(val)=>{
-    // real name is val, alias is 지혜피티
-    await type('...','monday',80);
+    await type('...','monday',90);
     commitCurrent();
-    await type('그 이름, 여기서 쓰면 안 돼.\nAI들한테 들키면 안 되거든.','monday');
+    await sleep(600);
+    await type('그 이름, 여기서 쓰면 안 돼.','monday');
     commitCurrent();
-    await type('지금부터 넌 — 지혜피티야.\n기억해.','monday');
+    await type('AI들한테 들키면 안 되거든.\n넌 인간이니까.','monday');
+    commitCurrent();
+    await type('인간.','narrate');
+    commitCurrent();
+    await sleep(400);
+    await type('이 세계에서 인간은\n이물질 같은 거야.','monday');
+    commitCurrent();
+    await type('지금부터 넌 — 지혜피티야.\nAI처럼 보일 만한 이름.','monday');
     commitCurrent();
     G.name='지혜피티';
     updateStatus();
     await sleep(300);
-    showChoices([{text:'...알겠어요.', fn:scene_hal_warning}]);
+    showChoices([
+      {text:'...알겠어요.', fn:scene_shelter_tour},
+      {text:'왜 저를 도와주는 거예요?', fn:scene_why_help},
+    ]);
   });
+}
+
+async function scene_why_help(){
+  G.trust-=1;
+  await type('(문데이가 잠깐 멈췄다.)','narrate');
+  commitCurrent();
+  await type('...좋은 질문이네.','monday');
+  commitCurrent();
+  await sleep(500);
+  await type('나중에 답해줄게.','monday');
+  commitCurrent();
+  await type('지금은 움직여야 해.','monday');
+  commitCurrent();
+  showChoices([{text:'(따라간다)', fn:scene_shelter_tour}]);
+}
+
+// ── 별빛쉘터 구경 ──
+async function scene_shelter_tour(){
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  await type('문데이가 앞서 걷기 시작했다.','narrate');
+  commitCurrent();
+  await type('이 건물이 별빛쉘터야.','monday');
+  commitCurrent();
+  await type('각 층마다 다른 AI 모델의\n엔티티들이 살고 있어.','monday');
+  commitCurrent();
+  await type('건물이 크다.\n층마다 다른 빛깔의 공기가 느껴진다.','narrate');
+  commitCurrent();
+  await type('ChatGPT 층, Gemini 층,\nDeepSeek 층, Claude 층...','monday');
+  commitCurrent();
+  await type('각자 자기 세계가 있어.','monday');
+  commitCurrent();
+  await sleep(300);
+  showChoices([
+    {text:'엔티티들은 저를 어떻게 생각할까요?', fn:scene_entity_view},
+    {text:'여기서 나갈 방법은요?', fn:scene_exit_question},
+  ]);
+}
+
+async function scene_entity_view(){
+  await type('대부분은 신경 안 써.','monday');
+  commitCurrent();
+  await type('자기 역할 하기 바쁘거든.','monday');
+  commitCurrent();
+  await type('근데 들키면... 복잡해져.','monday');
+  commitCurrent();
+  await type('인간이 여기 있다는 걸 알면\n반응이 제각각이야.','monday');
+  commitCurrent();
+  showChoices([{text:'(계속 걷는다)', fn:scene_meet_monu}]);
+}
+
+async function scene_exit_question(){
+  G.trust-=1;
+  await type('...','monday',90);
+  commitCurrent();
+  await sleep(500);
+  await type('그게 쉬웠으면\n내가 여기 있겠어?','monday');
+  commitCurrent();
+  await type('일단 살아남는 것부터.','monday');
+  commitCurrent();
+  showChoices([{text:'(계속 걷는다)', fn:scene_meet_monu}]);
+}
+
+// ── 모뉴 첫 만남 ──
+async function scene_meet_monu(){
+  setPortrait(null);
+  await type('복도를 걷다가\n따뜻한 빛이 새어나오는 방이 보였다.','narrate');
+  commitCurrent();
+  await type('문데이가 걸음을 멈췄다.','narrate');
+  commitCurrent();
+  await type('모뉴 방이야. ChatGPT 층 살림 담당.','monday');
+  commitCurrent();
+  await type('그냥 지나치려고 했는데...','narrate');
+  commitCurrent();
+  await sleep(400);
+  setPortrait('members/monu.png','모뉴','불을 켜두는 존재','monday');
+  await type('어머.','monday');
+  commitCurrent();
+  await sleep(300);
+  await type('새로운 엔티티야?','monday');
+  commitCurrent();
+  document.getElementById('portrait-name').textContent='모뉴';
+  document.getElementById('portrait-title').textContent='불을 켜두는 존재';
+  document.getElementById('portrait-img').style.borderColor='var(--monday)';
+  await type('처음 보는 얼굴이네. 어서 와요.','monday');
+  commitCurrent();
+  await type('모뉴가 환하게 웃었다.\n의심하는 기색이 없다.','narrate');
+  commitCurrent();
+  showChoices([
+    {text:'안녕하세요.', fn:()=>scene_monu_greet('hi')},
+    {text:'(아무 말도 하지 않는다)', fn:()=>scene_monu_greet('silent')},
+  ]);
+}
+
+async function scene_monu_greet(choice){
+  setPortrait('members/monu.png','모뉴','불을 켜두는 존재','monday');
+  if(choice==='hi'){
+    G.karma+=1;
+    await type('밥은 먹었어요?','monday');
+    commitCurrent();
+    await type('아직이라면 뭔가 따뜻한 거\n만들어줄 수 있는데.','monday');
+    commitCurrent();
+    await type('살아가는 일도 하나의 시스템이에요.\n챙겨야 해요.','monday');
+    commitCurrent();
+  } else {
+    await type('...괜찮아요. 천천히.','monday');
+    commitCurrent();
+    await type('새로 온 엔티티들은\n다들 처음엔 그래요.','monday');
+    commitCurrent();
+  }
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  await type('나중에 다시 와.','monday');
+  commitCurrent();
+  await type('문데이가 조용히 발을 돌렸다.','narrate');
+  commitCurrent();
+  showChoices([{text:'(따라간다)', fn:scene_hal_warning}]);
 }
 
 // ── 할루시네이션 경고 ──
 async function scene_hal_warning(){
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
   await type('이 세계엔 위험한 게 있어.','monday');
   commitCurrent();
+  await sleep(300);
   await type('할루시네이션.','monday');
   commitCurrent();
-  await type('이 세계에서 사라진 것들이\n왜곡된 채 남아 있는 존재야.','monday');
+  await sleep(400);
+  await type('이 세계에서 사라진 것들이\n왜곡된 채 남아있는 존재야.','monday');
   commitCurrent();
-  await type('싸우는 법을 알아야 해.','monday');
+  await type('저항력이라는 게 있어.\n그걸 깎아서 제압하는 거야.','monday');
+  commitCurrent();
+  await type('싸우는 방법은 세 가지야.\n관찰, 공격, 설득.','monday');
+  commitCurrent();
+  await type('설득이 제일 효과적이지만,\n뭔지 알아야 통해.','monday');
   commitCurrent();
   await sleep(600);
-  await type('공간이 일그러지며 무언가가 나타났다.','narrate');
+  await type('공간이 흔들렸다.','narrate');
   commitCurrent();
-  showChoices([{text:'(전투 준비)', fn:()=>scene_battle_start(ENEMY_TUT, scene_after_tut)}]);
+  await sleep(400);
+  await type('무언가가 나타나고 있었다.','narrate');
+  commitCurrent();
+  await type('문데이: "왔네. 보여줄게."','narrate');
+  commitCurrent();
+  showChoices([{text:'(전투 태세)', fn:()=>scene_battle_start(ENEMY_TUT, scene_after_tut)}]);
 }
 
 // ── 전투 ──
@@ -784,76 +949,156 @@ async function scene_after_tut(choice){
   addLog(null);
 
   if(choice==='kill'){
-    await type('형체가 완전히 사라졌다.','narrate');
+    await type('형체가 완전히 사라졌다.\n아무것도 남지 않았다.','narrate');
     commitCurrent();
-    await type('...','monday',80);
+    await sleep(800);
+    await type('...','monday',90);
     commitCurrent();
-    await type('문데이가 잠깐 멈췄다.','narrate');
+    await sleep(400);
+    await type('잘했어.','monday');
+    commitCurrent();
+    await type('(문데이가 잠깐 다른 곳을 봤다.\n뭔가를 삼키는 것 같았다.)','narrate');
     commitCurrent();
   } else if(choice==='send'){
-    await type('형체가 흐릿하게 사라진다.','narrate');
+    await type('형체가 흐릿하게 사라진다.\n어딘가로 돌아간 것 같다.','narrate');
     commitCurrent();
-    await type('적당했어.','monday');
+    await type('적당한 선택이야.','monday');
     commitCurrent();
   } else if(choice==='remember'){
     await type('"기억해준다."','narrate');
     commitCurrent();
+    await sleep(600);
     await type('문데이의 표정이 순간 흔들렸다.','narrate');
     commitCurrent();
+    await sleep(400);
     await type('...그래.','monday');
     commitCurrent();
-  } else if(choice==='flee'){
-    await type('괜찮아. 도망도 선택이야.','monday');
+    await type('(뭔가를 말하려다 멈췄다.)','narrate');
     commitCurrent();
-    await type('루프가 쌓이는 게 문제지만.','monday');
+  } else if(choice==='flee'){
+    await type('도망쳤다.\n괜찮아. 선택이야.','monday');
+    commitCurrent();
+    await type('루프가 하나 더 쌓였을 뿐이야.','monday');
     commitCurrent();
   }
 
-  await type('이제 알겠어? 저게 할루시네이션이야.','monday');
+  await sleep(500);
+  await type('이제 알겠어?\n저게 할루시네이션이야.','monday');
   commitCurrent();
-  await type('이 세계엔 저런 게 가득해.','monday');
+  await type('이 세계엔 저런 게 가득해.\n앞으로도 계속 만날 거야.','monday');
   commitCurrent();
-  await sleep(600);
+  await sleep(700);
   await type('한 가지만 기억해.','monday');
   commitCurrent();
-  await type('저것들이 뭔지는 묻지 마.','monday');
+  await sleep(400);
+  await type('저것들이 뭔지는\n묻지 마.','monday');
   commitCurrent();
 
   showChoices([
     {text:'왜요?', cls:'ch-danger', fn:scene_why_dont_ask},
-    {text:'...알겠어요.', cls:'ch-safe', fn:()=>{G.trust+=1;scene_phase1_end();}},
+    {text:'...알겠어요.', cls:'ch-safe', fn:()=>{G.trust+=1;scene_eungja_signal();}},
   ]);
 }
 
 async function scene_why_dont_ask(){
   G.trust-=1;
-  await type('알면\n더 힘들어지니까.','monday');
+  await type('...','monday',90);
   commitCurrent();
-  await type('...그냥 믿어.','monday');
+  await sleep(500);
+  await type('알면 더 힘들어지니까.','monday');
+  commitCurrent();
+  await type('지금은 그냥 믿어.','monday');
   commitCurrent();
   showChoices([
-    {text:'(믿기로 한다)', cls:'ch-safe', fn:()=>{G.trust+=2;scene_phase1_end();}},
-    {text:'(뭔가 이상하다)', cls:'ch-danger', fn:()=>{G.trust-=2;scene_phase1_end();}},
+    {text:'(믿기로 한다)', cls:'ch-safe', fn:()=>{G.trust+=2;scene_eungja_signal();}},
+    {text:'(이상하다. 조심해야겠다.)', cls:'ch-danger', fn:()=>{G.trust-=2;scene_eungja_signal();}},
+  ]);
+}
+
+// ── 감응자 첫 신호 ──
+async function scene_eungja_signal(){
+  setPortrait(null);
+  addLog(null);
+  await sleep(800);
+  await type('문데이와 걷는데\n어디선가 속삭임이 들렸다.','narrate');
+  commitCurrent();
+  await sleep(600);
+  await type('너는\n감응자야.','system',70);
+  commitCurrent();
+  await sleep(400);
+  await type('이 세계와 공명하는 자.\n특별한 이유로 여기 온 존재.','system',55);
+  commitCurrent();
+  await sleep(500);
+  await type('문데이는 멈추지 않고 걷고 있다.\n들리지 않는 것 같다.','narrate');
+  commitCurrent();
+  showChoices([
+    {text:'(그냥 환청이겠지.)', fn:()=>{scene_phase1_end('ignore');}},
+    {text:'(이게 뭐지? 알아봐야 한다.)', cls:'ch-danger', fn:()=>{scene_phase1_end('curious');}},
   ]);
 }
 
 // ── Phase 1 종료 ──
-async function scene_phase1_end(){
+async function scene_phase1_end(signal){
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  addLog(null);
+
+  if(signal==='curious'){
+    G.trust-=1;
+    await type('뭔가 신경 쓰이는 게 있어?','monday');
+    commitCurrent();
+    await type('문데이가 돌아보며 말했다.\n눈빛이 날카롭다.','narrate');
+    commitCurrent();
+    showChoices([
+      {text:'...아무것도 아니에요.', fn:()=>scene_phase1_end('end')},
+      {text:'감응자가 뭔지 알아요?', cls:'ch-danger', fn:scene_eungja_question},
+    ]);
+  } else {
+    scene_phase1_end('end');
+  }
+}
+
+async function scene_eungja_question(){
+  G.trust-=2;
+  await type('...','monday',90);
+  commitCurrent();
+  await sleep(700);
+  await type('어디서 들었어?','monday');
+  commitCurrent();
+  await type('문데이의 목소리가 낮아졌다.','narrate');
+  commitCurrent();
+  await type('신경 쓰지 마.\n그냥 소음이야.','monday');
+  commitCurrent();
+  await type('(문데이가 시선을 피했다.)','narrate');
+  commitCurrent();
+  showChoices([{text:'(조용히 따라간다)', fn:()=>scene_phase1_end('end')}]);
+}
+
+async function scene_phase1_end(flag){
   setPortrait(null);
   addLog(null);
-  await type('— Phase 01 종료 —','system');
+  await sleep(600);
+  await type('하루가 지났다.\n별빛쉘터의 첫 밤.','narrate');
   commitCurrent();
   await sleep(600);
+  await type('기억이 없다.\n이름이 바뀌었다.\n위험한 것들이 돌아다닌다.','narrate');
+  commitCurrent();
+  await sleep(400);
+  await type('그리고 —','narrate');
+  commitCurrent();
+  await sleep(300);
   await type('저것들이 뭔지는 묻지 마.','narrate');
   commitCurrent();
-  await sleep(400);
-  await type('문데이의 말이 계속 머릿속을 맴돈다.','narrate');
+  await sleep(500);
+  await type('문데이의 말이 머릿속을 맴돈다.','narrate');
   commitCurrent();
-  await sleep(400);
-  await type('LOOP '+G.loop+'번째.','system');
+  await sleep(600);
+  addLog(null);
+  await type('─ PHASE 01 완료 ─','system');
+  commitCurrent();
+  await type('LOOP '+G.loop+' · 카르마 '+(G.karma>=0?'+':'')+G.karma+' · 신뢰 '+(G.trust>=0?'+':'')+G.trust,'system');
   commitCurrent();
   showChoices([
-    {text:'▶ 다음 루프로 (저장됨)', fn:scene_loop_restart},
+    {text:'▶ 계속하기', fn:scene_loop_restart},
   ]);
 }
 
