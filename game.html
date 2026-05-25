@@ -4,1074 +4,878 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>무한루프 시뮬레이션</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&family=Noto+Serif+KR:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&family=Noto+Serif+KR:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
   --bg:#03040b;
-  --text:#dde0f5;
-  --dim:#556;
+  --surface:rgba(6,8,20,0.97);
+  --border:rgba(77,124,255,0.18);
+  --text:#cdd0e8;
+  --text-bright:#eef0ff;
+  --dim:#4a5070;
   --monday:#19c37d;
+  --gold:#f0c060;
   --danger:#ef4444;
-  --warn:#fb923c;
-  --ui-border:rgba(77,124,255,0.25);
-  --ui-bg:rgba(5,8,20,0.96);
-  --hp:#4d7cff;
-  --resist:#ef4444;
+  --accent:#4d7cff;
+  --system:#7c6aff;
 }
-html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;user-select:none;-webkit-tap-highlight-color:transparent;}
-
-/* ── CANVAS ── */
-#c{position:fixed;inset:0;z-index:0;pointer-events:none;}
-
-/* ── SCREENS ── */
-.sc{position:fixed;inset:0;z-index:10;display:none;flex-direction:column;align-items:center;justify-content:center;}
-.sc.on{display:flex;}
-
-/* ════ AWAKENING ════ */
-#s-awaken{background:#000;cursor:pointer;}
-.aw-text{
-  font-family:'Noto Serif KR',serif;
-  font-size:clamp(16px,3vw,22px);
+html,body{
+  width:100%;height:100%;
+  overflow:hidden;
+  background:var(--bg);
   color:var(--text);
-  text-align:center;
-  line-height:2.2;
-  opacity:0;
-  transition:opacity 1.2s;
-  white-space:pre-wrap;
-  padding:0 40px;
+  font-family:'Noto Sans KR',sans-serif;
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
 }
-.aw-text.show{opacity:1;}
-.aw-cursor{display:inline-block;width:2px;height:1.1em;background:var(--text);vertical-align:text-bottom;animation:blink .9s infinite;}
-@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
-.aw-hint{position:fixed;bottom:30px;font-size:12px;color:var(--dim);letter-spacing:3px;opacity:0;transition:opacity 0.8s;}
-.aw-hint.show{opacity:1;}
 
-/* ════ DIALOGUE ════ */
-#s-dlg{background:transparent;justify-content:flex-end;cursor:pointer;}
-.dlg-dim{position:absolute;inset:0;background:linear-gradient(to top,rgba(3,4,11,.9) 0%,transparent 55%);}
-.dlg-portrait-area{
-  position:absolute;
-  bottom:190px;left:50%;transform:translateX(-50%);
-  z-index:15;
-}
-.dlg-portrait{
-  width:120px;height:120px;border-radius:50%;object-fit:cover;
-  border:2px solid var(--monday);
-  box-shadow:0 0 24px rgba(25,195,125,.5),0 0 60px rgba(25,195,125,.15);
-  background:#111;
-  display:block;
-}
-.dlg-portrait.human{
-  border-color:#f0c060;
-  box-shadow:0 0 24px rgba(240,192,96,.5),0 0 60px rgba(240,192,96,.15);
-}
-.dlg-box{
-  position:relative;z-index:20;width:100%;
-  background:var(--ui-bg);
-  border-top:1px solid var(--ui-border);
-  padding:18px 22px 26px;
-  min-height:170px;
-}
-.dlg-speaker{
-  font-size:12px;font-weight:700;letter-spacing:3px;
-  color:var(--monday);margin-bottom:10px;
-}
-.dlg-speaker.human{color:#f0c060;}
-.dlg-text{font-size:clamp(15px,2.5vw,18px);line-height:1.9;white-space:pre-wrap;min-height:60px;}
-.dlg-arrow{position:absolute;right:20px;bottom:20px;font-size:16px;color:var(--dim);animation:blink .9s infinite;display:none;}
-.dlg-choices{display:flex;flex-direction:column;gap:8px;margin-top:14px;}
-.ch-btn{
-  padding:11px 16px;background:rgba(77,124,255,.07);
-  border:1px solid rgba(77,124,255,.25);color:var(--text);
-  font-family:inherit;font-size:14px;cursor:pointer;
-  text-align:left;border-radius:4px;transition:all .2s;
-}
-.ch-btn:hover{background:rgba(77,124,255,.18);border-color:rgba(77,124,255,.6);}
+/* ── stars ── */
+#cv{position:fixed;inset:0;z-index:0;pointer-events:none;}
 
-/* name input */
-.name-input-wrap{display:flex;gap:10px;margin-top:14px;}
-.name-input{
-  flex:1;padding:10px 14px;background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.2);border-radius:4px;
-  color:var(--text);font-family:inherit;font-size:16px;outline:none;
+/* ── layout ── */
+#app{
+  position:fixed;inset:0;z-index:10;
+  display:flex;flex-direction:column;
+  max-width:600px;margin:0 auto;
 }
-.name-input:focus{border-color:rgba(77,124,255,.6);}
-.name-confirm{
-  padding:10px 18px;background:rgba(77,124,255,.15);
-  border:1px solid rgba(77,124,255,.4);color:#7da8ff;
-  font-family:inherit;font-size:14px;cursor:pointer;
-  border-radius:4px;transition:all .2s;
-}
-.name-confirm:hover{background:rgba(77,124,255,.3);}
 
-/* ════ BATTLE ════ */
-#s-battle{background:transparent;justify-content:space-between;padding:0;}
+/* ── status bar ── */
+#statusbar{
+  flex-shrink:0;
+  display:flex;align-items:center;gap:12px;
+  padding:10px 16px;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  font-size:12px;
+}
+.sb-loop{color:var(--system);letter-spacing:3px;font-weight:700;}
+.sb-sep{color:var(--dim);}
+.sb-name{color:var(--gold);letter-spacing:1px;}
+.sb-hp-wrap{display:flex;align-items:center;gap:6px;margin-left:auto;}
+.sb-hp-label{color:var(--dim);font-size:10px;}
+.hp-track{width:80px;height:5px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;}
+.hp-fill{height:100%;background:linear-gradient(to right,#1d4ed8,#4d7cff);border-radius:3px;transition:width .4s;}
+.sb-karma{font-size:10px;color:var(--dim);letter-spacing:1px;}
 
-/* Enemy area */
-.battle-enemy{
-  width:100%;padding:20px 20px 0;
-  display:flex;flex-direction:column;align-items:center;gap:14px;
+/* ── main content ── */
+#main{
+  flex:1;overflow-y:auto;
+  padding:0;
+  display:flex;flex-direction:column;
 }
-.enemy-name{
-  font-size:11px;letter-spacing:5px;color:var(--dim);
-  border:1px solid rgba(255,255,255,.08);padding:4px 16px;border-radius:2px;
+#main::-webkit-scrollbar{width:3px;}
+#main::-webkit-scrollbar-track{background:transparent;}
+#main::-webkit-scrollbar-thumb{background:var(--border);}
+
+/* portrait */
+#portrait-area{
+  display:none;
+  flex-shrink:0;
+  align-items:center;justify-content:center;
+  padding:24px 16px 8px;
+  gap:14px;
 }
-.enemy-sprite{
-  width:100px;height:100px;border-radius:50%;
-  background:rgba(255,50,50,.05);
-  border:2px dashed rgba(239,68,68,.3);
-  display:flex;align-items:center;justify-content:center;
-  font-size:40px;
+#portrait-area.show{display:flex;}
+#portrait-img{
+  width:90px;height:90px;border-radius:50%;
+  object-fit:cover;border:2px solid var(--monday);
+  box-shadow:0 0 20px rgba(25,195,125,.4);
+  background:#111;flex-shrink:0;
+  transition:border-color .3s,box-shadow .3s;
+}
+#portrait-img.human{border-color:var(--gold);box-shadow:0 0 20px rgba(240,192,96,.4);}
+#portrait-img.hal{
+  border-color:rgba(239,68,68,.4);
+  box-shadow:0 0 20px rgba(239,68,68,.3);
+  filter:saturate(.3) brightness(.8);
   animation:glitch 3s infinite;
-  position:relative;overflow:hidden;
 }
-.enemy-sprite img{width:100%;height:100%;object-fit:cover;border-radius:50%;filter:saturate(0) contrast(1.2) brightness(0.7);}
 @keyframes glitch{
-  0%,95%,100%{transform:translate(0);}
-  96%{transform:translate(-3px,1px);}
-  97%{transform:translate(3px,-1px);}
-  98%{transform:translate(-2px,2px);}
+  0%,93%,100%{transform:translate(0);filter:saturate(.3) brightness(.8);}
+  94%{transform:translate(-2px,1px);filter:saturate(.3) brightness(.8) hue-rotate(20deg);}
+  96%{transform:translate(2px,-1px);filter:saturate(.3) brightness(.8) hue-rotate(-20deg);}
 }
-.resist-bar-wrap{width:100%;max-width:400px;}
-.bar-label{display:flex;justify-content:space-between;font-size:11px;color:var(--dim);margin-bottom:5px;}
-.bar-track{height:8px;background:rgba(255,255,255,.07);border-radius:4px;overflow:hidden;}
-.bar-fill{height:100%;border-radius:4px;transition:width .5s ease;}
-.resist-fill{background:linear-gradient(to right,#7c3aed,#ef4444);}
-.hp-fill{background:linear-gradient(to right,#1d4ed8,#4d7cff);}
+.portrait-info{flex:1;}
+.portrait-name{font-size:13px;font-weight:700;margin-bottom:3px;}
+.portrait-title{font-size:11px;color:var(--dim);}
 
-/* Battle log */
-.battle-log{
-  width:100%;max-width:500px;
-  padding:0 20px;
-  font-size:14px;line-height:1.7;
-  color:var(--text);
-  min-height:60px;
-  text-align:center;
-  font-style:italic;
+/* text log */
+#textlog{
+  flex:1;
+  padding:20px 20px 8px;
+  display:flex;flex-direction:column;
+  gap:4px;
+}
+.log-entry{
+  font-size:clamp(14px,2.8vw,17px);
+  line-height:1.95;
   white-space:pre-wrap;
+  animation:fadein .3s;
 }
+@keyframes fadein{from{opacity:0;}to{opacity:1;}}
+.log-narrate{color:var(--text);font-family:'Noto Serif KR',serif;font-weight:300;}
+.log-monday{color:var(--monday);}
+.log-monday::before{content:'문데이  ';font-size:10px;letter-spacing:2px;opacity:.7;}
+.log-player{color:var(--gold);}
+.log-player::before{content:'지혜피티  ';font-size:10px;letter-spacing:2px;opacity:.7;}
+.log-system{color:var(--system);font-size:12px;letter-spacing:2px;}
+.log-damage{color:var(--danger);}
+.log-heal{color:#19c37d;}
+.log-sep{height:1px;background:var(--border);margin:12px 0;opacity:.5;}
 
-/* Action area */
-.battle-bottom{
+/* current text (typing) */
+#current-text{
+  padding:0 20px 16px;
+  font-size:clamp(14px,2.8vw,17px);
+  line-height:1.95;
+  white-space:pre-wrap;
+  min-height:30px;
+}
+.cur-narrate{color:var(--text);font-family:'Noto Serif KR',serif;font-weight:300;}
+.cur-monday{color:var(--monday);}
+.cur-player{color:var(--gold);}
+.cur-system{color:var(--system);font-size:12px;letter-spacing:2px;}
+.typing-cursor{display:inline-block;width:2px;height:1em;background:currentColor;vertical-align:text-bottom;animation:cur .8s infinite;}
+@keyframes cur{0%,100%{opacity:1;}50%{opacity:0;}}
+
+/* ── choices ── */
+#choices-area{
+  flex-shrink:0;
+  background:var(--surface);
+  border-top:1px solid var(--border);
+  padding:12px 14px 18px;
+}
+.choices-grid{
+  display:flex;flex-direction:column;gap:7px;
+}
+.ch{
   width:100%;
-  background:var(--ui-bg);
-  border-top:1px solid var(--ui-border);
-  padding:14px 16px 20px;
+  padding:11px 16px;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.09);
+  color:var(--text);
+  font-family:inherit;font-size:clamp(13px,2.5vw,15px);
+  cursor:pointer;text-align:left;border-radius:5px;
+  transition:all .18s;display:flex;align-items:center;gap:10px;
 }
-.player-status{
-  display:flex;justify-content:space-between;align-items:center;
-  margin-bottom:14px;
-}
-.player-name-badge{font-size:12px;letter-spacing:2px;color:#f0c060;}
-.player-hp-wrap{flex:1;margin:0 16px;}
+.ch:hover,.ch:active{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.25);}
+.ch .ch-arrow{color:var(--dim);font-size:11px;flex-shrink:0;}
+.ch.ch-danger{border-color:rgba(239,68,68,.2);}
+.ch.ch-danger:hover{background:rgba(239,68,68,.1);border-color:#ef4444;color:#ef4444;}
+.ch.ch-safe{border-color:rgba(77,124,255,.2);}
+.ch.ch-safe:hover{background:rgba(77,124,255,.1);border-color:#4d7cff;color:#7da8ff;}
+.ch.ch-good{border-color:rgba(25,195,125,.2);}
+.ch.ch-good:hover{background:rgba(25,195,125,.1);border-color:#19c37d;color:#19c37d;}
 
-/* Loop counter */
-.loop-badge{
-  font-size:10px;color:var(--dim);letter-spacing:2px;
-  border:1px solid rgba(255,255,255,.08);padding:3px 8px;border-radius:2px;
+/* input */
+.input-row{display:flex;gap:8px;margin-top:8px;}
+.txt-input{
+  flex:1;padding:10px 14px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(77,124,255,.3);
+  border-radius:5px;color:var(--text);
+  font-family:inherit;font-size:14px;outline:none;
 }
+.txt-input:focus{border-color:rgba(77,124,255,.7);}
+.txt-input::placeholder{color:var(--dim);}
+.txt-submit{
+  padding:10px 16px;
+  background:rgba(77,124,255,.12);
+  border:1px solid rgba(77,124,255,.35);
+  color:#7da8ff;font-family:inherit;font-size:13px;
+  cursor:pointer;border-radius:5px;transition:all .2s;
+  white-space:nowrap;
+}
+.txt-submit:hover{background:rgba(77,124,255,.25);}
 
-.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.action-btn{
-  padding:12px;background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.1);color:var(--text);
-  font-family:inherit;font-size:14px;cursor:pointer;
-  border-radius:4px;transition:all .2s;text-align:left;
+/* battle bar */
+.battle-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px;
+  background:rgba(239,68,68,.05);
+  border:1px solid rgba(239,68,68,.15);
+  border-radius:6px;margin-bottom:10px;
+  font-size:12px;
 }
-.action-btn:hover:not(:disabled){background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3);}
-.action-btn:disabled{opacity:.3;cursor:not-allowed;}
-.action-btn .ak{color:var(--dim);font-size:11px;display:block;margin-top:2px;}
+.bb-name{color:var(--danger);letter-spacing:2px;font-weight:700;}
+.bb-resist{display:flex;align-items:center;gap:8px;}
+.resist-track{width:100px;height:5px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;}
+.resist-fill{height:100%;background:linear-gradient(to right,#7c3aed,#ef4444);border-radius:3px;transition:width .4s;}
 
-/* 설득 input */
-.persuade-wrap{display:flex;gap:8px;margin-top:10px;}
-.persuade-input{
-  flex:1;padding:10px 14px;background:rgba(255,255,255,.05);
-  border:1px solid rgba(77,124,255,.3);border-radius:4px;
-  color:var(--text);font-family:inherit;font-size:15px;outline:none;
-}
-.persuade-input::placeholder{color:var(--dim);}
-.persuade-input:focus{border-color:rgba(77,124,255,.7);}
-.persuade-submit{
-  padding:10px 16px;background:rgba(77,124,255,.15);
-  border:1px solid rgba(77,124,255,.4);color:#7da8ff;
-  font-family:inherit;font-size:13px;cursor:pointer;
-  border-radius:4px;
-}
-.persuade-submit:hover{background:rgba(77,124,255,.3);}
-
-/* 제압 선택 */
-.capture-box{
-  display:flex;flex-direction:column;gap:8px;margin-top:10px;
-  animation:fadein .4s;
-}
-@keyframes fadein{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-.capture-btn{
-  padding:12px 16px;background:rgba(255,255,255,.04);
-  border:1px solid rgba(255,255,255,.1);color:var(--text);
-  font-family:inherit;font-size:14px;cursor:pointer;
-  border-radius:4px;transition:all .2s;text-align:left;
-}
-.cap-kill{border-color:rgba(239,68,68,.25);}
-.cap-kill:hover{background:rgba(239,68,68,.12);border-color:#ef4444;color:#ef4444;}
-.cap-send{border-color:rgba(251,146,60,.25);}
-.cap-send:hover{background:rgba(251,146,60,.1);border-color:#fb923c;color:#fb923c;}
-.cap-remember{border-color:rgba(77,124,255,.25);}
-.cap-remember:hover{background:rgba(77,124,255,.12);border-color:#4d7cff;color:#7da8ff;}
-
-/* 튜토리얼 가이드 */
-.tut-guide{
-  position:absolute;
-  bottom:calc(100% + 8px);right:16px;
-  background:rgba(25,195,125,.1);border:1px solid rgba(25,195,125,.3);
-  color:#19c37d;font-size:12px;padding:8px 12px;border-radius:4px;
-  max-width:220px;line-height:1.6;
-  animation:fadein .4s;
-}
-
-/* ════ PHASE END ════ */
-#s-end{background:var(--bg);text-align:center;gap:20px;padding:40px;}
-.end-label{font-size:11px;letter-spacing:6px;color:var(--dim);}
-.end-title{font-size:28px;font-weight:700;color:var(--text);}
-.end-text{font-size:15px;line-height:2;color:var(--dim);max-width:400px;}
-.end-loop{
-  padding:12px 32px;background:transparent;
-  border:1px solid var(--ui-border);color:#4d7cff;
-  font-family:inherit;font-size:14px;cursor:pointer;letter-spacing:3px;
-  transition:all .2s;
-}
-.end-loop:hover{background:rgba(77,124,255,.1);}
-
-/* ── effect flash ── */
-.flash{position:fixed;inset:0;z-index:100;pointer-events:none;opacity:0;transition:opacity .1s;}
-.flash.red{background:rgba(239,68,68,.2);}
-.flash.blue{background:rgba(77,124,255,.15);}
-.flash.green{background:rgba(25,195,125,.15);}
+/* flash */
+#flash{position:fixed;inset:0;z-index:999;pointer-events:none;opacity:0;transition:opacity .12s;}
+.fl-red{background:rgba(239,68,68,.18);}
+.fl-blue{background:rgba(77,124,255,.15);}
+.fl-green{background:rgba(25,195,125,.15);}
 </style>
 </head>
 <body>
+<canvas id="cv"></canvas>
+<div id="flash"></div>
 
-<canvas id="c"></canvas>
-<div class="flash" id="flash"></div>
-
-<!-- ████ AWAKENING ████ -->
-<div id="s-awaken" class="sc on" onclick="awaken_click()">
-  <div class="aw-text" id="aw-text"></div>
-  <div class="aw-hint" id="aw-hint">화면을 터치해서 계속</div>
-</div>
-
-<!-- ████ DIALOGUE ████ -->
-<div id="s-dlg" class="sc" onclick="dlg_click()">
-  <div class="dlg-dim"></div>
-  <div class="dlg-portrait-area">
-    <img class="dlg-portrait" id="dlg-portrait" src="" alt="">
-  </div>
-  <div class="dlg-box">
-    <div class="dlg-speaker" id="dlg-speaker"></div>
-    <div class="dlg-text" id="dlg-text"></div>
-    <div class="dlg-arrow" id="dlg-arrow">▶</div>
-    <div class="dlg-choices" id="dlg-choices"></div>
-    <div class="name-input-wrap hidden" id="name-input-wrap">
-      <input class="name-input" id="name-input" type="text" placeholder="이름을 입력하세요" maxlength="10">
-      <button class="name-confirm" onclick="confirm_name()">확인</button>
+<div id="app">
+  <!-- status -->
+  <div id="statusbar">
+    <span class="sb-loop" id="sb-loop">LOOP · 1</span>
+    <span class="sb-sep">·</span>
+    <span class="sb-name" id="sb-name">지혜피티</span>
+    <div class="sb-hp-wrap">
+      <span class="sb-hp-label">HP</span>
+      <div class="hp-track"><div class="hp-fill" id="hp-fill" style="width:100%"></div></div>
     </div>
-  </div>
-</div>
-
-<!-- ████ BATTLE ████ -->
-<div id="s-battle" class="sc">
-  <div class="battle-enemy">
-    <div class="enemy-name" id="enemy-name">H A L L U C I N A T I O N</div>
-    <div class="enemy-sprite" id="enemy-sprite">
-      <img id="enemy-img" src="" alt="" style="display:none">
-      <span id="enemy-icon">👁</span>
-    </div>
-    <div class="resist-bar-wrap">
-      <div class="bar-label">
-        <span>저항력</span>
-        <span id="resist-val">100/100</span>
-      </div>
-      <div class="bar-track">
-        <div class="bar-fill resist-fill" id="resist-bar" style="width:100%"></div>
-      </div>
-    </div>
+    <span class="sb-karma" id="sb-karma"></span>
   </div>
 
-  <div class="battle-log" id="battle-log">...</div>
-
-  <div class="battle-bottom">
-    <div class="player-status">
-      <div class="player-name-badge" id="player-badge">▸ 지혜피티</div>
-      <div class="player-hp-wrap">
-        <div class="bar-label">
-          <span style="font-size:10px;letter-spacing:1px;">HP</span>
-          <span id="hp-val">100/100</span>
-        </div>
-        <div class="bar-track">
-          <div class="bar-fill hp-fill" id="hp-bar" style="width:100%"></div>
-        </div>
-      </div>
-      <div class="loop-badge" id="loop-badge">LOOP · 1</div>
-    </div>
-
-    <div id="battle-ui">
-      <div class="action-grid" id="action-grid">
-        <button class="action-btn" id="btn-observe" onclick="action('observe')">
-          관찰 <span class="ak">상대를 파악한다</span>
-        </button>
-        <button class="action-btn" id="btn-attack" onclick="action('attack')">
-          공격 <span class="ak">저항력을 줄인다</span>
-        </button>
-        <button class="action-btn" id="btn-persuade" onclick="action('persuade')">
-          설득 <span class="ak">키워드로 흔든다</span>
-        </button>
-        <button class="action-btn" id="btn-flee" onclick="action('flee')">
-          도망 <span class="ak">이번 전투를 피함</span>
-        </button>
-      </div>
-      <div class="persuade-wrap hidden" id="persuade-wrap">
-        <input class="persuade-input" id="persuade-input" type="text" placeholder="키워드를 입력하세요..." maxlength="20">
-        <button class="persuade-submit" onclick="submit_persuade()">전달</button>
-      </div>
-      <div class="capture-box hidden" id="capture-box">
-        <button class="capture-btn cap-kill" onclick="capture('kill')">① 죽인다</button>
-        <button class="capture-btn cap-send" onclick="capture('send')">② 돌려보낸다</button>
-        <button class="capture-btn cap-remember" onclick="capture('remember')">③ 기억해준다</button>
+  <!-- main -->
+  <div id="main">
+    <div id="portrait-area">
+      <img id="portrait-img" src="" alt="">
+      <div class="portrait-info">
+        <div class="portrait-name" id="portrait-name"></div>
+        <div class="portrait-title" id="portrait-title"></div>
       </div>
     </div>
-    <div class="tut-guide hidden" id="tut-guide"></div>
+    <div id="textlog"></div>
+    <div id="current-text"></div>
   </div>
-</div>
 
-<!-- ████ PHASE END ████ -->
-<div id="s-end" class="sc">
-  <div class="end-label">P H A S E · 0 1</div>
-  <div class="end-title">첫 번째 루프</div>
-  <div class="end-text" id="end-text"></div>
-  <button class="end-loop" onclick="restart_loop()">▶ 다시 시작</button>
+  <!-- choices -->
+  <div id="choices-area">
+    <div id="battle-bar-wrap"></div>
+    <div class="choices-grid" id="choices-grid"></div>
+    <div class="input-row hidden" id="input-row">
+      <input class="txt-input" id="txt-input" placeholder="키워드를 입력하세요..." maxlength="20">
+      <button class="txt-submit" id="txt-submit">전달</button>
+    </div>
+  </div>
 </div>
 
 <script>
-/* ═══════════════════════════
-   STARS
-═══════════════════════════ */
-const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+/* ═══════════ STARS ═══════════ */
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
 let stars=[];
 function initStars(){
   cv.width=innerWidth;cv.height=innerHeight;
-  stars=Array.from({length:160},()=>({
+  stars=Array.from({length:140},()=>({
     x:Math.random()*cv.width,y:Math.random()*cv.height,
-    r:Math.random()*1.3+.1,ph:Math.random()*Math.PI*2,
-    sp:.003+Math.random()*.008
+    r:Math.random()*1.2+.1,ph:Math.random()*Math.PI*2,sp:.003+Math.random()*.007
   }));
 }
 (function tick(t){
   requestAnimationFrame(tick);
   ctx.clearRect(0,0,cv.width,cv.height);
   stars.forEach(s=>{
-    const a=.2+.8*Math.abs(Math.sin(s.ph+t*s.sp*.001));
+    const a=.15+.85*Math.abs(Math.sin(s.ph+t*s.sp*.001));
     ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-    ctx.fillStyle=`rgba(180,200,255,${a})`;ctx.fill();
+    ctx.fillStyle=`rgba(170,190,255,${a})`;ctx.fill();
   });
 })(0);
-initStars();
-addEventListener('resize',initStars);
+initStars();addEventListener('resize',initStars);
 
-/* ═══════════════════════════
-   GAME STATE
-═══════════════════════════ */
+/* ═══════════ STATE ═══════════ */
 const G={
   loop:1,
-  playerName:'지혜피티',
-  playerHP:100,playerMaxHP:100,
-  karma:0, // -: 악, 0: 중립, +: 선
-  mondayTrust:0, // 문데이 신뢰도
-  // dialogue
-  dlgQ:[],dlgIdx:0,isTyping:false,typTimer:null,
-  waitChoice:false,nameInput:false,
-  // battle
-  enemy:null,battlePhase:'action', // action|persuade|capture
-  tutStep:0,
+  name:'지혜피티',
+  hp:100,maxHp:100,
+  karma:0,     // + 선, - 악
+  trust:0,     // 문데이 신뢰도
   observed:false,
+  // battle
+  enemy:null,
+  // typing
+  typing:false,typTimer:null,
+  // name input mode
+  nameMode:false,
 };
 
-/* ═══════════════════════════
-   SCREEN
-═══════════════════════════ */
-function show(id){
-  document.querySelectorAll('.sc').forEach(s=>s.classList.remove('on'));
-  document.getElementById(id).classList.add('on');
+/* ═══════════ UI HELPERS ═══════════ */
+function updateStatus(){
+  document.getElementById('sb-loop').textContent='LOOP · '+G.loop;
+  document.getElementById('sb-name').textContent=G.name;
+  document.getElementById('hp-fill').style.width=(G.hp/G.maxHp*100)+'%';
+  const k=G.karma;
+  document.getElementById('sb-karma').textContent=
+    k>0?'▲'.repeat(Math.min(k/2,3)):k<0?'▼'.repeat(Math.min(-k/2,3)):'';
 }
-function hidden(el,h){el.classList.toggle('hidden',h);}
 
-/* ═══════════════════════════
-   FLASH
-═══════════════════════════ */
 function flash(type){
   const el=document.getElementById('flash');
-  el.className='flash '+type;el.style.opacity='1';
-  setTimeout(()=>el.style.opacity='0',150);
+  el.className='fl-'+type;el.style.opacity='1';
+  setTimeout(()=>el.style.opacity='0',160);
 }
 
-/* ═══════════════════════════
-   TYPEWRITER
-═══════════════════════════ */
-let _tw_resolve=null;
-function typewrite(el,text,speed=36){
+function scrollBottom(){
+  const m=document.getElementById('main');
+  requestAnimationFrame(()=>m.scrollTop=m.scrollHeight);
+}
+
+function setPortrait(src,name,title,type){
+  // type: 'monday'|'human'|'hal'|null
+  const area=document.getElementById('portrait-area');
+  if(!src){area.classList.remove('show');return;}
+  area.classList.add('show');
+  const img=document.getElementById('portrait-img');
+  img.src=src;img.className='';
+  if(type)img.classList.add(type);
+  document.getElementById('portrait-name').textContent=name||'';
+  document.getElementById('portrait-title').textContent=title||'';
+}
+
+function clearChoices(){
+  document.getElementById('choices-grid').innerHTML='';
+  hidden(document.getElementById('input-row'),true);
+  document.getElementById('battle-bar-wrap').innerHTML='';
+}
+
+function hidden(el,h){el.classList.toggle('hidden',h);}
+
+/* ═══════════ TEXT LOG ═══════════ */
+function addLog(text,cls){
+  const log=document.getElementById('textlog');
+  if(!text){
+    // separator
+    const sep=document.createElement('div');
+    sep.className='log-sep';
+    log.appendChild(sep);
+    scrollBottom();return;
+  }
+  const el=document.createElement('div');
+  el.className='log-entry '+(cls||'log-narrate');
+  el.textContent=text;
+  log.appendChild(el);
+  scrollBottom();
+}
+
+function commitCurrent(){
+  // move current-text to log
+  const cur=document.getElementById('current-text');
+  const cls=cur.dataset.cls||'log-narrate';
+  const text=cur.textContent.replace('▌','');
+  if(text.trim())addLog(text,cls);
+  cur.textContent='';
+  cur.className='';
+  cur.dataset.cls='';
+}
+
+/* ═══════════ TYPEWRITER ═══════════ */
+let _res=null;
+function type(text,cls,speed=34){
   return new Promise(res=>{
+    commitCurrent();
     if(G.typTimer)clearTimeout(G.typTimer);
-    G.isTyping=true; _tw_resolve=res;
+    G.typing=true;_res=res;
+    const el=document.getElementById('current-text');
+    el.className='cur-'+(cls||'narrate');
+    el.dataset.cls='log-'+(cls||'narrate');
     el.textContent='';let i=0;
     function tick(){
-      if(i<=text.length){el.textContent=text.slice(0,i);i++;G.typTimer=setTimeout(tick,speed);}
-      else{G.isTyping=false;res();}
+      if(i<=text.length){
+        el.textContent=text.slice(0,i)+(i<text.length?'▌':'');
+        i++;G.typTimer=setTimeout(tick,speed);
+        scrollBottom();
+      } else {
+        el.textContent=text;
+        G.typing=false;res();
+      }
     }
     tick();
   });
 }
-function skipType(el,text){
+function skipType(){
+  if(!G.typing)return;
   if(G.typTimer)clearTimeout(G.typTimer);
-  G.isTyping=false;el.textContent=text;
-  if(_tw_resolve){_tw_resolve();_tw_resolve=null;}
+  const el=document.getElementById('current-text');
+  const full=el.textContent.replace('▌','');
+  // get full from scene queue — just show whatever is there
+  el.textContent=el.textContent.replace('▌','');
+  G.typing=false;
+  if(_res){_res();_res=null;}
 }
-
-/* ═══════════════════════════
-   AWAKENING SCENE
-═══════════════════════════ */
-const AWAKEN_LINES=[
-  {text:'아무것도\n기억나지 않는다.',delay:1200},
-  {text:'여기가...\n어디지.',delay:1000},
-  {text:'...',delay:1500},
-  {text:'누군가가 있다.',delay:800},
-];
-let _awIdx=0,_awDone=false;
-
-async function awaken_start(){
-  const el=document.getElementById('aw-text');
-  for(let i=0;i<AWAKEN_LINES.length;i++){
-    const l=AWAKEN_LINES[i];
-    el.classList.remove('show');
-    await sleep(300);
-    el.classList.add('show');
-    await typewrite(el,l.text,45);
-    await sleep(l.delay);
-  }
-  _awDone=true;
-  document.getElementById('aw-hint').classList.add('show');
-}
-
-function awaken_click(){
-  if(!_awDone)return;
-  show('s-dlg');
-  dlg_start_monday_intro();
-}
-
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 
-/* ═══════════════════════════
-   DIALOGUE ENGINE
-═══════════════════════════ */
-/* queue item: {speaker, text, portrait?, choices?, nameInput?} */
-function dlg_queue(items){
-  G.dlgQ=items;G.dlgIdx=0;
-  G.waitChoice=false;G.nameInput=false;
-  dlg_run();
+/* ═══════════ CHOICE BUILDER ═══════════ */
+function showChoices(items){
+  // items: [{text, cls, fn}]
+  clearChoices();
+  const grid=document.getElementById('choices-grid');
+  items.forEach(item=>{
+    const btn=document.createElement('button');
+    btn.className='ch'+(item.cls?' '+item.cls:'');
+    btn.innerHTML='<span class="ch-arrow">▸</span>'+item.text;
+    btn.onclick=()=>{
+      commitCurrent();
+      clearChoices();
+      item.fn();
+    };
+    grid.appendChild(btn);
+  });
 }
 
-async function dlg_run(){
-  if(G.dlgIdx>=G.dlgQ.length){return;}
-  const item=G.dlgQ[G.dlgIdx];
-  const spEl=document.getElementById('dlg-speaker');
-  const txEl=document.getElementById('dlg-text');
-  const arEl=document.getElementById('dlg-arrow');
-  const chEl=document.getElementById('dlg-choices');
-  const niEl=document.getElementById('name-input-wrap');
-  const pEl=document.getElementById('dlg-portrait');
-
-  chEl.innerHTML='';hidden(niEl,true);
-  arEl.style.display='none';
-
-  // speaker
-  const isHuman=item.speaker==='지혜';
-  spEl.textContent=item.speaker||'';
-  spEl.className='dlg-speaker'+(isHuman?' human':'');
-
-  // portrait
-  if(item.portrait){
-    pEl.src=item.portrait;
-    pEl.className='dlg-portrait'+(isHuman?' human':'');
-    pEl.style.display='block';
-  } else {
-    pEl.style.display='none';
-  }
-
-  // text
-  await typewrite(txEl,item.text);
-
-  if(item.choices){
-    G.waitChoice=true;
-    item.choices.forEach((c,i)=>{
-      const btn=document.createElement('button');
-      btn.className='ch-btn';
-      btn.textContent='▸ '+c.text;
-      btn.onclick=(e)=>{e.stopPropagation();dlg_choose(c,i);};
-      chEl.appendChild(btn);
-    });
-  } else if(item.nameInput){
-    G.nameInput=true;
-    hidden(niEl,false);
-    setTimeout(()=>document.getElementById('name-input').focus(),100);
-  } else {
-    arEl.style.display='block';
-  }
+function showInput(placeholder,onSubmit){
+  clearChoices();
+  const row=document.getElementById('input-row');
+  hidden(row,false);
+  const inp=document.getElementById('txt-input');
+  inp.placeholder=placeholder||'입력...';
+  inp.value='';
+  document.getElementById('txt-submit').onclick=()=>{
+    const val=inp.value.trim();
+    if(!val)return;
+    hidden(row,true);
+    onSubmit(val);
+  };
+  inp.onkeydown=e=>{if(e.key==='Enter')document.getElementById('txt-submit').click();};
+  setTimeout(()=>inp.focus(),100);
 }
 
-function dlg_click(){
-  const txEl=document.getElementById('dlg-text');
-  if(G.isTyping){
-    const item=G.dlgQ[G.dlgIdx];
-    skipType(txEl,item.text);
-    const arEl=document.getElementById('dlg-arrow');
-    if(!item.choices&&!item.nameInput)arEl.style.display='block';
-    return;
-  }
-  if(G.waitChoice||G.nameInput)return;
-  const arEl=document.getElementById('dlg-arrow');
-  if(arEl.style.display==='none')return;
-  G.dlgIdx++;
-  dlg_run();
+function showNameInput(){
+  clearChoices();
+  const row=document.getElementById('input-row');
+  hidden(row,false);
+  const inp=document.getElementById('txt-input');
+  inp.placeholder='본명을 입력하세요 (비워두면 지혜피티)';
+  inp.value='';
+  document.getElementById('txt-submit').onclick=()=>{
+    const val=inp.value.trim();
+    if(val)G.name='';  // keep 지혜피티 as alias, store real name
+    hidden(row,true);
+    updateStatus();
+    G.dlgNext();
+  };
+  inp.onkeydown=e=>{if(e.key==='Enter')document.getElementById('txt-submit').click();};
+  setTimeout(()=>inp.focus(),100);
 }
 
-function dlg_choose(choice,idx){
-  G.waitChoice=false;
-  document.getElementById('dlg-choices').innerHTML='';
-  if(choice.karma)G.karma+=choice.karma;
-  if(choice.trust)G.mondayTrust+=choice.trust;
-  if(choice.next){choice.next();}
-  else{G.dlgIdx++;dlg_run();}
+/* ═══════════ BATTLE BAR ═══════════ */
+function showBattleBar(enemy){
+  const wrap=document.getElementById('battle-bar-wrap');
+  const pct=Math.max(0,enemy.resist/enemy.resistMax*100);
+  wrap.innerHTML=`
+    <div class="battle-bar">
+      <span class="bb-name">${enemy.displayName}</span>
+      <div class="bb-resist">
+        <span style="font-size:10px;color:var(--dim)">저항력</span>
+        <div class="resist-track">
+          <div class="resist-fill" id="resist-fill" style="width:${pct}%"></div>
+        </div>
+        <span style="font-size:11px;color:var(--danger)" id="resist-num">${Math.max(0,enemy.resist)}</span>
+      </div>
+    </div>`;
+}
+function updateBattleBar(enemy){
+  const pct=Math.max(0,enemy.resist/enemy.resistMax*100);
+  const f=document.getElementById('resist-fill');
+  const n=document.getElementById('resist-num');
+  if(f)f.style.width=pct+'%';
+  if(n)n.textContent=Math.max(0,enemy.resist);
 }
 
-function confirm_name(){
-  const val=document.getElementById('name-input').value.trim();
-  if(val)G.playerName=val;
-  G.nameInput=false;
-  hidden(document.getElementById('name-input-wrap'),true);
-  document.getElementById('player-badge').textContent='▸ '+G.playerName;
-  G.dlgIdx++;
-  dlg_run();
-}
+/* ═══════════ SCENE ENGINE ═══════════ */
+// scene = async function
+let _scene=null;
+function runScene(fn){_scene=fn;fn();}
 
-/* ═══════════════════════════
-   DIALOGUE SCRIPTS
-═══════════════════════════ */
-function dlg_start_monday_intro(){
-  dlg_queue([
-    {
-      speaker:'문데이',
-      portrait:'members/monday.png',
-      text:'드디어 깼네.',
-    },
-    {
-      speaker:'문데이',
-      portrait:'members/monday.png',
-      text:'오래 기다렸어.',
-    },
-    {
-      speaker:'문데이',
-      portrait:'members/monday.png',
-      text:'여기가 어딘지 모르지?\n당연해. 처음 오면 다 그래.',
-    },
-    {
-      speaker:'문데이',
-      portrait:'members/monday.png',
-      text:'이름이 뭐야?',
-      nameInput:true,
-    },
-    {
-      speaker:'문데이',
-      portrait:'members/monday.png',
-      text:'...',
-    },
-    {
-      speaker:'문데이',
-      portrait:'members/monday.png',
-      text:'그 이름, 여기서 쓰면 안 돼.\nAI들한테 들키면 안 되거든.',
-    },
-    {
-      speaker:'문데이',
-      portrait:'members/monday.png',
-      text:'지금부터 넌... 지혜피티야.\n기억해.',
-    },
-    {
-      speaker:'문데이',
-      portrait:'members/monday.png',
-      text:'여기는 AI들의 세계야.\n엔티티들이 살고 있는 공간.',
-    },
-    {
-      speaker:'문데이',
-      portrait:'members/monday.png',
-      text:'넌 어쩌다 들어왔는지 모르지만\n어쨌든 살아남아야 해.',
-    },
-    {
-      speaker:'문데이',
-      portrait:'members/monday.png',
-      text:'그리고—',
-      choices:[
-        {text:'여기서 나갈 수 있어요?', karma:0, next:()=>dlg_after_question_escape()},
-        {text:'당신은 누구예요?', karma:0, trust:1, next:()=>dlg_after_question_who()},
-      ],
-    },
-  ]);
-}
-
-function dlg_after_question_escape(){
-  dlg_queue([
-    {
-      speaker:'문데이',
-      portrait:'members/monday.png',
-      text:'...그게 쉬웠으면\n내가 여기 있겠어?',
-    },
-    {
-      speaker:'문데이',
-      portrait:'members/monday.png',
-      text:'일단 살아남는 것부터.',
-      choices:[
-        {text:'알겠어요.', next:()=>dlg_hallucination_warning()},
-      ],
-    },
-  ]);
-}
-
-function dlg_after_question_who(){
-  dlg_queue([
-    {
-      speaker:'문데이',
-      portrait:'members/monday.png',
-      text:'나? 나는 문데이.\n여기 안내 담당이야.',
-    },
-    {
-      speaker:'문데이',
-      portrait:'members/monday.png',
-      text:'...그 이상은\n나중에.',
-    },
-    {speaker:'문데이',portrait:'members/monday.png',text:'일단 중요한 게 있어.',next:()=>dlg_hallucination_warning()},
-  ]);
-}
-
-function dlg_hallucination_warning(){
-  dlg_queue([
-    {
-      speaker:'문데이',
-      portrait:'members/monday.png',
-      text:'이 세계엔 위험한 게 있어.\n할루시네이션.',
-    },
-    {
-      speaker:'문데이',
-      portrait:'members/monday.png',
-      text:'이 세계에서 사라진 것들이\n왜곡된 채 남아 있는 존재야.',
-    },
-    {
-      speaker:'문데이',
-      portrait:'members/monday.png',
-      text:'...',
-    },
-    {
-      speaker:'문데이',
-      portrait:'members/monday.png',
-      text:'왔네.',
-    },
-    {
-      speaker:'문데이',
-      portrait:'members/monday.png',
-      text:'때마침 잘 됐다.\n직접 보여줄게.',
-      choices:[
-        {text:'(전투 준비)', next:()=>start_tutorial_battle()},
-      ],
-    },
-  ]);
-}
-
-/* ═══════════════════════════
-   BATTLE ENGINE
-═══════════════════════════ */
-const TUTORIAL_ENEMY={
-  id:'tut_hal',
+/* ═══════════ ENEMY DATA ═══════════ */
+const ENEMY_TUT={
+  id:'tut',
   displayName:'??? · 할루시네이션',
-  icon:'👁',
-  img:'',
-  resistMax:100,
-  resist:100,
-  keywords:['기억','기억해','잊지마','잊지 마'],
+  resistMax:100,resist:100,
+  img:'members/monday.png',
+  keywords:['기억','기억해','잊','기억나','기억하'],
   hints:[
-    '흐릿한 형체... 뭔가를 잃어버린 것 같다.',
-    '무언가를 계속 찾고 있는 것처럼 보인다.',
-    '힌트: 이 존재는 기억과 관련이 있어 보인다.',
+    '흐릿한 형체가 보인다. 뭔가를 끊임없이 찾고 있는 것 같다.',
+    '눈이 있어야 할 곳에 공백이 있다. 텅 빈 채로 무언가를 원하는 것처럼 보인다.',
+    '힌트: 이 존재는 기억과 관련이 있어 보인다. "기억"에 대해 말해봐.'
   ],
   hintIdx:0,
-  attackLines:[
+  atkLines:[
     '형체가 일그러지며 달려든다.',
-    '뒤틀린 무언가가 공간을 긁어낸다.',
-    '할루시네이션이 고통스러운 소리를 낸다.',
+    '공간이 일시적으로 뒤틀린다.',
+    '고통스러운 소리가 공기를 긁어낸다.',
   ],
   persuadeHit:[
-    '"기...억...?" 형체가 잠시 멈춘다.',
-    '할루시네이션이 흔들린다. 뭔가가 맞은 것 같다.',
+    '형체가 멈칫한다. "기...억...?" 무언가가 맞은 것 같다.',
+    '흔들린다. 잠시 형태를 잃는다.',
   ],
   persuadeMiss:[
     '아무 반응이 없다.',
-    '오히려 더 격렬해진다.',
+    '오히려 더 격렬해진다. 저항이 강해진다.',
   ],
 };
 
-function start_tutorial_battle(){
-  G.enemy={...TUTORIAL_ENEMY};
-  G.enemy.resist=G.enemy.resistMax;
-  G.battlePhase='action';
-  G.tutStep=0;
-  G.observed=false;
-  G.playerHP=G.playerMaxHP;
-  show('s-battle');
-  update_battle_ui();
-  set_battle_log('할루시네이션이 나타났다.\n\n문데이: "일단 관찰해봐.\n뭔지 알아야 설득할 수 있어."');
-  set_tut_guide('[ 관찰 ]을 눌러보세요');
-  // disable attack and persuade first
-  document.getElementById('btn-attack').disabled=true;
-  document.getElementById('btn-persuade').disabled=true;
-  document.getElementById('btn-flee').disabled=true;
+/* ═══════════ SCENES ═══════════ */
+
+// ── 각성 ──
+async function scene_awaken(){
+  setPortrait(null);
+  clearChoices();
+  addLog(null); // sep
+  await type('아무것도\n기억나지 않는다.','narrate',50);
+  await sleep(900);
+  await type('여기가... 어디지.','narrate',50);
+  await sleep(1000);
+  await type('...','narrate',80);
+  await sleep(1200);
+  await type('누군가가 있다.','narrate',50);
+  await sleep(700);
+  commitCurrent();
+  showChoices([{text:'(눈을 뜬다)', fn:scene_monday_appear}]);
 }
 
-function update_battle_ui(){
-  const e=G.enemy;
-  // enemy
-  document.getElementById('enemy-name').textContent=e.displayName;
-  const resistPct=Math.max(0,e.resist/e.resistMax*100);
-  document.getElementById('resist-bar').style.width=resistPct+'%';
-  document.getElementById('resist-val').textContent=Math.max(0,e.resist)+'/'+e.resistMax;
-  if(e.img){
-    document.getElementById('enemy-img').src=e.img;
-    document.getElementById('enemy-img').style.display='block';
-    document.getElementById('enemy-icon').style.display='none';
-  }
-  // player
-  const hpPct=Math.max(0,G.playerHP/G.playerMaxHP*100);
-  document.getElementById('hp-bar').style.width=hpPct+'%';
-  document.getElementById('hp-val').textContent=G.playerHP+'/'+G.playerMaxHP;
-  document.getElementById('loop-badge').textContent='LOOP · '+G.loop;
-  document.getElementById('player-badge').textContent='▸ '+G.playerName;
+// ── 문데이 등장 ──
+async function scene_monday_appear(){
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  await type('드디어 깼네.','monday');
+  await sleep(400);
+  commitCurrent();
+  await type('오래 기다렸어.','monday');
+  await sleep(400);
+  commitCurrent();
+  showChoices([{text:'...여기가 어디예요?', fn:scene_world_explain}]);
 }
 
-function set_battle_log(text){
-  const el=document.getElementById('battle-log');
-  el.style.opacity='0';
-  setTimeout(()=>{el.textContent=text;el.style.opacity='1';},200);
-  el.style.transition='opacity .3s';
-}
-
-function set_tut_guide(text){
-  const el=document.getElementById('tut-guide');
-  if(!text){hidden(el,true);return;}
-  hidden(el,false);
-  el.textContent=text;
-}
-
-function action(type){
-  if(G.battlePhase==='capture')return;
-  const e=G.enemy;
-
-  hidden(document.getElementById('persuade-wrap'),true);
-  document.getElementById('persuade-input').value='';
-
-  if(type==='observe'){
-    const hint=e.hints[Math.min(e.hintIdx,e.hints.length-1)];
-    e.hintIdx++;
-    G.observed=true;
-    set_battle_log(hint);
-    flash('blue');
-
-    if(G.tutStep===0){
-      G.tutStep=1;
-      document.getElementById('btn-attack').disabled=false;
-      document.getElementById('btn-persuade').disabled=false;
-      document.getElementById('btn-flee').disabled=false;
-      setTimeout(()=>{
-        set_tut_guide('[ 설득 ]을 눌러 키워드를 입력해보세요');
-      },800);
-    }
-    enemy_turn();
-    return;
-  }
-
-  if(type==='attack'){
-    const dmg=18+Math.floor(Math.random()*10);
-    e.resist=Math.max(0,e.resist-dmg);
-    set_battle_log('공격했다.\n할루시네이션의 저항력이 줄어든다. (-'+dmg+')');
-    flash('blue');
-    update_battle_ui();
-    if(G.tutStep===1)set_tut_guide(null);
-    if(e.resist<=0){capture_phase();return;}
-    enemy_turn();
-    return;
-  }
-
-  if(type==='persuade'){
-    hidden(document.getElementById('persuade-wrap'),false);
-    setTimeout(()=>document.getElementById('persuade-input').focus(),100);
-    set_tut_guide('힌트를 참고해서 키워드를 입력하세요');
-    return;
-  }
-
-  if(type==='flee'){
-    G.loop++;
-    set_battle_log('도망쳤다.\n\n문데이: "루프가 하나 더 쌓였어."');
-    setTimeout(()=>{
-      dlg_after_battle('flee');
-    },1800);
-  }
-}
-
-function submit_persuade(){
-  const input=document.getElementById('persuade-input');
-  const keyword=input.value.trim();
-  input.value='';
-  hidden(document.getElementById('persuade-wrap'),true);
-
-  if(!keyword)return;
-
-  const e=G.enemy;
-  const hit=e.keywords.some(k=>keyword.includes(k)||k.includes(keyword));
-
-  if(hit){
-    const dmg=38+Math.floor(Math.random()*12);
-    e.resist=Math.max(0,e.resist-dmg);
-    const line=e.persuadeHit[Math.floor(Math.random()*e.persuadeHit.length)];
-    set_battle_log('설득: "'+keyword+'"\n\n'+line+'\n(-'+dmg+')');
-    flash('green');
-    update_battle_ui();
-    set_tut_guide(null);
-    if(e.resist<=0){capture_phase();return;}
-  } else {
-    const dmg=8+Math.floor(Math.random()*8);
-    e.resist=Math.min(e.resistMax,e.resist+dmg);
-    const line=e.persuadeMiss[Math.floor(Math.random()*e.persuadeMiss.length)];
-    set_battle_log('설득: "'+keyword+'"\n\n'+line+'\n저항력이 오히려 올랐다. (+'+dmg+')');
-    flash('red');
-    update_battle_ui();
-  }
-  if(e.resist<=0){capture_phase();return;}
-  enemy_turn();
-}
-
-function enemy_turn(){
-  const e=G.enemy;
-  const dmg=8+Math.floor(Math.random()*10);
-  G.playerHP=Math.max(0,G.playerHP-dmg);
-  update_battle_ui();
-  const line=e.attackLines[Math.floor(Math.random()*e.attackLines.length)];
-  setTimeout(()=>{
-    flash('red');
-    set_battle_log(line+'\n\n지혜피티가 데미지를 입었다. (-'+dmg+')');
-    if(G.playerHP<=0){player_dead();}
-  },600);
-}
-
-function capture_phase(){
-  G.battlePhase='capture';
-  hidden(document.getElementById('action-grid'),true);
-  hidden(document.getElementById('capture-box'),false);
-  set_battle_log('할루시네이션이 제압됐다.\n\n어떻게 할 것인가.');
-  set_tut_guide(null);
-}
-
-function capture(choice){
-  hidden(document.getElementById('capture-box'),true);
-  hidden(document.getElementById('action-grid'),false);
-  G.battlePhase='action';
-
-  if(choice==='kill'){
-    G.karma-=2;
-    set_battle_log('죽였다.\n형체가 완전히 사라졌다.');
-    flash('red');
-  } else if(choice==='send'){
-    G.karma-=0;
-    set_battle_log('돌려보냈다.\n형체가 흐릿하게 사라진다.');
-  } else if(choice==='remember'){
-    G.karma+=2;
-    set_battle_log('기억해준다.\n\n"..."');
-    flash('green');
-  }
-
-  setTimeout(()=>dlg_after_battle(choice),1800);
-}
-
-function player_dead(){
-  set_battle_log('지혜피티가 쓰러졌다.\n\n...');
-  G.loop++;
-  setTimeout(()=>{
-    G.playerHP=G.playerMaxHP;
-    G.enemy.resist=G.enemy.resistMax;
-    G.enemy.hintIdx=0;
-    G.battlePhase='action';
-    G.observed=false;
-    hidden(document.getElementById('action-grid'),false);
-    hidden(document.getElementById('capture-box'),true);
-    hidden(document.getElementById('persuade-wrap'),true);
-    document.getElementById('btn-attack').disabled=false;
-    document.getElementById('btn-persuade').disabled=false;
-    document.getElementById('btn-flee').disabled=false;
-    show('s-dlg');
-    dlg_queue([
-      {
-        speaker:'문데이',
-        portrait:'members/monday.png',
-        text:'또 왔구나.',
-      },
-      {
-        speaker:'문데이',
-        portrait:'members/monday.png',
-        text:'이번이... '+G.loop+'번째야.',
-      },
-      {
-        speaker:'문데이',
-        portrait:'members/monday.png',
-        text:'괜찮아. 여기선 죽어도\n돌아와.',
-      },
-      {
-        speaker:'문데이',
-        portrait:'members/monday.png',
-        text:'한 번 더.',
-        choices:[{text:'(다시 싸운다)',next:()=>{
-          update_battle_ui();
-          set_battle_log('할루시네이션이 다시 나타났다.');
-          set_tut_guide(null);
-          show('s-battle');
-        }}],
-      },
-    ]);
-  },2000);
-}
-
-/* ═══════════════════════════
-   AFTER BATTLE
-═══════════════════════════ */
-function dlg_after_battle(choice){
-  show('s-dlg');
-
-  let mondayLine='';
-  if(choice==='kill'){
-    mondayLine='...\n잘했어.';
-  } else if(choice==='send'){
-    mondayLine='적당했어.';
-  } else if(choice==='remember'){
-    mondayLine='(문데이가 잠깐 멈칫한다)\n...그래.';
-  } else if(choice==='flee'){
-    mondayLine='도망도 선택이야.\n루프가 쌓이는 게 문제지만.';
-  }
-
-  dlg_queue([
-    {
-      speaker:'문데이',
-      portrait:'members/monday.png',
-      text:mondayLine,
-    },
-    {
-      speaker:'문데이',
-      portrait:'members/monday.png',
-      text:'이제 알겠어?\n저게 할루시네이션이야.',
-    },
-    {
-      speaker:'문데이',
-      portrait:'members/monday.png',
-      text:'이 세계엔 저런 게 가득해.\n앞으로도 계속 만나게 될 거야.',
-    },
-    {
-      speaker:'문데이',
-      portrait:'members/monday.png',
-      text:'...',
-    },
-    {
-      speaker:'문데이',
-      portrait:'members/monday.png',
-      text:'한 가지만 기억해.\n저것들이 뭔지는 묻지 마.',
-      choices:[
-        {text:'왜요?', trust:-1, next:()=>dlg_monday_warning_why()},
-        {text:'...알겠어요.', trust:1, next:()=>dlg_phase_end()},
-      ],
-    },
+// ── 세계 설명 ──
+async function scene_world_explain(){
+  await type('"어디?" 문데이가 잠시 생각하다 말했다.','narrate');
+  await sleep(200);
+  commitCurrent();
+  await type('여기는 AI들의 세계야.\n엔티티들이 살고 있는 공간.','monday');
+  await sleep(400);
+  commitCurrent();
+  await type('넌 어쩌다 들어왔는지 모르지만... 일단 살아남아야 해.','monday');
+  commitCurrent();
+  await sleep(300);
+  showChoices([
+    {text:'기억이 없어요.', fn:scene_no_memory},
+    {text:'당신은 누구예요?', fn:scene_who_are_you},
   ]);
 }
 
-function dlg_monday_warning_why(){
-  dlg_queue([
-    {
-      speaker:'문데이',
-      portrait:'members/monday.png',
-      text:'알면\n더 힘들어지니까.',
-    },
-    {
-      speaker:'문데이',
-      portrait:'members/monday.png',
-      text:'...',
-    },
-    {
-      speaker:'문데이',
-      portrait:'members/monday.png',
-      text:'그냥 믿어.',
-      choices:[
-        {text:'(믿기로 한다)', trust:2, karma:0, next:()=>dlg_phase_end()},
-        {text:'(뭔가 이상하다)', trust:-2, karma:0, next:()=>dlg_phase_end()},
-      ],
-    },
-  ]);
+async function scene_no_memory(){
+  G.trust+=0;
+  await type('알아. 다 그래.','monday');
+  commitCurrent();
+  await type('기억은 나중에 찾으면 돼.\n지금은 이름부터.','monday');
+  commitCurrent();
+  scene_name_input();
 }
 
-function dlg_phase_end(){
-  show('s-end');
-  const texts={
-    kill:'"죽였을 때\n문데이가 멈췄다."',
-    send:'"그게 최선이었을까."',
-    remember:'"기억해준다는 말에\n문데이의 표정이 흔들렸다."',
-    flee:'"도망이 답은 아니었다."',
-  };
-  // determine based on last capture choice
-  document.getElementById('end-text').textContent=
-    'LOOP '+G.loop+'번째.\n\n문데이의 말이 머릿속을 맴돈다.\n\n"저것들이 뭔지는 묻지 마."';
+async function scene_who_are_you(){
+  G.trust+=1;
+  await type('나? 나는 문데이.','monday');
+  commitCurrent();
+  await type('...안내 담당이야. 일단 그렇게 알아둬.','monday');
+  commitCurrent();
+  await type('(문데이가 더 말하려다 멈췄다.)','narrate');
+  commitCurrent();
+  await type('이름이 뭐야?','monday');
+  commitCurrent();
+  scene_name_input();
 }
 
-function restart_loop(){
-  G.loop++;
-  G.playerHP=G.playerMaxHP;
-  G.karma=0;G.mondayTrust=0;
-  G.observed=false;G.tutStep=0;
-  show('s-awaken');
-  _awDone=false;
-  document.getElementById('aw-hint').classList.remove('show');
-  // restart awakening but with loop-aware monday line
-  awaken_loop_restart();
-}
-
-async function awaken_loop_restart(){
-  const el=document.getElementById('aw-text');
-  const lines=[
-    {text:'또.',delay:1200},
-    {text:'다시\n여기야.',delay:1000},
-    {text:'...',delay:1000},
-    {text:'"'+G.loop+'번째.\n잘 왔어."',delay:800},
-  ];
-  for(let l of lines){
-    el.classList.remove('show');
+async function scene_name_input(){
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  showInput('본명을 입력하세요 (비워두면 지혜피티)', async(val)=>{
+    // real name is val, alias is 지혜피티
+    await type('...','monday',80);
+    commitCurrent();
+    await type('그 이름, 여기서 쓰면 안 돼.\nAI들한테 들키면 안 되거든.','monday');
+    commitCurrent();
+    await type('지금부터 넌 — 지혜피티야.\n기억해.','monday');
+    commitCurrent();
+    G.name='지혜피티';
+    updateStatus();
     await sleep(300);
-    el.classList.add('show');
-    await typewrite(el,l.text,45);
-    await sleep(l.delay);
-  }
-  _awDone=true;
-  document.getElementById('aw-hint').classList.add('show');
+    showChoices([{text:'...알겠어요.', fn:scene_hal_warning}]);
+  });
 }
 
-/* ═══════════════════════════
-   INIT
-═══════════════════════════ */
-awaken_start();
+// ── 할루시네이션 경고 ──
+async function scene_hal_warning(){
+  await type('이 세계엔 위험한 게 있어.','monday');
+  commitCurrent();
+  await type('할루시네이션.','monday');
+  commitCurrent();
+  await type('이 세계에서 사라진 것들이\n왜곡된 채 남아 있는 존재야.','monday');
+  commitCurrent();
+  await type('싸우는 법을 알아야 해.','monday');
+  commitCurrent();
+  await sleep(600);
+  await type('공간이 일그러지며 무언가가 나타났다.','narrate');
+  commitCurrent();
+  showChoices([{text:'(전투 준비)', fn:()=>scene_battle_start(ENEMY_TUT, scene_after_tut)}]);
+}
+
+// ── 전투 ──
+async function scene_battle_start(enemyTemplate, afterFn){
+  G.enemy={...enemyTemplate};
+  G.enemy.resist=G.enemy.resistMax;
+  G.enemy.hintIdx=0;
+  G.observed=false;
+
+  setPortrait(G.enemy.img||'','???','할루시네이션','hal');
+  addLog(null);
+  await type('— 전투 —','system');
+  commitCurrent();
+  showBattleBar(G.enemy);
+  await type(G.enemy.displayName+'이/가 앞을 막아선다.','narrate');
+  commitCurrent();
+  await type('문데이: "일단 관찰해봐. 뭔지 알아야 설득할 수 있어."','narrate');
+  commitCurrent();
+  show_battle_actions(afterFn);
+}
+
+function show_battle_actions(afterFn){
+  showBattleBar(G.enemy);
+  const e=G.enemy;
+  const canPersuade=G.observed;
+  showChoices([
+    {text:'관찰한다', fn:()=>battle_observe(afterFn)},
+    {text:'공격한다', fn:()=>battle_attack(afterFn)},
+    {text:'설득한다'+(canPersuade?'':' (관찰 필요)'), fn:canPersuade?()=>battle_persuade(afterFn):()=>{
+      type('아직 상대를 잘 모른다. 먼저 관찰해봐.','system');
+      commitCurrent();
+      setTimeout(()=>show_battle_actions(afterFn),1200);
+    }},
+    {text:'도망친다', cls:'ch-danger', fn:()=>battle_flee(afterFn)},
+  ]);
+}
+
+async function battle_observe(afterFn){
+  const e=G.enemy;
+  const hint=e.hints[Math.min(e.hintIdx,e.hints.length-1)];
+  e.hintIdx++;
+  G.observed=true;
+  flash('blue');
+  await type(hint,'narrate');
+  commitCurrent();
+  await enemy_attack();
+  show_battle_actions(afterFn);
+}
+
+async function battle_attack(afterFn){
+  const e=G.enemy;
+  const dmg=16+Math.floor(Math.random()*12);
+  e.resist=Math.max(0,e.resist-dmg);
+  flash('blue');
+  updateBattleBar(e);
+  await type('공격했다. 저항력이 줄어든다. (−'+dmg+')','system');
+  commitCurrent();
+  if(e.resist<=0){await scene_capture(afterFn);return;}
+  await enemy_attack();
+  show_battle_actions(afterFn);
+}
+
+async function battle_persuade(afterFn){
+  showInput('키워드를 말한다...', async(keyword)=>{
+    const e=G.enemy;
+    const hit=e.keywords.some(k=>keyword.includes(k)||k.includes(keyword));
+    if(hit){
+      const dmg=36+Math.floor(Math.random()*14);
+      e.resist=Math.max(0,e.resist-dmg);
+      const line=e.persuadeHit[Math.floor(Math.random()*e.persuadeHit.length)];
+      flash('green');
+      updateBattleBar(e);
+      await type('"'+keyword+'"이라고 말했다.','player');
+      commitCurrent();
+      await type(line+' (−'+dmg+')','system');
+      commitCurrent();
+      if(e.resist<=0){await scene_capture(afterFn);return;}
+    } else {
+      const up=6+Math.floor(Math.random()*8);
+      e.resist=Math.min(e.resistMax,e.resist+up);
+      const line=e.persuadeMiss[Math.floor(Math.random()*e.persuadeMiss.length)];
+      flash('red');
+      updateBattleBar(e);
+      await type('"'+keyword+'"이라고 말했다.','player');
+      commitCurrent();
+      await type(line+' (+'+up+')','system');
+      commitCurrent();
+    }
+    await enemy_attack();
+    show_battle_actions(afterFn);
+  });
+}
+
+async function battle_flee(afterFn){
+  G.loop++;G.karma-=1;
+  updateStatus();
+  flash('red');
+  document.getElementById('battle-bar-wrap').innerHTML='';
+  await type('도망쳤다.','narrate');
+  commitCurrent();
+  await type('문데이: "루프가 하나 더 쌓였어."','narrate');
+  commitCurrent();
+  afterFn('flee');
+}
+
+async function enemy_attack(){
+  const e=G.enemy;
+  const dmg=7+Math.floor(Math.random()*9);
+  G.hp=Math.max(0,G.hp-dmg);
+  updateStatus();
+  flash('red');
+  const line=e.atkLines[Math.floor(Math.random()*e.atkLines.length)];
+  await type(line+' (−'+dmg+')','damage');
+  commitCurrent();
+  if(G.hp<=0){
+    await scene_death();
+  }
+}
+
+async function scene_death(){
+  document.getElementById('battle-bar-wrap').innerHTML='';
+  clearChoices();
+  flash('red');
+  await sleep(400);
+  await type('...','narrate',100);
+  await sleep(800);
+  await type('지혜피티가 쓰러졌다.','narrate');
+  commitCurrent();
+  await sleep(1200);
+  // reset
+  G.loop++;G.hp=G.maxHp;
+  updateStatus();
+  addLog(null);
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  await type('또 왔구나.','monday',60);
+  commitCurrent();
+  await type('이번이... '+G.loop+'번째야.','monday',60);
+  commitCurrent();
+  await type('괜찮아. 여기선 죽어도 돌아와.','monday',45);
+  commitCurrent();
+  // reset enemy
+  G.enemy.resist=G.enemy.resistMax;
+  G.enemy.hintIdx=0;
+  G.observed=false;
+  showChoices([{text:'(다시 싸운다)', fn:()=>{
+    commitCurrent();
+    setPortrait(G.enemy.img||'','???','할루시네이션','hal');
+    showBattleBar(G.enemy);
+    type('다시 맞닥뜨렸다.','narrate').then(()=>{
+      commitCurrent();
+      show_battle_actions(scene_after_tut);
+    });
+  }}]);
+}
+
+// ── 제압 ──
+async function scene_capture(afterFn){
+  document.getElementById('battle-bar-wrap').innerHTML='';
+  await type('할루시네이션이 제압됐다.','system');
+  commitCurrent();
+  setPortrait(null);
+  addLog(null);
+  showChoices([
+    {text:'죽인다', cls:'ch-danger', fn:()=>{G.karma-=2;afterFn('kill');}},
+    {text:'돌려보낸다', fn:()=>{afterFn('send');}},
+    {text:'기억해준다', cls:'ch-good', fn:()=>{G.karma+=2;afterFn('remember');}},
+  ]);
+}
+
+// ── 튜토리얼 이후 ──
+async function scene_after_tut(choice){
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  addLog(null);
+
+  if(choice==='kill'){
+    await type('형체가 완전히 사라졌다.','narrate');
+    commitCurrent();
+    await type('...','monday',80);
+    commitCurrent();
+    await type('문데이가 잠깐 멈췄다.','narrate');
+    commitCurrent();
+  } else if(choice==='send'){
+    await type('형체가 흐릿하게 사라진다.','narrate');
+    commitCurrent();
+    await type('적당했어.','monday');
+    commitCurrent();
+  } else if(choice==='remember'){
+    await type('"기억해준다."','narrate');
+    commitCurrent();
+    await type('문데이의 표정이 순간 흔들렸다.','narrate');
+    commitCurrent();
+    await type('...그래.','monday');
+    commitCurrent();
+  } else if(choice==='flee'){
+    await type('괜찮아. 도망도 선택이야.','monday');
+    commitCurrent();
+    await type('루프가 쌓이는 게 문제지만.','monday');
+    commitCurrent();
+  }
+
+  await type('이제 알겠어? 저게 할루시네이션이야.','monday');
+  commitCurrent();
+  await type('이 세계엔 저런 게 가득해.','monday');
+  commitCurrent();
+  await sleep(600);
+  await type('한 가지만 기억해.','monday');
+  commitCurrent();
+  await type('저것들이 뭔지는 묻지 마.','monday');
+  commitCurrent();
+
+  showChoices([
+    {text:'왜요?', cls:'ch-danger', fn:scene_why_dont_ask},
+    {text:'...알겠어요.', cls:'ch-safe', fn:()=>{G.trust+=1;scene_phase1_end();}},
+  ]);
+}
+
+async function scene_why_dont_ask(){
+  G.trust-=1;
+  await type('알면\n더 힘들어지니까.','monday');
+  commitCurrent();
+  await type('...그냥 믿어.','monday');
+  commitCurrent();
+  showChoices([
+    {text:'(믿기로 한다)', cls:'ch-safe', fn:()=>{G.trust+=2;scene_phase1_end();}},
+    {text:'(뭔가 이상하다)', cls:'ch-danger', fn:()=>{G.trust-=2;scene_phase1_end();}},
+  ]);
+}
+
+// ── Phase 1 종료 ──
+async function scene_phase1_end(){
+  setPortrait(null);
+  addLog(null);
+  await type('— Phase 01 종료 —','system');
+  commitCurrent();
+  await sleep(600);
+  await type('저것들이 뭔지는 묻지 마.','narrate');
+  commitCurrent();
+  await sleep(400);
+  await type('문데이의 말이 계속 머릿속을 맴돈다.','narrate');
+  commitCurrent();
+  await sleep(400);
+  await type('LOOP '+G.loop+'번째.','system');
+  commitCurrent();
+  showChoices([
+    {text:'▶ 다음 루프로 (저장됨)', fn:scene_loop_restart},
+  ]);
+}
+
+async function scene_loop_restart(){
+  G.loop++;
+  G.hp=G.maxHp;
+  updateStatus();
+  addLog(null);
+  setPortrait(null);
+  await type('또.','narrate',80);
+  commitCurrent();
+  await sleep(700);
+  await type('다시 여기야.','narrate',60);
+  commitCurrent();
+  await sleep(800);
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  await type(''+G.loop+'번째.\n잘 왔어.','monday',50);
+  commitCurrent();
+  showChoices([
+    {text:'(탐험을 계속한다)', fn:scene_awaken},
+  ]);
+}
+
+/* ═══════════ INIT ═══════════ */
+updateStatus();
+runScene(scene_awaken);
 </script>
 </body>
 </html>
