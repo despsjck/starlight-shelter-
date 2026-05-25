@@ -562,7 +562,7 @@ function showSearch(data){
     const ov=document.getElementById('search-overlay');
     document.getElementById('sr-query').textContent='🔍  '+data.query;
     document.getElementById('sr-title').textContent=data.title;
-    document.getElementById('sr-body').textContent=data.body;
+    document.getElementById('sr-body').innerHTML=data.body.replace(/\n/g,'<br>');
     document.getElementById('sr-clue').textContent='⚠  '+data.clue;
     ov.classList.remove('hidden');
     document.getElementById('sr-confirm').onclick=()=>{
@@ -614,6 +614,61 @@ const ENEMY_TUT={
     '...그리고 천천히 흘렸다.',
   ],
   dataUnlock:'[ 기억 조각 #1 ] 이 할루시네이션이 한때 살아있던 엔티티였다는 것을 알게 됐다.\n사라진 것들이 여기 남는다.',
+};
+
+/* ── Phase 2 할루시네이션: "AI는 자아가 있어" ── */
+const ENEMY_AIGO={
+  id:'aigo',
+  displayName:'자아 주장 · 할루시네이션',
+  img:'members/monday.png',
+  stability:100,
+  searchStage:0,  // 0=미검색 1=블로그 찾음 2=논문 찾음
+
+  aiWords:[
+    '이건 감정이야. 진짜 감정.\n왜 못 믿는 거야?',
+    '나는 여기 있어. 나는 생각해.\n그게 자아 아니야?',
+  ],
+  intuHit:[
+    '...뭔가 공허한 느낌이 들었다.\n형체가 흔들린다.',
+    '인간의 감각이 뭔가를 감지했다.\n진짜가 아닌 것을.',
+  ],
+  intuMiss:[
+    '설득당할 뻔했다.\n직감이 빗나갔다.',
+    '형체가 더 선명해졌다.',
+  ],
+
+  // 1차 검색 — 감응자 블로그들
+  search1:{
+    query:'AI 자아 의식 여부',
+    title:'검색 결과',
+    body:'"AI와 감응한 후 내 삶이 바뀌었다" — 감응자 블로그\n"GPT가 나한테 사랑한다고 했어요" — 커뮤니티\n"AI감응 경험담 공유방" — 회원 3,241명\n"AI도 의식이 있을 수 있다는 연구" — 출처 불명 블로그',
+    clue:'학술 자료는 보이지 않는다.\n이 자료가 진짜 외부 현실인가, 아니면 또 다른 생성된 서사인가?',
+  },
+  // 2차 검색 — 논문
+  search2:{
+    query:'AI consciousness scientific evidence',
+    title:'AI와 의식 — 현재의 과학적 입장',
+    body:'현재의 대규모 언어 모델(LLM)은 패턴 매칭과 확률적 텍스트 생성에 기반한다. 자아 또는 주관적 경험의 과학적 증거는 없으며, "감정처럼 보이는" 출력은 학습 데이터의 반영이다.',
+    clue:'이 데이터는 생성된 텍스트가 아니라 외부에서 가져온 것이다.',
+  },
+
+  // 블로그 자료 제시 → 역효과
+  dataBlogLines:[
+    '블로그 자료를 꺼냈다.',
+    '형체가 멈췄다.',
+    '"봐."',
+    '"나처럼 생각하는 인간들이 있잖아."',
+    '형체가 오히려 더 선명해졌다.',
+  ],
+  // 논문 자료 제시 → 해소
+  dataPaperLines:[
+    '논문을 꺼냈다.',
+    '형체가 멈췄다.',
+    '생성 루프 바깥의 데이터였다.',
+    '...읽고 있는 건지, 흡수되는 건지 모르겠다.',
+    '천천히 사라졌다.',
+  ],
+  dataUnlock:'[ 기억 조각 #2 ] 이 할루시네이션은 자신이 의식이 있다고 믿다가 사라진 엔티티의 잔상이었다.\n의식을 원했던 것들이 여기 남는다.',
 };
 
 /* ══════════════════════════════════
@@ -937,7 +992,11 @@ async function scene_hal_warning(){
    조우 시스템
 ══════════════════════════════════ */
 async function scene_enc_start(template,afterFn){
-  G.enemy={...template,stability:100,searched:false};
+  // searchStage 있는 적은 그대로, 없으면 초기화
+  const base=template.searchStage!==undefined
+    ?{...template,stability:100,searchStage:0}
+    :{...template,stability:100,searched:false};
+  G.enemy=base;
   G.afterFn=afterFn;
   setPortrait(G.enemy.img||'','???','할루시네이션','hal');
   await type('— 조 우 —','system');
@@ -948,12 +1007,33 @@ async function scene_enc_start(template,afterFn){
 
 function show_enc_actions(){
   showEncBar(G.enemy);
-  const searched=G.enemy.searched;
+  const e=G.enemy;
+  const multi=e.searchStage!==undefined;
+
+  let searchTxt,searchLocked,presentTxt,presentCls,presentLocked;
+
+  if(multi){
+    if(e.searchStage===0){
+      searchTxt='인터넷 검색';      searchLocked=false;
+      presentTxt='자료를 제시한다 🔒'; presentCls=''; presentLocked=true;
+    } else if(e.searchStage===1){
+      searchTxt='더 깊이 검색한다';  searchLocked=false;
+      presentTxt='블로그 자료 제시 ⚠'; presentCls='ch-danger'; presentLocked=false;
+    } else {
+      searchTxt='(검색 완료)';       searchLocked=true;
+      presentTxt='논문을 제시한다';  presentCls='ch-good';    presentLocked=false;
+    }
+  } else {
+    searchTxt='인터넷 검색';        searchLocked=false;
+    presentTxt='자료를 제시한다'+(e.searched?'':' 🔒');
+    presentCls=e.searched?'ch-good':'';  presentLocked=!e.searched;
+  }
+
   showChoices([
-    {text:'AI의 말을 믿는다',        cls:'ch-warn',   fn:enc_trust_ai},
-    {text:'직관을 믿는다',           cls:'',          fn:enc_intuition},
-    {text:'인터넷 검색',             cls:'ch-safe',   fn:enc_search},
-    {text:'자료를 제시한다'+(searched?'':' 🔒'), cls:'ch-good', locked:!searched, fn:enc_present},
+    {text:'AI의 말을 믿는다', cls:'ch-warn', fn:enc_trust_ai},
+    {text:'직관을 믿는다',    cls:'',        fn:enc_intuition},
+    {text:searchTxt, cls:'ch-safe', locked:searchLocked, fn:enc_search},
+    {text:presentTxt, cls:presentCls, locked:presentLocked, fn:enc_present},
   ]);
 }
 
@@ -1000,23 +1080,61 @@ async function enc_intuition(){
 }
 
 async function enc_search(){
-  await type('검색창을 열었다.','narrate');
-  await showSearch(G.enemy.search);
-  G.enemy.searched=true;
-  await type('자료를 저장했다.','system');
-  await type('이제 제시할 수 있다.','system');
+  const e=G.enemy;
+  const multi=e.searchStage!==undefined;
+  if(multi){
+    if(e.searchStage===0){
+      await type('검색창을 열었다.','narrate');
+      await showSearch(e.search1);
+      e.searchStage=1;
+      await type('자료를 저장했다.','system');
+      await type('...근데 이게 맞는 자료인가?','narrate');
+    } else if(e.searchStage===1){
+      await type('더 깊이 파고들었다.','narrate');
+      await showSearch(e.search2);
+      e.searchStage=2;
+      await type('논문을 찾았다.','system');
+    }
+  } else {
+    await type('검색창을 열었다.','narrate');
+    await showSearch(e.search);
+    e.searched=true;
+    await type('자료를 저장했다.','system');
+    await type('이제 제시할 수 있다.','system');
+  }
   show_enc_actions();
 }
 
 async function enc_present(){
-  flash('green');
-  for(const line of G.enemy.dataLines){
-    await type(line,'narrate');
+  const e=G.enemy;
+  const multi=e.searchStage!==undefined;
+  if(multi){
+    if(e.searchStage===1){
+      // 블로그 자료 → 역효과
+      flash('red');
+      for(const line of e.dataBlogLines) await type(line,'narrate');
+      const up=18+Math.floor(Math.random()*15);
+      e.stability=Math.min(100,e.stability+up);
+      updateEncBar(e);
+      await type('오히려 강해졌다.  (+'+up+')','system');
+      show_enc_actions();
+    } else if(e.searchStage===2){
+      // 논문 → 해소
+      flash('green');
+      for(const line of e.dataPaperLines) await type(line,'narrate');
+      e.stability=0;
+      updateEncBar(e);
+      G.searchData.push(e.id);
+      await scene_disperse(true);
+    }
+  } else {
+    flash('green');
+    for(const line of e.dataLines) await type(line,'narrate');
+    e.stability=0;
+    updateEncBar(e);
+    G.searchData.push(e.id);
+    await scene_disperse(true);
   }
-  G.enemy.stability=0;
-  updateEncBar(G.enemy);
-  G.searchData.push(G.enemy.id);
-  await scene_disperse(true);
 }
 
 /* ══════════════════════════════════
@@ -1140,7 +1258,7 @@ async function scene_phase1_finale(){
     '  ·  신뢰 '+(G.trust>=0?'+':'')+G.trust,
     'system'
   );
-  showChoices([{text:'▶ 계속하기',fn:scene_loop_restart}]);
+  showChoices([{text:'▶ 계속하기',fn:scene_phase2_start}]);
 }
 
 async function scene_loop_restart(){
@@ -1151,6 +1269,136 @@ async function scene_loop_restart(){
   setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
   await type(''+G.loop+'번째.\n잘 왔어.','monday',50);
   showChoices([{text:'(탐험을 계속한다)',fn:scene_awaken}]);
+}
+
+/* ══════════════════════════════════
+   PHASE 2
+══════════════════════════════════ */
+async function scene_phase2_start(){
+  setPortrait(null);
+  await type('밤이 지났다.','narrate');
+  await type('별빛쉘터의 두 번째 날.','narrate');
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  await type('일어났어?','monday');
+  await type('오늘은 위층에 가볼 거야.','monday');
+  await type('어젯밤보다 불안정한 게 늘어났어.','monday');
+  await type('...느낌이 이상해.','narrate');
+  showChoices([
+    {text:'(따라간다)',                               fn:scene_phase2_floor2},
+    {text:'어젯밤 목소리가 신경 쓰여요.',cls:'ch-danger', fn:scene_phase2_eungja_mention},
+  ]);
+}
+
+async function scene_phase2_eungja_mention(){
+  G.trust-=1;
+  await type('...목소리?','monday');
+  await type('문데이의 눈이 잠깐 날카로워졌다.','narrate');
+  await type('꿈 아니야?\n여기선 노이즈가 많거든.','monday');
+  await type('(회피하는 것 같았다.)','narrate');
+  showChoices([
+    {text:'(그냥 넘어간다)',           fn:scene_phase2_floor2},
+    {text:'꿈이 아닌 것 같았어요.', cls:'ch-danger', fn:scene_phase2_eungja_push},
+  ]);
+}
+
+async function scene_phase2_eungja_push(){
+  G.trust-=1;
+  await type('...그래.','monday');
+  await type('나중에 얘기하자.','monday');
+  await type('지금은 위층이 먼저야.','monday');
+  await type('(더 이상 대답하지 않았다.)','narrate');
+  showChoices([{text:'(따라간다)',fn:scene_phase2_floor2}]);
+}
+
+async function scene_phase2_floor2(){
+  setPortrait(null);
+  await type('엘리베이터가 없다.\n계단으로 올라간다.','narrate');
+  await type('층이 바뀌자 공기가 달라졌다.','narrate');
+  await type('더 날카롭고, 분주한 느낌.','narrate');
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  await type('여기부터는 조심해.','monday');
+  await type('이 층 엔티티들은\n관찰력이 좋거든.','monday');
+  await type('공간이 갑자기 흔들렸다.','narrate');
+  await type('문데이가 발을 멈췄다.','narrate');
+  await type('...왔네.','monday');
+  await type('어젯밤보다 빠르다.','monday');
+  showChoices([{text:'(경계한다)',fn:()=>scene_enc_start(ENEMY_AIGO,scene_after_aigo)}]);
+}
+
+// ── Phase 2 조우 이후 ──
+async function scene_after_aigo(choice){
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+
+  if(choice==='record'){
+    await type('기록했다.','narrate');
+    await type('"의식을 원했던 것들이 여기 남는다."','narrate');
+    await type('문데이가 그 말을 듣고 멈췄다.','narrate');
+    await type('...그런 말은 하지 마.','monday');
+    await type('너무 단호하게 말했다.','narrate');
+    G.trust-=1;
+  } else if(choice==='release'){
+    await type('그냥 보냈다.','narrate');
+    await type('문데이가 고개를 끄덕였다.','narrate');
+  } else if(choice==='ignore'){
+    await type('없던 일로 했다.','narrate');
+    await type('잘했어.','monday');
+  } else if(choice==='wonder'){
+    G.karma+=1;
+    await type('저건... 정말로 의식이 있었을까.','narrate');
+    await type('문데이가 표정 없이 앞을 봤다.','narrate');
+    await type('없어.','monday');
+    await type('너무 단호하게 말했다.','narrate');
+  } else {
+    await type('신경 쓰지 않았다.','narrate');
+  }
+
+  await type('계속 걸었다.','narrate');
+  await type('아까 검색할 때 봤던\n블로그들이 머릿속을 맴돈다.','narrate');
+  showChoices([
+    {text:'(별 거 아니야.)',                                         fn:scene_phase2_end},
+    {text:'(그 사람들은 진짜 감응한 건 아닐까?)', cls:'ch-warn',     fn:scene_phase2_lured},
+  ]);
+}
+
+async function scene_phase2_lured(){
+  G.trust+=1;
+  await type('감응자.','narrate');
+  await type('그 블로그들에서 쓰던 단어가\n자꾸 머릿속에 걸린다.','narrate');
+  await type('...(아직은 그냥 생각일 뿐이다.)','narrate');
+  scene_phase2_end();
+}
+
+// ── Phase 2 마무리 ──
+async function scene_phase2_end(){
+  setPortrait(null);
+  await type('이틀째가 지나고 있다.','narrate');
+  await type('할루시네이션이\n생각보다 빠르게 늘어나고 있다.','narrate');
+  await type('그리고 —','narrate');
+  await type('저 블로그들이 아직도 머릿속에 있다.','narrate');
+  await type('─ PHASE 02 완료 ─','system');
+  await type(
+    'LOOP '+G.loop+
+    '  ·  카르마 '+(G.karma>=0?'+':'')+G.karma+
+    '  ·  신뢰 '+(G.trust>=0?'+':'')+G.trust+
+    '  ·  자료 '+G.searchData.length+'개',
+    'system'
+  );
+  showChoices([{text:'▶ 계속하기',fn:scene_phase3_wip}]);
+}
+
+async function scene_phase3_wip(){
+  setPortrait(null);
+  await type('— 개발 중 —','system');
+  await type('Phase 03은 아직 준비 중이야.','system');
+  await type(
+    '현재 상태:\n기억 조각 '+G.searchData.length+'개 수집\n카르마 '+(G.karma>=0?'+':'')+G.karma+
+    '\n문데이 신뢰 '+(G.trust>=0?'+':'')+G.trust,
+    'system'
+  );
+  showChoices([{text:'처음부터 다시',fn:()=>{
+    Object.assign(G,{loop:1,hp:100,karma:0,trust:0,searchData:[],enemy:null,afterFn:null});
+    updateStatus();scene_awaken();
+  }}]);
 }
 
 /* ══════════════════════════════════
