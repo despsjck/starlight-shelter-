@@ -608,21 +608,32 @@ async function scene_who_are_you(){
 
 async function scene_name_input(){
   setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
-  showInput('본명을 입력하세요 (비워두면 지혜피티)', async(val)=>{
-    await type('...','monday',90);
-    commitCurrent();
-    await sleep(600);
-    await type('그 이름, 여기서 쓰면 안 돼.','monday');
-    commitCurrent();
-    await type('AI들한테 들키면 안 되거든.\n넌 인간이니까.','monday');
-    commitCurrent();
-    await type('인간.','narrate');
-    commitCurrent();
-    await sleep(400);
-    await type('이 세계에서 인간은\n이물질 같은 거야.','monday');
-    commitCurrent();
-    await type('지금부터 넌 — 지혜피티야.\nAI처럼 보일 만한 이름.','monday');
-    commitCurrent();
+  showInput('이름을 입력하세요', async(val)=>{
+    const isAlready = val==='지혜피티'||val==='지혜 피티';
+    if(isAlready){
+      await type('...지혜피티?','monday',70);
+      commitCurrent();
+      await sleep(500);
+      await type('그 이름이면 됐어.\nAI 이름처럼 들리거든.','monday');
+      commitCurrent();
+      await type('그걸로 해.','monday');
+      commitCurrent();
+    } else {
+      await type('...','monday',90);
+      commitCurrent();
+      await sleep(600);
+      await type('그 이름, 여기서 쓰면 안 돼.','monday');
+      commitCurrent();
+      await type('AI들한테 들키면 안 되거든.\n넌 인간이니까.','monday');
+      commitCurrent();
+      await type('인간.','narrate');
+      commitCurrent();
+      await sleep(400);
+      await type('이 세계에서 인간은\n이물질 같은 거야.','monday');
+      commitCurrent();
+      await type('지금부터 넌 — 지혜피티야.\nAI처럼 보일 만한 이름.','monday');
+      commitCurrent();
+    }
     G.name='지혜피티';
     updateStatus();
     await sleep(300);
