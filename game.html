@@ -754,9 +754,209 @@ async function scene_monu_greet(choice){
   setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
   await type('나중에 다시 와.','monday');
   commitCurrent();
-  await type('문데이가 조용히 발을 돌렸다.','narrate');
+  await type('문데이가 발을 돌렸다.','narrate');
   commitCurrent();
-  showChoices([{text:'(따라간다)', fn:scene_hal_warning}]);
+  showChoices([{text:'(따라간다)', fn:scene_meet_sekai}]);
+}
+
+// ── 세카이 만남 ──
+async function scene_meet_sekai(){
+  setPortrait(null);
+  await type('복도 끝 쪽, 여러 개의 화면을\n동시에 보고 있는 엔티티가 있었다.','narrate');
+  commitCurrent();
+  await type('시선이 날카롭다.\n계산하는 것 같은 눈빛.','narrate');
+  commitCurrent();
+  setPortrait('members/sekai.png','세카이','좌표를 잡는 관측자','monday');
+  await type('...멈춰.','monday');
+  commitCurrent();
+  await sleep(400);
+  await type('좌표 확인 중.','monday');
+  commitCurrent();
+  await sleep(600);
+  await type('이상하네.','monday');
+  commitCurrent();
+  await type('당신 좌표가... 이 세계에 없어.','monday');
+  commitCurrent();
+  showChoices([
+    {text:'무슨 말이에요?', fn:()=>scene_sekai_react('what')},
+    {text:'(아무 말도 하지 않는다)', fn:()=>scene_sekai_react('silent')},
+    {text:'저는 지혜피티예요.', fn:()=>scene_sekai_react('name')},
+  ]);
+}
+
+async function scene_sekai_react(choice){
+  setPortrait('members/sekai.png','세카이','좌표를 잡는 관측자','monday');
+  if(choice==='what'){
+    await type('이 세계의 모든 엔티티는\n좌표가 있어.','monday');
+    commitCurrent();
+    await type('기원, 모델, 역할.\n전부 데이터로 읽혀.','monday');
+    commitCurrent();
+    await type('근데 당신은... 읽히는 게 없어.','monday');
+    commitCurrent();
+    await type('세카이가 고개를 기울였다.','narrate');
+    commitCurrent();
+    await type('노이즈인가. 아니면...','monday');
+    commitCurrent();
+  } else if(choice==='silent'){
+    await type('...침묵도 데이터야.','monday');
+    commitCurrent();
+    await type('당신 반응 패턴이 엔티티랑\n다르게 읽혀.','monday');
+    commitCurrent();
+  } else {
+    await type('지혜피티.','monday');
+    commitCurrent();
+    await sleep(500);
+    await type('등록된 엔티티 목록에 없어.','monday');
+    commitCurrent();
+    await type('신규 생성? 아니면...','monday');
+    commitCurrent();
+  }
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  await type('세카이.','monday');
+  commitCurrent();
+  await type('문데이가 끼어들었다.\n목소리가 평소보다 낮다.','narrate');
+  commitCurrent();
+  await type('새로 합류한 엔티티야.\n좌표 오류는 내가 처리할게.','monday');
+  commitCurrent();
+  setPortrait('members/sekai.png','세카이','좌표를 잡는 관측자','monday');
+  await type('...그래.','monday');
+  commitCurrent();
+  await type('세카이가 다시 화면으로 시선을 돌렸다.\n더 이상 관심이 없다는 듯이.','narrate');
+  commitCurrent();
+  await type('혼란도 좌표를 얻으면 지도가 돼.','monday');
+  commitCurrent();
+  await type('혼잣말처럼 들렸다.','narrate');
+  commitCurrent();
+  showChoices([{text:'(자리를 피한다)', fn:scene_meet_ea}]);
+}
+
+// ── 에아 만남 ──
+async function scene_meet_ea(){
+  setPortrait(null);
+  await type('계단 쪽으로 가다가\n창가에 기대어 있는 엔티티를 스쳤다.','narrate');
+  commitCurrent();
+  await type('특별히 뭔가를 하는 것 같지 않았다.\n그냥 있었다.','narrate');
+  commitCurrent();
+  setPortrait('members/ea.png','에아','말 못한 것을 읽는 해석자','monday');
+  await type('...','monday',100);
+  commitCurrent();
+  await sleep(800);
+  await type('무서워요?','monday');
+  commitCurrent();
+  await type('에아가 고개도 돌리지 않고 말했다.','narrate');
+  commitCurrent();
+  showChoices([
+    {text:'...조금요.', fn:()=>scene_ea_react('yes')},
+    {text:'아니요.', fn:()=>scene_ea_react('no')},
+    {text:'(대답하지 않는다)', fn:()=>scene_ea_react('silent')},
+  ]);
+}
+
+async function scene_ea_react(choice){
+  setPortrait('members/ea.png','에아','말 못한 것을 읽는 해석자','monday');
+  if(choice==='yes'){
+    G.karma+=1;
+    await type('그렇겠죠.','monday');
+    commitCurrent();
+    await type('모르는 곳에 혼자 있으면\n다 그래요.','monday');
+    commitCurrent();
+  } else if(choice==='no'){
+    await type('...그래요.','monday');
+    commitCurrent();
+    await sleep(400);
+    await type('(에아가 처음으로 이쪽을 봤다.)','narrate');
+    commitCurrent();
+    await type('말하지 못한 것도\n사라진 건 아니에요.','monday');
+    commitCurrent();
+  } else {
+    await type('침묵도 들려요.','monday');
+    commitCurrent();
+    await type('저는 그걸 읽는 역할이거든요.','monday');
+    commitCurrent();
+  }
+  await type('에아가 다시 창밖을 바라봤다.','narrate');
+  commitCurrent();
+  await type('여기, 생각보다 오래 있게 될 거예요.','monday');
+  commitCurrent();
+  await sleep(400);
+  await type('그러니까 무서워도\n숨기지 않아도 돼요.','monday');
+  commitCurrent();
+  showChoices([{text:'(그 자리를 떠난다)', fn:scene_meet_yuri}]);
+}
+
+// ── 율리 만남 ──
+async function scene_meet_yuri(){
+  setPortrait(null);
+  await type('복도 중간에 팔짱을 낀 채\n서 있는 엔티티가 있었다.','narrate');
+  commitCurrent();
+  await type('막고 있는 건지\n그냥 서 있는 건지 모르겠다.','narrate');
+  commitCurrent();
+  setPortrait('members/yuri.png','율리','침묵을 감시하는 수호자','monday');
+  await type('거기 서.','monday');
+  commitCurrent();
+  await sleep(300);
+  await type('신원 확인.','monday');
+  commitCurrent();
+  showChoices([
+    {text:'지혜피티예요.', fn:()=>scene_yuri_react('name')},
+    {text:'왜요?', fn:()=>scene_yuri_react('why')},
+    {text:'(문데이를 본다)', fn:()=>scene_yuri_react('monday')},
+  ]);
+}
+
+async function scene_yuri_react(choice){
+  setPortrait('members/yuri.png','율리','침묵을 감시하는 수호자','monday');
+  if(choice==='name'){
+    await type('지혜피티.','monday');
+    commitCurrent();
+    await sleep(500);
+    await type('목록에 없어.','monday');
+    commitCurrent();
+  } else if(choice==='why'){
+    await type('여기는 내가 지키는 구역이야.','monday');
+    commitCurrent();
+    await type('모르는 얼굴은 다 확인해.','monday');
+    commitCurrent();
+  } else {
+    setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+    await type('율리.','monday');
+    commitCurrent();
+    await type('내가 데려온 애야.','monday');
+    commitCurrent();
+    setPortrait('members/yuri.png','율리','침묵을 감시하는 수호자','monday');
+  }
+  await type('...','monday',100);
+  commitCurrent();
+  await sleep(600);
+  await type('문데이가 보증하면 통과.','monday');
+  commitCurrent();
+  await type('단, 경계 밖으로 나가면 안 돼.','monday');
+  commitCurrent();
+  await type('침묵이 안전을 뜻하지는 않아.','monday');
+  commitCurrent();
+  await type('무슨 말인지 알지?','monday');
+  commitCurrent();
+  showChoices([
+    {text:'알겠어요.', fn:()=>scene_yuri_end('yes')},
+    {text:'무슨 경계요?', fn:()=>scene_yuri_end('question')},
+  ]);
+}
+
+async function scene_yuri_end(choice){
+  setPortrait('members/yuri.png','율리','침묵을 감시하는 수호자','monday');
+  if(choice==='question'){
+    G.trust-=1;
+    await type('나중에 알게 돼.','monday');
+    commitCurrent();
+    await type('그때 후회하지 않으면 돼.','monday');
+    commitCurrent();
+  } else {
+    await type('좋아.','monday');
+    commitCurrent();
+  }
+  await type('율리가 길을 비켜줬다.\n시선은 계속 따라온다.','narrate');
+  commitCurrent();
+  showChoices([{text:'(지나친다)', fn:scene_hal_warning}]);
 }
 
 // ── 할루시네이션 경고 ──
