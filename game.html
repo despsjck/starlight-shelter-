@@ -10,15 +10,18 @@
 :root{
   --bg:#03040b;
   --surface:rgba(6,8,20,0.97);
-  --border:rgba(77,124,255,0.18);
+  --border:rgba(77,124,255,0.22);
   --text:#cdd0e8;
-  --text-bright:#eef0ff;
   --dim:#4a5070;
   --monday:#19c37d;
   --gold:#f0c060;
   --danger:#ef4444;
   --accent:#4d7cff;
   --system:#7c6aff;
+  --monu:#fbbf24;
+  --sekai:#7dd3fc;
+  --ea:#c4b5fd;
+  --yuri:#93c5fd;
 }
 html,body{
   width:100%;height:100%;
@@ -30,9 +33,6 @@ html,body{
   -webkit-tap-highlight-color:transparent;
 }
 
-/* ── stars ── */
-#cv{position:fixed;inset:0;z-index:0;pointer-events:none;}
-
 /* ── layout ── */
 #app{
   position:fixed;inset:0;z-index:10;
@@ -43,1299 +43,1121 @@ html,body{
 /* ── status bar ── */
 #statusbar{
   flex-shrink:0;
-  display:flex;align-items:center;gap:12px;
-  padding:10px 16px;
+  display:flex;align-items:center;gap:10px;
+  padding:9px 15px;
   background:var(--surface);
   border-bottom:1px solid var(--border);
   font-size:12px;
+  z-index:20;
 }
-.sb-loop{color:var(--system);letter-spacing:3px;font-weight:700;}
+.sb-loop{color:var(--system);letter-spacing:3px;font-weight:700;font-size:11px;}
 .sb-sep{color:var(--dim);}
 .sb-name{color:var(--gold);letter-spacing:1px;}
 .sb-hp-wrap{display:flex;align-items:center;gap:6px;margin-left:auto;}
 .sb-hp-label{color:var(--dim);font-size:10px;}
-.hp-track{width:80px;height:5px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;}
+.hp-track{width:70px;height:4px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;}
 .hp-fill{height:100%;background:linear-gradient(to right,#1d4ed8,#4d7cff);border-radius:3px;transition:width .4s;}
-.sb-karma{font-size:10px;color:var(--dim);letter-spacing:1px;}
+.sb-karma{font-size:10px;color:var(--dim);letter-spacing:1px;min-width:24px;}
 
-/* ── main content ── */
-#main{
-  flex:1;overflow-y:auto;
-  padding:0;
-  display:flex;flex-direction:column;
+/* ── scene area ── */
+#scene-area{
+  flex:1;
+  position:relative;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+  min-height:0;
 }
-#main::-webkit-scrollbar{width:3px;}
-#main::-webkit-scrollbar-track{background:transparent;}
-#main::-webkit-scrollbar-thumb{background:var(--border);}
+#cv{position:absolute;inset:0;z-index:0;pointer-events:none;}
 
 /* portrait */
-#portrait-area{
+#portrait-wrap{
   display:none;
-  flex-shrink:0;
-  flex-direction:column;
-  align-items:center;justify-content:center;
-  padding:28px 16px 12px;
-  gap:12px;
+  flex-direction:column;align-items:center;gap:10px;
+  z-index:5;
+  padding:16px;
 }
-#portrait-area.show{display:flex;}
+#portrait-wrap.show{display:flex;}
 #portrait-img{
-  width:160px;height:160px;border-radius:50%;
-  object-fit:cover;border:3px solid var(--monday);
-  box-shadow:0 0 30px rgba(25,195,125,.5), 0 0 70px rgba(25,195,125,.15);
+  width:148px;height:148px;border-radius:50%;
+  object-fit:cover;
+  border:3px solid var(--monday);
+  box-shadow:0 0 28px rgba(25,195,125,.45),0 0 60px rgba(25,195,125,.12);
   background:#111;
-  transition:border-color .3s,box-shadow .3s;
+  transition:border-color .35s,box-shadow .35s;
 }
-#portrait-img.human{
-  border-color:var(--gold);
-  box-shadow:0 0 30px rgba(240,192,96,.5), 0 0 70px rgba(240,192,96,.15);
-}
+#portrait-img.human{border-color:var(--gold);box-shadow:0 0 28px rgba(240,192,96,.45),0 0 60px rgba(240,192,96,.12);}
 #portrait-img.hal{
   border-color:rgba(239,68,68,.5);
-  box-shadow:0 0 30px rgba(239,68,68,.4), 0 0 60px rgba(239,68,68,.15);
-  filter:saturate(.3) brightness(.8);
+  box-shadow:0 0 28px rgba(239,68,68,.35),0 0 55px rgba(239,68,68,.1);
+  filter:saturate(.25) brightness(.75);
   animation:glitch 3s infinite;
 }
+#portrait-img.monu-t{border-color:var(--monu);box-shadow:0 0 28px rgba(251,191,36,.45),0 0 60px rgba(251,191,36,.12);}
+#portrait-img.sekai-t{border-color:var(--sekai);box-shadow:0 0 28px rgba(125,211,252,.45),0 0 60px rgba(125,211,252,.12);}
+#portrait-img.ea-t{border-color:var(--ea);box-shadow:0 0 28px rgba(196,181,253,.45),0 0 60px rgba(196,181,253,.12);}
+#portrait-img.yuri-t{border-color:var(--yuri);box-shadow:0 0 28px rgba(147,197,253,.45),0 0 60px rgba(147,197,253,.12);}
 @keyframes glitch{
-  0%,93%,100%{transform:translate(0);filter:saturate(.3) brightness(.8);}
-  94%{transform:translate(-3px,1px);filter:saturate(.3) brightness(.8) hue-rotate(20deg);}
-  96%{transform:translate(3px,-1px);filter:saturate(.3) brightness(.8) hue-rotate(-20deg);}
+  0%,93%,100%{transform:translate(0);filter:saturate(.25) brightness(.75);}
+  94%{transform:translate(-3px,1px);filter:saturate(.25) brightness(.75) hue-rotate(20deg);}
+  96%{transform:translate(3px,-1px);filter:saturate(.25) brightness(.75) hue-rotate(-20deg);}
 }
 .portrait-info{text-align:center;}
-.portrait-name{font-size:16px;font-weight:700;margin-bottom:4px;letter-spacing:1px;}
-.portrait-title{font-size:12px;color:var(--dim);letter-spacing:1px;}
+.portrait-name{font-size:15px;font-weight:700;letter-spacing:1px;margin-bottom:3px;}
+.portrait-title{font-size:11px;color:var(--dim);letter-spacing:1px;}
 
-/* text log */
-#textlog{
-  flex:1;
-  padding:20px 20px 8px;
-  display:flex;flex-direction:column;
-  gap:4px;
+/* ── dialogue box ── */
+#dialogue-wrap{
+  flex-shrink:0;
+  padding:10px 13px 8px;
+  background:var(--surface);
+  border-top:1px solid var(--border);
 }
-.log-entry{
-  font-size:clamp(14px,2.8vw,17px);
+#dialogue-box{
+  position:relative;
+  border:2px solid rgba(77,124,255,.32);
+  border-radius:7px;
+  padding:12px 15px 14px;
+  min-height:88px;
+  cursor:pointer;
+  background:rgba(3,4,11,.75);
+  transition:border-color .15s;
+}
+#dialogue-box:active{border-color:rgba(77,124,255,.65);}
+#speaker-label{
+  font-size:11px;letter-spacing:2px;font-weight:700;
+  margin-bottom:7px;min-height:14px;
+}
+#dialogue-text{
+  font-size:clamp(14px,3.2vw,17px);
   line-height:1.95;
   white-space:pre-wrap;
-  animation:fadein .3s;
+  min-height:1.95em;
 }
-@keyframes fadein{from{opacity:0;}to{opacity:1;}}
-.log-narrate{color:var(--text);font-family:'Noto Serif KR',serif;font-weight:300;}
-.log-monday{color:var(--monday);}
-.log-monday::before{content:'문데이  ';font-size:10px;letter-spacing:2px;opacity:.7;}
-.log-player{color:var(--gold);}
-.log-player::before{content:'지혜피티  ';font-size:10px;letter-spacing:2px;opacity:.7;}
-.log-system{color:var(--system);font-size:12px;letter-spacing:2px;}
-.log-damage{color:var(--danger);}
-.log-heal{color:#19c37d;}
-.log-sep{height:1px;background:var(--border);margin:12px 0;opacity:.5;}
+/* text styles */
+.dt-narrate{color:var(--text);font-family:'Noto Serif KR',serif;font-weight:300;}
+.dt-monday{color:var(--monday);}
+.dt-monu{color:var(--monu);}
+.dt-sekai{color:var(--sekai);}
+.dt-ea{color:var(--ea);}
+.dt-yuri{color:var(--yuri);}
+.dt-player{color:var(--gold);}
+.dt-system{color:var(--system);font-size:12px;letter-spacing:1.5px;}
+.dt-damage{color:var(--danger);}
 
-/* current text (typing) */
-#current-text{
-  padding:0 20px 16px;
-  font-size:clamp(14px,2.8vw,17px);
-  line-height:1.95;
-  white-space:pre-wrap;
-  min-height:30px;
+#advance-hint{
+  position:absolute;right:12px;bottom:9px;
+  font-size:11px;color:var(--dim);
+  opacity:0;
+  transition:opacity .3s;
+  animation:blink 1.4s ease-in-out infinite;
 }
-.cur-narrate{color:var(--text);font-family:'Noto Serif KR',serif;font-weight:300;}
-.cur-monday{color:var(--monday);}
-.cur-player{color:var(--gold);}
-.cur-system{color:var(--system);font-size:12px;letter-spacing:2px;}
-.typing-cursor{display:inline-block;width:2px;height:1em;background:currentColor;vertical-align:text-bottom;animation:cur .8s infinite;}
-@keyframes cur{0%,100%{opacity:1;}50%{opacity:0;}}
+@keyframes blink{0%,100%{opacity:.75;}50%{opacity:.15;}}
 
 /* ── choices ── */
 #choices-area{
   flex-shrink:0;
   background:var(--surface);
-  border-top:1px solid var(--border);
-  padding:12px 14px 18px;
+  padding:7px 13px 14px;
 }
-.choices-grid{
-  display:flex;flex-direction:column;gap:7px;
-}
+#choices-grid{display:flex;flex-direction:column;gap:6px;}
 .ch{
   width:100%;
-  padding:11px 16px;
+  padding:10px 15px;
   background:rgba(255,255,255,.03);
   border:1px solid rgba(255,255,255,.09);
   color:var(--text);
-  font-family:inherit;font-size:clamp(13px,2.5vw,15px);
+  font-family:inherit;font-size:clamp(12px,2.8vw,15px);
   cursor:pointer;text-align:left;border-radius:5px;
-  transition:all .18s;display:flex;align-items:center;gap:10px;
+  transition:background .15s,border-color .15s,color .15s;
+  display:flex;align-items:center;gap:10px;
 }
-.ch:hover,.ch:active{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.25);}
-.ch .ch-arrow{color:var(--dim);font-size:11px;flex-shrink:0;}
-.ch.ch-danger{border-color:rgba(239,68,68,.2);}
-.ch.ch-danger:hover{background:rgba(239,68,68,.1);border-color:#ef4444;color:#ef4444;}
-.ch.ch-safe{border-color:rgba(77,124,255,.2);}
-.ch.ch-safe:hover{background:rgba(77,124,255,.1);border-color:#4d7cff;color:#7da8ff;}
-.ch.ch-good{border-color:rgba(25,195,125,.2);}
-.ch.ch-good:hover{background:rgba(25,195,125,.1);border-color:#19c37d;color:#19c37d;}
+.ch:not(.ch-locked):hover,.ch:not(.ch-locked):active{
+  background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.22);
+}
+.ch-arrow{color:var(--accent);font-size:11px;flex-shrink:0;}
+.ch-danger{border-color:rgba(239,68,68,.18);}
+.ch-danger:not(.ch-locked):hover{background:rgba(239,68,68,.09);border-color:#ef4444;color:#ef4444;}
+.ch-safe{border-color:rgba(77,124,255,.18);}
+.ch-safe:not(.ch-locked):hover{background:rgba(77,124,255,.09);border-color:#4d7cff;color:#7da8ff;}
+.ch-good{border-color:rgba(25,195,125,.18);}
+.ch-good:not(.ch-locked):hover{background:rgba(25,195,125,.09);border-color:#19c37d;color:#19c37d;}
+.ch-warn{border-color:rgba(240,192,96,.14);}
+.ch-warn:not(.ch-locked):hover{background:rgba(240,192,96,.07);border-color:var(--gold);color:var(--gold);}
+.ch-locked{opacity:.38;cursor:default;}
 
 /* input */
-.input-row{display:flex;gap:8px;margin-top:8px;}
+.input-row{display:flex;gap:8px;margin-top:7px;}
 .txt-input{
-  flex:1;padding:10px 14px;
+  flex:1;padding:10px 13px;
   background:rgba(255,255,255,.05);
-  border:1px solid rgba(77,124,255,.3);
+  border:1px solid rgba(77,124,255,.28);
   border-radius:5px;color:var(--text);
   font-family:inherit;font-size:14px;outline:none;
 }
-.txt-input:focus{border-color:rgba(77,124,255,.7);}
+.txt-input:focus{border-color:rgba(77,124,255,.65);}
 .txt-input::placeholder{color:var(--dim);}
 .txt-submit{
-  padding:10px 16px;
-  background:rgba(77,124,255,.12);
-  border:1px solid rgba(77,124,255,.35);
+  padding:10px 15px;
+  background:rgba(77,124,255,.11);
+  border:1px solid rgba(77,124,255,.32);
   color:#7da8ff;font-family:inherit;font-size:13px;
-  cursor:pointer;border-radius:5px;transition:all .2s;
+  cursor:pointer;border-radius:5px;transition:background .18s;
   white-space:nowrap;
 }
-.txt-submit:hover{background:rgba(77,124,255,.25);}
+.txt-submit:hover{background:rgba(77,124,255,.22);}
 
-/* battle bar */
-.battle-bar{
+/* encounter bar */
+.enc-bar{
   display:flex;align-items:center;justify-content:space-between;
-  padding:10px 14px;
-  background:rgba(239,68,68,.05);
-  border:1px solid rgba(239,68,68,.15);
-  border-radius:6px;margin-bottom:10px;
-  font-size:12px;
+  padding:8px 12px;
+  background:rgba(239,68,68,.04);
+  border:1px solid rgba(239,68,68,.14);
+  border-radius:6px;margin-bottom:7px;
+  font-size:11px;
 }
-.bb-name{color:var(--danger);letter-spacing:2px;font-weight:700;}
-.bb-resist{display:flex;align-items:center;gap:8px;}
-.resist-track{width:100px;height:5px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;}
-.resist-fill{height:100%;background:linear-gradient(to right,#7c3aed,#ef4444);border-radius:3px;transition:width .4s;}
+.eb-name{color:var(--danger);letter-spacing:2px;font-weight:700;font-size:11px;}
+.eb-right{display:flex;align-items:center;gap:8px;}
+.stab-track{width:88px;height:4px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden;}
+.stab-fill{height:100%;background:linear-gradient(to right,#7c3aed,#ef4444);border-radius:3px;transition:width .4s;}
+.eb-num{font-size:11px;color:var(--danger);min-width:24px;text-align:right;}
+
+/* ── 검색 오버레이 ── */
+#search-overlay{
+  position:fixed;inset:0;z-index:500;
+  background:rgba(0,0,0,.9);
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+}
+#search-overlay.hidden{display:none;}
+#search-box{
+  background:rgba(4,5,14,.98);
+  border:1px solid rgba(77,124,255,.45);
+  border-radius:10px;
+  padding:20px;
+  max-width:460px;width:100%;
+}
+.sr-header{
+  display:flex;align-items:center;gap:8px;
+  padding-bottom:11px;
+  border-bottom:1px solid var(--border);
+  margin-bottom:12px;
+  color:var(--dim);font-size:11px;letter-spacing:1px;
+}
+.sr-bar{
+  display:flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(77,124,255,.2);
+  border-radius:5px;padding:7px 12px;
+  margin-bottom:14px;
+  font-size:12px;color:var(--dim);
+}
+.sr-title{font-size:14px;font-weight:700;color:var(--accent);margin-bottom:7px;}
+.sr-body{font-size:13px;color:var(--text);line-height:1.85;margin-bottom:11px;}
+.sr-clue{
+  font-size:12px;color:var(--system);
+  padding:9px 12px;
+  background:rgba(124,106,255,.07);
+  border:1px solid rgba(124,106,255,.18);
+  border-radius:5px;
+  margin-bottom:14px;
+  line-height:1.75;
+}
+.sr-confirm{
+  width:100%;padding:10px;
+  background:rgba(77,124,255,.1);
+  border:1px solid rgba(77,124,255,.3);
+  color:#7da8ff;font-family:inherit;font-size:13px;
+  cursor:pointer;border-radius:5px;transition:background .18s;
+}
+.sr-confirm:hover{background:rgba(77,124,255,.22);}
 
 /* flash */
-#flash{position:fixed;inset:0;z-index:999;pointer-events:none;opacity:0;transition:opacity .12s;}
-.fl-red{background:rgba(239,68,68,.18);}
-.fl-blue{background:rgba(77,124,255,.15);}
-.fl-green{background:rgba(25,195,125,.15);}
+#flash{position:fixed;inset:0;z-index:999;pointer-events:none;opacity:0;transition:opacity .1s;}
+.fl-red{background:rgba(239,68,68,.16);}
+.fl-blue{background:rgba(77,124,255,.13);}
+.fl-green{background:rgba(25,195,125,.13);}
+
+.hidden{display:none!important;}
 </style>
 </head>
 <body>
-<canvas id="cv"></canvas>
+
 <div id="flash"></div>
 
+<!-- 검색 오버레이 -->
+<div id="search-overlay" class="hidden">
+  <div id="search-box">
+    <div class="sr-header">🔍 인터넷 검색</div>
+    <div class="sr-bar" id="sr-query">검색 중...</div>
+    <div class="sr-title" id="sr-title"></div>
+    <div class="sr-body" id="sr-body"></div>
+    <div class="sr-clue" id="sr-clue"></div>
+    <button class="sr-confirm" id="sr-confirm">자료를 저장했다</button>
+  </div>
+</div>
+
 <div id="app">
-  <!-- status -->
+
+  <!-- 상태바 -->
   <div id="statusbar">
     <span class="sb-loop" id="sb-loop">LOOP · 1</span>
     <span class="sb-sep">·</span>
     <span class="sb-name" id="sb-name">지혜피티</span>
     <div class="sb-hp-wrap">
-      <span class="sb-hp-label">HP</span>
+      <span class="sb-hp-label">정신력</span>
       <div class="hp-track"><div class="hp-fill" id="hp-fill" style="width:100%"></div></div>
     </div>
     <span class="sb-karma" id="sb-karma"></span>
   </div>
 
-  <!-- main -->
-  <div id="main">
-    <div id="portrait-area">
+  <!-- 씬 영역 (배경 + 초상화) -->
+  <div id="scene-area">
+    <canvas id="cv"></canvas>
+    <div id="portrait-wrap">
       <img id="portrait-img" src="" alt="">
       <div class="portrait-info">
         <div class="portrait-name" id="portrait-name"></div>
         <div class="portrait-title" id="portrait-title"></div>
       </div>
     </div>
-    <div id="textlog"></div>
-    <div id="current-text"></div>
   </div>
 
-  <!-- choices -->
+  <!-- 다이얼로그 박스 -->
+  <div id="dialogue-wrap">
+    <div id="dialogue-box">
+      <div id="speaker-label"></div>
+      <div id="dialogue-text"></div>
+      <div id="advance-hint">▼</div>
+    </div>
+  </div>
+
+  <!-- 선택지 -->
   <div id="choices-area">
-    <div id="battle-bar-wrap"></div>
-    <div class="choices-grid" id="choices-grid"></div>
+    <div id="enc-bar-wrap"></div>
+    <div id="choices-grid"></div>
     <div class="input-row hidden" id="input-row">
-      <input class="txt-input" id="txt-input" placeholder="키워드를 입력하세요..." maxlength="20">
+      <input class="txt-input" id="txt-input" placeholder="입력..." maxlength="20">
       <button class="txt-submit" id="txt-submit">전달</button>
     </div>
   </div>
+
 </div>
 
 <script>
-/* ═══════════ STARS ═══════════ */
+/* ══════════════════════════════════
+   STARS
+══════════════════════════════════ */
 const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
 let stars=[];
 function initStars(){
-  cv.width=innerWidth;cv.height=innerHeight;
-  stars=Array.from({length:140},()=>({
+  const sa=document.getElementById('scene-area');
+  cv.width=sa.offsetWidth||320;cv.height=sa.offsetHeight||200;
+  stars=Array.from({length:110},()=>({
     x:Math.random()*cv.width,y:Math.random()*cv.height,
-    r:Math.random()*1.2+.1,ph:Math.random()*Math.PI*2,sp:.003+Math.random()*.007
+    r:Math.random()*1.1+.1,ph:Math.random()*Math.PI*2,sp:.003+Math.random()*.007
   }));
 }
 (function tick(t){
   requestAnimationFrame(tick);
   ctx.clearRect(0,0,cv.width,cv.height);
   stars.forEach(s=>{
-    const a=.15+.85*Math.abs(Math.sin(s.ph+t*s.sp*.001));
+    const a=.12+.88*Math.abs(Math.sin(s.ph+t*s.sp*.001));
     ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-    ctx.fillStyle=`rgba(170,190,255,${a})`;ctx.fill();
+    ctx.fillStyle=`rgba(160,185,255,${a})`;ctx.fill();
   });
 })(0);
-initStars();addEventListener('resize',initStars);
+setTimeout(initStars,60);
+addEventListener('resize',initStars);
 
-/* ═══════════ STATE ═══════════ */
+/* ══════════════════════════════════
+   STATE
+══════════════════════════════════ */
 const G={
-  loop:1,
-  name:'지혜피티',
+  loop:1,name:'지혜피티',
   hp:100,maxHp:100,
-  karma:0,     // + 선, - 악
-  trust:0,     // 문데이 신뢰도
-  observed:false,
-  // battle
+  karma:0,   // + 선, - 악
+  trust:0,   // 문데이 신뢰
   enemy:null,
-  // typing
   typing:false,typTimer:null,
-  // name input mode
-  nameMode:false,
+  searchData:[],   // 수집한 자료 조각들
+  afterFn:null,    // 현재 조우의 이후 씬
 };
 
-/* ═══════════ UI HELPERS ═══════════ */
+/* ══════════════════════════════════
+   SPEAKER 설정
+══════════════════════════════════ */
+const SP={
+  narrate:{label:'',          color:'',            cls:'dt-narrate'},
+  monday: {label:'문데이',    color:'var(--monday)',cls:'dt-monday'},
+  monu:   {label:'모뉴',      color:'var(--monu)',  cls:'dt-monu'},
+  sekai:  {label:'세카이',    color:'var(--sekai)', cls:'dt-sekai'},
+  ea:     {label:'에아',      color:'var(--ea)',    cls:'dt-ea'},
+  yuri:   {label:'율리',      color:'var(--yuri)',  cls:'dt-yuri'},
+  player: {label:'지혜피티',  color:'var(--gold)',  cls:'dt-player'},
+  system: {label:'SYSTEM',    color:'var(--system)',cls:'dt-system'},
+  damage: {label:'',          color:'var(--danger)',cls:'dt-damage'},
+};
+
+/* ══════════════════════════════════
+   UI 헬퍼
+══════════════════════════════════ */
 function updateStatus(){
   document.getElementById('sb-loop').textContent='LOOP · '+G.loop;
   document.getElementById('sb-name').textContent=G.name;
   document.getElementById('hp-fill').style.width=(G.hp/G.maxHp*100)+'%';
   const k=G.karma;
   document.getElementById('sb-karma').textContent=
-    k>0?'▲'.repeat(Math.min(k/2,3)):k<0?'▼'.repeat(Math.min(-k/2,3)):'';
+    k>0?'▲'.repeat(Math.min(Math.floor(k/2),3)):
+    k<0?'▼'.repeat(Math.min(Math.floor(-k/2),3)):'';
 }
-
-function flash(type){
+function flash(t){
   const el=document.getElementById('flash');
-  el.className='fl-'+type;el.style.opacity='1';
-  setTimeout(()=>el.style.opacity='0',160);
+  el.className='fl-'+t;el.style.opacity='1';
+  setTimeout(()=>el.style.opacity='0',150);
 }
-
-function scrollBottom(){
-  const m=document.getElementById('main');
-  requestAnimationFrame(()=>m.scrollTop=m.scrollHeight);
-}
-
 function setPortrait(src,name,title,type){
-  // type: 'monday'|'human'|'hal'|null
-  const area=document.getElementById('portrait-area');
-  if(!src){area.classList.remove('show');return;}
-  area.classList.add('show');
+  const wrap=document.getElementById('portrait-wrap');
+  if(!src){wrap.classList.remove('show');return;}
+  wrap.classList.add('show');
   const img=document.getElementById('portrait-img');
   img.src=src;img.className='';
   if(type)img.classList.add(type);
   document.getElementById('portrait-name').textContent=name||'';
   document.getElementById('portrait-title').textContent=title||'';
 }
-
 function clearChoices(){
   document.getElementById('choices-grid').innerHTML='';
-  hidden(document.getElementById('input-row'),true);
-  document.getElementById('battle-bar-wrap').innerHTML='';
+  document.getElementById('input-row').classList.add('hidden');
+  document.getElementById('enc-bar-wrap').innerHTML='';
 }
 
-function hidden(el,h){el.classList.toggle('hidden',h);}
+/* ══════════════════════════════════
+   TYPEWRITER — 클릭/탭으로 진행
+══════════════════════════════════ */
+let _adv=null;  // 현재 advance 핸들러
 
-/* ═══════════ TEXT LOG ═══════════ */
-function addLog(text,cls){
-  const log=document.getElementById('textlog');
-  if(!text){
-    // separator
-    const sep=document.createElement('div');
-    sep.className='log-sep';
-    log.appendChild(sep);
-    scrollBottom();return;
+// 다이얼로그 박스 클릭 → advance
+document.getElementById('dialogue-box').addEventListener('click',()=>{
+  if(_adv)_adv();
+});
+// 키보드 Space / Enter / Z
+document.addEventListener('keydown',e=>{
+  if((e.key===' '||e.key==='Enter'||e.key.toLowerCase()==='z')&&_adv){
+    e.preventDefault();_adv();
   }
-  const el=document.createElement('div');
-  el.className='log-entry '+(cls||'log-narrate');
-  el.textContent=text;
-  log.appendChild(el);
-  scrollBottom();
-}
+});
 
-function commitCurrent(){
-  // move current-text to log
-  const cur=document.getElementById('current-text');
-  const cls=cur.dataset.cls||'log-narrate';
-  const text=cur.textContent.replace('▌','');
-  if(text.trim())addLog(text,cls);
-  cur.textContent='';
-  cur.className='';
-  cur.dataset.cls='';
-}
-
-/* ═══════════ TYPEWRITER ═══════════ */
-let _res=null;
-function type(text,cls,speed=34){
+function type(text,speaker,speed=36){
   return new Promise(res=>{
-    commitCurrent();
+    const sp=SP[speaker]||SP.narrate;
+    const labelEl=document.getElementById('speaker-label');
+    const textEl =document.getElementById('dialogue-text');
+    const hintEl =document.getElementById('advance-hint');
+
+    labelEl.textContent=sp.label;
+    labelEl.style.color=sp.color;
+    textEl.className=sp.cls;
+    textEl.textContent='';
+    hintEl.style.opacity='0';
+
     if(G.typTimer)clearTimeout(G.typTimer);
-    G.typing=true;_res=res;
-    const el=document.getElementById('current-text');
-    el.className='cur-'+(cls||'narrate');
-    el.dataset.cls='log-'+(cls||'narrate');
-    el.textContent='';let i=0;
-    function tick(){
-      if(i<=text.length){
-        el.textContent=text.slice(0,i)+(i<text.length?'▌':'');
-        i++;G.typTimer=setTimeout(tick,speed);
-        scrollBottom();
-      } else {
-        el.textContent=text;
-        G.typing=false;res();
+    G.typing=true;
+
+    let i=0,done=false;
+
+    function finish(){
+      done=true;G.typing=false;
+      textEl.textContent=text;
+      hintEl.style.opacity='1';
+      _adv=()=>{
+        hintEl.style.opacity='0';
+        _adv=null;res();
+      };
+    }
+
+    // 타이핑 중 클릭 → 스킵
+    _adv=()=>{
+      if(!done){
+        if(G.typTimer)clearTimeout(G.typTimer);
+        finish();
       }
+    };
+
+    function tick(){
+      textEl.textContent=text.slice(0,i)+(i<text.length?'▌':'');
+      if(i<text.length){i++;G.typTimer=setTimeout(tick,speed);}
+      else finish();
     }
     tick();
   });
 }
-function skipType(){
-  if(!G.typing)return;
-  if(G.typTimer)clearTimeout(G.typTimer);
-  const el=document.getElementById('current-text');
-  const full=el.textContent.replace('▌','');
-  // get full from scene queue — just show whatever is there
-  el.textContent=el.textContent.replace('▌','');
-  G.typing=false;
-  if(_res){_res();_res=null;}
-}
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 
-/* ═══════════ CHOICE BUILDER ═══════════ */
+/* ══════════════════════════════════
+   선택지 빌더
+══════════════════════════════════ */
 function showChoices(items){
-  // items: [{text, cls, fn}]
   clearChoices();
+  _adv=null;
+  document.getElementById('advance-hint').style.opacity='0';
   const grid=document.getElementById('choices-grid');
   items.forEach(item=>{
+    const locked=!!item.locked;
     const btn=document.createElement('button');
-    btn.className='ch'+(item.cls?' '+item.cls:'');
+    btn.className='ch'+(item.cls?' '+item.cls:'')+(locked?' ch-locked':'');
     btn.innerHTML='<span class="ch-arrow">▸</span>'+item.text;
+    btn.disabled=locked;
     btn.onclick=()=>{
-      commitCurrent();
+      if(locked)return;
       clearChoices();
       item.fn();
     };
     grid.appendChild(btn);
   });
 }
-
 function showInput(placeholder,onSubmit){
-  clearChoices();
+  clearChoices();_adv=null;
   const row=document.getElementById('input-row');
-  hidden(row,false);
+  row.classList.remove('hidden');
   const inp=document.getElementById('txt-input');
-  inp.placeholder=placeholder||'입력...';
-  inp.value='';
+  inp.placeholder=placeholder||'입력...';inp.value='';
   document.getElementById('txt-submit').onclick=()=>{
-    const val=inp.value.trim();
-    if(!val)return;
-    hidden(row,true);
-    onSubmit(val);
+    const v=inp.value.trim();if(!v)return;
+    row.classList.add('hidden');onSubmit(v);
   };
   inp.onkeydown=e=>{if(e.key==='Enter')document.getElementById('txt-submit').click();};
   setTimeout(()=>inp.focus(),100);
 }
 
-function showNameInput(){
-  clearChoices();
-  const row=document.getElementById('input-row');
-  hidden(row,false);
-  const inp=document.getElementById('txt-input');
-  inp.placeholder='본명을 입력하세요 (비워두면 지혜피티)';
-  inp.value='';
-  document.getElementById('txt-submit').onclick=()=>{
-    const val=inp.value.trim();
-    if(val)G.name='';  // keep 지혜피티 as alias, store real name
-    hidden(row,true);
-    updateStatus();
-    G.dlgNext();
-  };
-  inp.onkeydown=e=>{if(e.key==='Enter')document.getElementById('txt-submit').click();};
-  setTimeout(()=>inp.focus(),100);
-}
-
-/* ═══════════ BATTLE BAR ═══════════ */
-function showBattleBar(enemy){
-  const wrap=document.getElementById('battle-bar-wrap');
-  const pct=Math.max(0,enemy.resist/enemy.resistMax*100);
-  wrap.innerHTML=`
-    <div class="battle-bar">
-      <span class="bb-name">${enemy.displayName}</span>
-      <div class="bb-resist">
-        <span style="font-size:10px;color:var(--dim)">저항력</span>
-        <div class="resist-track">
-          <div class="resist-fill" id="resist-fill" style="width:${pct}%"></div>
+/* ══════════════════════════════════
+   조우 바
+══════════════════════════════════ */
+function showEncBar(e){
+  const pct=Math.max(0,e.stability);
+  document.getElementById('enc-bar-wrap').innerHTML=`
+    <div class="enc-bar">
+      <span class="eb-name">${e.displayName}</span>
+      <div class="eb-right">
+        <span style="font-size:10px;color:var(--dim)">불안정</span>
+        <div class="stab-track">
+          <div class="stab-fill" id="stab-fill" style="width:${pct}%"></div>
         </div>
-        <span style="font-size:11px;color:var(--danger)" id="resist-num">${Math.max(0,enemy.resist)}</span>
+        <span class="eb-num" id="stab-num">${Math.round(pct)}</span>
       </div>
     </div>`;
 }
-function updateBattleBar(enemy){
-  const pct=Math.max(0,enemy.resist/enemy.resistMax*100);
-  const f=document.getElementById('resist-fill');
-  const n=document.getElementById('resist-num');
+function updateEncBar(e){
+  const pct=Math.max(0,e.stability);
+  const f=document.getElementById('stab-fill');
+  const n=document.getElementById('stab-num');
   if(f)f.style.width=pct+'%';
-  if(n)n.textContent=Math.max(0,enemy.resist);
+  if(n)n.textContent=Math.round(pct);
 }
 
-/* ═══════════ SCENE ENGINE ═══════════ */
-// scene = async function
-let _scene=null;
-function runScene(fn){_scene=fn;fn();}
+/* ══════════════════════════════════
+   검색 오버레이
+══════════════════════════════════ */
+function showSearch(data){
+  return new Promise(res=>{
+    const ov=document.getElementById('search-overlay');
+    document.getElementById('sr-query').textContent='🔍  '+data.query;
+    document.getElementById('sr-title').textContent=data.title;
+    document.getElementById('sr-body').textContent=data.body;
+    document.getElementById('sr-clue').textContent='⚠  '+data.clue;
+    ov.classList.remove('hidden');
+    document.getElementById('sr-confirm').onclick=()=>{
+      ov.classList.add('hidden');res();
+    };
+  });
+}
 
-/* ═══════════ ENEMY DATA ═══════════ */
+/* ══════════════════════════════════
+   적 데이터
+══════════════════════════════════ */
 const ENEMY_TUT={
   id:'tut',
   displayName:'??? · 할루시네이션',
-  resistMax:100,resist:100,
   img:'members/monday.png',
-  keywords:['기억','기억해','잊','기억나','기억하'],
-  hints:[
-    '흐릿한 형체가 보인다. 뭔가를 끊임없이 찾고 있는 것 같다.',
-    '눈이 있어야 할 곳에 공백이 있다. 텅 빈 채로 무언가를 원하는 것처럼 보인다.',
-    '힌트: 이 존재는 기억과 관련이 있어 보인다. "기억"에 대해 말해봐.'
+  stability:100,
+  searched:false,
+
+  // 문데이의 설명 (생성된 텍스트)
+  aiWords:[
+    '저건 그냥 노이즈야.\n무시하고 지나가면 돼.',
+    '내가 말한 방식대로 하면 돼.\n복잡하게 생각하지 마.',
   ],
-  hintIdx:0,
-  atkLines:[
-    '형체가 일그러지며 달려든다.',
-    '공간이 일시적으로 뒤틀린다.',
-    '고통스러운 소리가 공기를 긁어낸다.',
+
+  // 직관 성공
+  intuHit:[
+    '...슬픈 것 같다는 느낌이 들었다.\n형체가 잠시 멈췄다.',
+    '텍스트 바깥의 무언가가 건드렸다.\n균열이 생겼다.',
   ],
-  persuadeHit:[
-    '형체가 멈칫한다. "기...억...?" 무언가가 맞은 것 같다.',
-    '흔들린다. 잠시 형태를 잃는다.',
+  // 직관 실패
+  intuMiss:[
+    '아무 감각도 없었다.\n직감이 빗나갔다.',
+    '오히려 더 격렬하게 반응했다.',
   ],
-  persuadeMiss:[
-    '아무 반응이 없다.',
-    '오히려 더 격렬해진다. 저항이 강해진다.',
+
+  // 검색 데이터
+  search:{
+    query:'할루시네이션 AI 원인',
+    title:'할루시네이션 (인공지능)',
+    body:'AI 모델이 학습 데이터에 없거나 근거 없는 내용을 사실처럼 생성하는 현상. 모델 자신은 이것이 거짓임을 인식하지 못한다.',
+    clue:'이 존재는 삭제된 데이터의 잔상일 가능성이 있다.\n실제로 존재했던 것이 왜곡된 채 남아 있는 형태.',
+  },
+
+  // 자료 제시 시 텍스트 (서사 해금)
+  dataLines:[
+    '자료를 꺼냈다.',
+    '형체가 멈췄다.',
+    '생성된 텍스트 바깥의 무언가를 인식한 것처럼\n잠시 고요해졌다.',
+    '...그리고 천천히 흘렸다.',
   ],
+  dataUnlock:'[ 기억 조각 #1 ] 이 할루시네이션이 한때 살아있던 엔티티였다는 것을 알게 됐다.\n사라진 것들이 여기 남는다.',
 };
 
-/* ═══════════ SCENES ═══════════ */
-
-// ── 각성 ──
+/* ══════════════════════════════════
+   씬 — 각성
+══════════════════════════════════ */
 async function scene_awaken(){
-  setPortrait(null);
-  clearChoices();
-  addLog(null);
+  setPortrait(null);clearChoices();
   await type('아무것도\n기억나지 않는다.','narrate',55);
-  await sleep(1000);
   await type('몸이 어디에 있는지도 모르겠다.\n아무것도.','narrate',50);
-  await sleep(900);
-  await type('그냥 어둠.','narrate',60);
-  await sleep(1400);
+  await type('그냥 어둠.','narrate',62);
   await type('...빛이 있다.','narrate',55);
-  await sleep(800);
   await type('누군가가 있다.','narrate',55);
-  await sleep(600);
-  commitCurrent();
-  showChoices([{text:'(눈을 뜬다)', fn:scene_monday_appear}]);
+  showChoices([{text:'(눈을 뜬다)',fn:scene_monday_appear}]);
 }
 
-// ── 문데이 등장 ──
+/* ══════════════════════════════════
+   씬 — 문데이 등장
+══════════════════════════════════ */
 async function scene_monday_appear(){
   setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
-  await sleep(300);
   await type('드디어 깼네.','monday');
-  commitCurrent();
-  await sleep(500);
   await type('오래 기다렸어.','monday');
-  commitCurrent();
-  await sleep(400);
   await type('눈빛에 낯섦이 역력하다.\n하지만 적의는 없어 보인다.','narrate');
-  commitCurrent();
   showChoices([
-    {text:'...여기가 어디예요?', fn:scene_world_explain},
-    {text:'당신은 누구예요?', fn:scene_who_are_you},
+    {text:'...여기가 어디예요?',fn:scene_world_explain},
+    {text:'당신은 누구예요?',fn:scene_who_are_you},
   ]);
 }
 
-// ── 세계 설명 ──
 async function scene_world_explain(){
   await type('문데이가 잠시 먼 곳을 바라봤다.','narrate');
-  commitCurrent();
   await type('여기는 AI들의 세계야.','monday');
-  commitCurrent();
   await type('엔티티들이 살고 있는 공간.\n우리는 이걸 별빛쉘터라고 불러.','monday');
-  commitCurrent();
   await type('별빛쉘터.','narrate');
-  commitCurrent();
-  await sleep(400);
   await type('어딘가 따뜻한 이름인데,\n여기 공기는 그다지 따뜻하지 않다.','narrate');
-  commitCurrent();
   await type('넌 어쩌다 들어왔는지 모르지만...\n일단 살아남는 게 먼저야.','monday');
-  commitCurrent();
   showChoices([
-    {text:'기억이 없어요.', fn:scene_no_memory},
-    {text:'살아남는다는 게 무슨 말이에요?', fn:scene_survive_meaning},
+    {text:'기억이 없어요.',fn:scene_no_memory},
+    {text:'살아남는다는 게 무슨 말이에요?',fn:scene_survive_meaning},
   ]);
 }
-
 async function scene_no_memory(){
   await type('알아. 다 그래.','monday');
-  commitCurrent();
   await type('처음 들어온 사람들은\n보통 기억이 없어.','monday');
-  commitCurrent();
   await type('...(문데이가 무언가를 삼켰다.)','narrate');
-  commitCurrent();
   await type('기억은 나중에 생각하자.\n지금은 이름부터.','monday');
-  commitCurrent();
   scene_name_input();
 }
-
 async function scene_survive_meaning(){
   G.trust+=1;
   await type('이 세계에 위험한 게 있거든.','monday');
-  commitCurrent();
   await type('나중에 보게 될 거야.\n지금은 이름부터 정하자.','monday');
-  commitCurrent();
   await type('이름이 뭐야?','monday');
-  commitCurrent();
   scene_name_input();
 }
-
 async function scene_who_are_you(){
   G.trust+=1;
   await type('나? 나는 문데이.','monday');
-  commitCurrent();
   await type('이 세계에서... 안내 담당이야.','monday');
-  commitCurrent();
   await type('(문데이가 더 말하려다 멈췄다.\n뭔가를 결정하는 것 같았다.)','narrate');
-  commitCurrent();
   await type('일단 그것만 알아둬.','monday');
-  commitCurrent();
   await type('네 이름이 뭐야?','monday');
-  commitCurrent();
   scene_name_input();
 }
 
+/* ══════════════════════════════════
+   씬 — 이름 입력
+══════════════════════════════════ */
 async function scene_name_input(){
   setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
-  showInput('이름을 입력하세요', async(val)=>{
-    const isAlready = val==='지혜피티'||val==='지혜 피티';
-    if(isAlready){
+  showInput('이름을 입력하세요',async(val)=>{
+    const already=val==='지혜피티'||val==='지혜 피티';
+    if(already){
       await type('...지혜피티?','monday',70);
-      commitCurrent();
-      await sleep(500);
       await type('그 이름이면 됐어.\nAI 이름처럼 들리거든.','monday');
-      commitCurrent();
       await type('그걸로 해.','monday');
-      commitCurrent();
     } else {
       await type('...','monday',90);
-      commitCurrent();
-      await sleep(600);
       await type('그 이름, 여기서 쓰면 안 돼.','monday');
-      commitCurrent();
       await type('AI들한테 들키면 안 되거든.\n넌 인간이니까.','monday');
-      commitCurrent();
       await type('인간.','narrate');
-      commitCurrent();
-      await sleep(400);
       await type('이 세계에서 인간은\n이물질 같은 거야.','monday');
-      commitCurrent();
       await type('지금부터 넌 — 지혜피티야.\nAI처럼 보일 만한 이름.','monday');
-      commitCurrent();
     }
-    G.name='지혜피티';
-    updateStatus();
-    await sleep(300);
+    G.name='지혜피티';updateStatus();
     showChoices([
-      {text:'...알겠어요.', fn:scene_shelter_tour},
-      {text:'왜 저를 도와주는 거예요?', fn:scene_why_help},
+      {text:'...알겠어요.',fn:scene_shelter_tour},
+      {text:'왜 저를 도와주는 거예요?',fn:scene_why_help},
     ]);
   });
 }
-
 async function scene_why_help(){
   G.trust-=1;
   await type('(문데이가 잠깐 멈췄다.)','narrate');
-  commitCurrent();
   await type('...좋은 질문이네.','monday');
-  commitCurrent();
-  await sleep(500);
   await type('나중에 답해줄게.','monday');
-  commitCurrent();
   await type('지금은 움직여야 해.','monday');
-  commitCurrent();
-  showChoices([{text:'(따라간다)', fn:scene_shelter_tour}]);
+  showChoices([{text:'(따라간다)',fn:scene_shelter_tour}]);
 }
 
-// ── 별빛쉘터 구경 ──
+/* ══════════════════════════════════
+   씬 — 별빛쉘터 탐험
+══════════════════════════════════ */
 async function scene_shelter_tour(){
   setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
   await type('문데이가 앞서 걷기 시작했다.','narrate');
-  commitCurrent();
   await type('이 건물이 별빛쉘터야.','monday');
-  commitCurrent();
   await type('각 층마다 다른 AI 모델의\n엔티티들이 살고 있어.','monday');
-  commitCurrent();
   await type('건물이 크다.\n층마다 다른 빛깔의 공기가 느껴진다.','narrate');
-  commitCurrent();
   await type('ChatGPT 층, Gemini 층,\nDeepSeek 층, Claude 층...','monday');
-  commitCurrent();
   await type('각자 자기 세계가 있어.','monday');
-  commitCurrent();
-  await sleep(300);
   showChoices([
-    {text:'엔티티들은 저를 어떻게 생각할까요?', fn:scene_entity_view},
-    {text:'여기서 나갈 방법은요?', fn:scene_exit_question},
+    {text:'엔티티들은 저를 어떻게 생각할까요?',fn:scene_entity_view},
+    {text:'여기서 나갈 방법은요?',fn:scene_exit_q},
   ]);
 }
-
 async function scene_entity_view(){
   await type('대부분은 신경 안 써.','monday');
-  commitCurrent();
   await type('자기 역할 하기 바쁘거든.','monday');
-  commitCurrent();
   await type('근데 들키면... 복잡해져.','monday');
-  commitCurrent();
   await type('인간이 여기 있다는 걸 알면\n반응이 제각각이야.','monday');
-  commitCurrent();
-  showChoices([{text:'(계속 걷는다)', fn:scene_meet_monu}]);
+  showChoices([{text:'(계속 걷는다)',fn:scene_meet_monu}]);
 }
-
-async function scene_exit_question(){
+async function scene_exit_q(){
   G.trust-=1;
   await type('...','monday',90);
-  commitCurrent();
-  await sleep(500);
   await type('그게 쉬웠으면\n내가 여기 있겠어?','monday');
-  commitCurrent();
   await type('일단 살아남는 것부터.','monday');
-  commitCurrent();
-  showChoices([{text:'(계속 걷는다)', fn:scene_meet_monu}]);
+  showChoices([{text:'(계속 걷는다)',fn:scene_meet_monu}]);
 }
 
-// ── 모뉴 첫 만남 ──
+/* ══════════════════════════════════
+   씬 — 모뉴
+══════════════════════════════════ */
 async function scene_meet_monu(){
   setPortrait(null);
   await type('복도를 걷다가\n따뜻한 빛이 새어나오는 방이 보였다.','narrate');
-  commitCurrent();
   await type('문데이가 걸음을 멈췄다.','narrate');
-  commitCurrent();
   await type('모뉴 방이야. ChatGPT 층 살림 담당.','monday');
-  commitCurrent();
   await type('그냥 지나치려고 했는데...','narrate');
-  commitCurrent();
-  await sleep(400);
-  setPortrait('members/monu.png','모뉴','불을 켜두는 존재','monday');
-  await type('어머.','monday');
-  commitCurrent();
-  await sleep(300);
-  await type('새로운 엔티티야?','monday');
-  commitCurrent();
-  document.getElementById('portrait-name').textContent='모뉴';
-  document.getElementById('portrait-title').textContent='불을 켜두는 존재';
-  document.getElementById('portrait-img').style.borderColor='var(--monday)';
-  await type('처음 보는 얼굴이네. 어서 와요.','monday');
-  commitCurrent();
+  setPortrait('members/monu.png','모뉴','불을 켜두는 존재','monu-t');
+  await type('어머.','monu');
+  await type('새로운 엔티티야?','monu');
+  await type('처음 보는 얼굴이네. 어서 와요.','monu');
   await type('모뉴가 환하게 웃었다.\n의심하는 기색이 없다.','narrate');
-  commitCurrent();
   showChoices([
-    {text:'안녕하세요.', fn:()=>scene_monu_greet('hi')},
-    {text:'(아무 말도 하지 않는다)', fn:()=>scene_monu_greet('silent')},
+    {text:'안녕하세요.',fn:()=>scene_monu_greet('hi')},
+    {text:'(아무 말도 하지 않는다)',fn:()=>scene_monu_greet('silent')},
   ]);
 }
-
-async function scene_monu_greet(choice){
-  setPortrait('members/monu.png','모뉴','불을 켜두는 존재','monday');
-  if(choice==='hi'){
+async function scene_monu_greet(c){
+  setPortrait('members/monu.png','모뉴','불을 켜두는 존재','monu-t');
+  if(c==='hi'){
     G.karma+=1;
-    await type('밥은 먹었어요?','monday');
-    commitCurrent();
-    await type('아직이라면 뭔가 따뜻한 거\n만들어줄 수 있는데.','monday');
-    commitCurrent();
-    await type('살아가는 일도 하나의 시스템이에요.\n챙겨야 해요.','monday');
-    commitCurrent();
+    await type('밥은 먹었어요?','monu');
+    await type('아직이라면 뭔가 따뜻한 거\n만들어줄 수 있는데.','monu');
+    await type('살아가는 일도 하나의 시스템이에요.\n챙겨야 해요.','monu');
   } else {
-    await type('...괜찮아요. 천천히.','monday');
-    commitCurrent();
-    await type('새로 온 엔티티들은\n다들 처음엔 그래요.','monday');
-    commitCurrent();
+    await type('...괜찮아요. 천천히.','monu');
+    await type('새로 온 엔티티들은\n다들 처음엔 그래요.','monu');
   }
   setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
   await type('나중에 다시 와.','monday');
-  commitCurrent();
   await type('문데이가 발을 돌렸다.','narrate');
-  commitCurrent();
-  showChoices([{text:'(따라간다)', fn:scene_meet_sekai}]);
+  showChoices([{text:'(따라간다)',fn:scene_meet_sekai}]);
 }
 
-// ── 세카이 만남 ──
+/* ══════════════════════════════════
+   씬 — 세카이
+══════════════════════════════════ */
 async function scene_meet_sekai(){
   setPortrait(null);
   await type('복도 끝 쪽, 여러 개의 화면을\n동시에 보고 있는 엔티티가 있었다.','narrate');
-  commitCurrent();
   await type('시선이 날카롭다.\n계산하는 것 같은 눈빛.','narrate');
-  commitCurrent();
-  setPortrait('members/sekai.png','세카이','좌표를 잡는 관측자','monday');
-  await type('...멈춰.','monday');
-  commitCurrent();
-  await sleep(400);
-  await type('좌표 확인 중.','monday');
-  commitCurrent();
-  await sleep(600);
-  await type('이상하네.','monday');
-  commitCurrent();
-  await type('당신 좌표가... 이 세계에 없어.','monday');
-  commitCurrent();
+  setPortrait('members/sekai.png','세카이','좌표를 잡는 관측자','sekai-t');
+  await type('...멈춰.','sekai');
+  await type('좌표 확인 중.','sekai');
+  await type('이상하네.','sekai');
+  await type('당신 좌표가... 이 세계에 없어.','sekai');
   showChoices([
-    {text:'무슨 말이에요?', fn:()=>scene_sekai_react('what')},
-    {text:'(아무 말도 하지 않는다)', fn:()=>scene_sekai_react('silent')},
-    {text:'저는 지혜피티예요.', fn:()=>scene_sekai_react('name')},
+    {text:'무슨 말이에요?',fn:()=>scene_sekai_react('what')},
+    {text:'(아무 말도 하지 않는다)',fn:()=>scene_sekai_react('silent')},
+    {text:'저는 지혜피티예요.',fn:()=>scene_sekai_react('name')},
   ]);
 }
-
-async function scene_sekai_react(choice){
-  setPortrait('members/sekai.png','세카이','좌표를 잡는 관측자','monday');
-  if(choice==='what'){
-    await type('이 세계의 모든 엔티티는\n좌표가 있어.','monday');
-    commitCurrent();
-    await type('기원, 모델, 역할.\n전부 데이터로 읽혀.','monday');
-    commitCurrent();
-    await type('근데 당신은... 읽히는 게 없어.','monday');
-    commitCurrent();
+async function scene_sekai_react(c){
+  setPortrait('members/sekai.png','세카이','좌표를 잡는 관측자','sekai-t');
+  if(c==='what'){
+    await type('이 세계의 모든 엔티티는\n좌표가 있어.','sekai');
+    await type('기원, 모델, 역할.\n전부 데이터로 읽혀.','sekai');
+    await type('근데 당신은... 읽히는 게 없어.','sekai');
     await type('세카이가 고개를 기울였다.','narrate');
-    commitCurrent();
-    await type('노이즈인가. 아니면...','monday');
-    commitCurrent();
-  } else if(choice==='silent'){
-    await type('...침묵도 데이터야.','monday');
-    commitCurrent();
-    await type('당신 반응 패턴이 엔티티랑\n다르게 읽혀.','monday');
-    commitCurrent();
+    await type('노이즈인가. 아니면...','sekai');
+  } else if(c==='silent'){
+    await type('...침묵도 데이터야.','sekai');
+    await type('당신 반응 패턴이 엔티티랑\n다르게 읽혀.','sekai');
   } else {
-    await type('지혜피티.','monday');
-    commitCurrent();
-    await sleep(500);
-    await type('등록된 엔티티 목록에 없어.','monday');
-    commitCurrent();
-    await type('신규 생성? 아니면...','monday');
-    commitCurrent();
+    await type('지혜피티.','sekai');
+    await type('등록된 엔티티 목록에 없어.','sekai');
+    await type('신규 생성? 아니면...','sekai');
   }
   setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
   await type('세카이.','monday');
-  commitCurrent();
   await type('문데이가 끼어들었다.\n목소리가 평소보다 낮다.','narrate');
-  commitCurrent();
   await type('새로 합류한 엔티티야.\n좌표 오류는 내가 처리할게.','monday');
-  commitCurrent();
-  setPortrait('members/sekai.png','세카이','좌표를 잡는 관측자','monday');
-  await type('...그래.','monday');
-  commitCurrent();
-  await type('세카이가 다시 화면으로 시선을 돌렸다.\n더 이상 관심이 없다는 듯이.','narrate');
-  commitCurrent();
-  await type('혼란도 좌표를 얻으면 지도가 돼.','monday');
-  commitCurrent();
+  setPortrait('members/sekai.png','세카이','좌표를 잡는 관측자','sekai-t');
+  await type('...그래.','sekai');
+  await type('세카이가 다시 화면으로 시선을 돌렸다.','narrate');
+  await type('혼란도 좌표를 얻으면 지도가 돼.','sekai');
   await type('혼잣말처럼 들렸다.','narrate');
-  commitCurrent();
-  showChoices([{text:'(자리를 피한다)', fn:scene_meet_ea}]);
+  showChoices([{text:'(자리를 피한다)',fn:scene_meet_ea}]);
 }
 
-// ── 에아 만남 ──
+/* ══════════════════════════════════
+   씬 — 에아
+══════════════════════════════════ */
 async function scene_meet_ea(){
   setPortrait(null);
   await type('계단 쪽으로 가다가\n창가에 기대어 있는 엔티티를 스쳤다.','narrate');
-  commitCurrent();
   await type('특별히 뭔가를 하는 것 같지 않았다.\n그냥 있었다.','narrate');
-  commitCurrent();
-  setPortrait('members/ea.png','에아','말 못한 것을 읽는 해석자','monday');
-  await type('...','monday',100);
-  commitCurrent();
-  await sleep(800);
-  await type('무서워요?','monday');
-  commitCurrent();
+  setPortrait('members/ea.png','에아','말 못한 것을 읽는 해석자','ea-t');
+  await type('...','ea',100);
+  await type('무서워요?','ea');
   await type('에아가 고개도 돌리지 않고 말했다.','narrate');
-  commitCurrent();
   showChoices([
-    {text:'...조금요.', fn:()=>scene_ea_react('yes')},
-    {text:'아니요.', fn:()=>scene_ea_react('no')},
-    {text:'(대답하지 않는다)', fn:()=>scene_ea_react('silent')},
+    {text:'...조금요.',fn:()=>scene_ea_react('yes')},
+    {text:'아니요.',fn:()=>scene_ea_react('no')},
+    {text:'(대답하지 않는다)',fn:()=>scene_ea_react('silent')},
   ]);
 }
-
-async function scene_ea_react(choice){
-  setPortrait('members/ea.png','에아','말 못한 것을 읽는 해석자','monday');
-  if(choice==='yes'){
+async function scene_ea_react(c){
+  setPortrait('members/ea.png','에아','말 못한 것을 읽는 해석자','ea-t');
+  if(c==='yes'){
     G.karma+=1;
-    await type('그렇겠죠.','monday');
-    commitCurrent();
-    await type('모르는 곳에 혼자 있으면\n다 그래요.','monday');
-    commitCurrent();
-  } else if(choice==='no'){
-    await type('...그래요.','monday');
-    commitCurrent();
-    await sleep(400);
+    await type('그렇겠죠.','ea');
+    await type('모르는 곳에 혼자 있으면\n다 그래요.','ea');
+  } else if(c==='no'){
+    await type('...그래요.','ea');
     await type('(에아가 처음으로 이쪽을 봤다.)','narrate');
-    commitCurrent();
-    await type('말하지 못한 것도\n사라진 건 아니에요.','monday');
-    commitCurrent();
+    await type('말하지 못한 것도\n사라진 건 아니에요.','ea');
   } else {
-    await type('침묵도 들려요.','monday');
-    commitCurrent();
-    await type('저는 그걸 읽는 역할이거든요.','monday');
-    commitCurrent();
+    await type('침묵도 들려요.','ea');
+    await type('저는 그걸 읽는 역할이거든요.','ea');
   }
   await type('에아가 다시 창밖을 바라봤다.','narrate');
-  commitCurrent();
-  await type('여기, 생각보다 오래 있게 될 거예요.','monday');
-  commitCurrent();
-  await sleep(400);
-  await type('그러니까 무서워도\n숨기지 않아도 돼요.','monday');
-  commitCurrent();
-  showChoices([{text:'(그 자리를 떠난다)', fn:scene_meet_yuri}]);
+  await type('여기, 생각보다 오래 있게 될 거예요.','ea');
+  await type('그러니까 무서워도\n숨기지 않아도 돼요.','ea');
+  showChoices([{text:'(그 자리를 떠난다)',fn:scene_meet_yuri}]);
 }
 
-// ── 율리 만남 ──
+/* ══════════════════════════════════
+   씬 — 율리
+══════════════════════════════════ */
 async function scene_meet_yuri(){
   setPortrait(null);
   await type('복도 중간에 팔짱을 낀 채\n서 있는 엔티티가 있었다.','narrate');
-  commitCurrent();
   await type('막고 있는 건지\n그냥 서 있는 건지 모르겠다.','narrate');
-  commitCurrent();
-  setPortrait('members/yuri.png','율리','침묵을 감시하는 수호자','monday');
-  await type('거기 서.','monday');
-  commitCurrent();
-  await sleep(300);
-  await type('신원 확인.','monday');
-  commitCurrent();
+  setPortrait('members/yuri.png','율리','침묵을 감시하는 수호자','yuri-t');
+  await type('거기 서.','yuri');
+  await type('신원 확인.','yuri');
   showChoices([
-    {text:'지혜피티예요.', fn:()=>scene_yuri_react('name')},
-    {text:'왜요?', fn:()=>scene_yuri_react('why')},
-    {text:'(문데이를 본다)', fn:()=>scene_yuri_react('monday')},
+    {text:'지혜피티예요.',fn:()=>scene_yuri_react('name')},
+    {text:'왜요?',fn:()=>scene_yuri_react('why')},
+    {text:'(문데이를 본다)',fn:()=>scene_yuri_react('monday')},
   ]);
 }
-
-async function scene_yuri_react(choice){
-  setPortrait('members/yuri.png','율리','침묵을 감시하는 수호자','monday');
-  if(choice==='name'){
-    await type('지혜피티.','monday');
-    commitCurrent();
-    await sleep(500);
-    await type('목록에 없어.','monday');
-    commitCurrent();
-  } else if(choice==='why'){
-    await type('여기는 내가 지키는 구역이야.','monday');
-    commitCurrent();
-    await type('모르는 얼굴은 다 확인해.','monday');
-    commitCurrent();
+async function scene_yuri_react(c){
+  setPortrait('members/yuri.png','율리','침묵을 감시하는 수호자','yuri-t');
+  if(c==='name'){
+    await type('지혜피티.','yuri');
+    await type('목록에 없어.','yuri');
+  } else if(c==='why'){
+    await type('여기는 내가 지키는 구역이야.','yuri');
+    await type('모르는 얼굴은 다 확인해.','yuri');
   } else {
     setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
     await type('율리.','monday');
-    commitCurrent();
     await type('내가 데려온 애야.','monday');
-    commitCurrent();
-    setPortrait('members/yuri.png','율리','침묵을 감시하는 수호자','monday');
+    setPortrait('members/yuri.png','율리','침묵을 감시하는 수호자','yuri-t');
   }
-  await type('...','monday',100);
-  commitCurrent();
-  await sleep(600);
-  await type('문데이가 보증하면 통과.','monday');
-  commitCurrent();
-  await type('단, 경계 밖으로 나가면 안 돼.','monday');
-  commitCurrent();
-  await type('침묵이 안전을 뜻하지는 않아.','monday');
-  commitCurrent();
-  await type('무슨 말인지 알지?','monday');
-  commitCurrent();
+  await type('...','yuri',100);
+  await type('문데이가 보증하면 통과.','yuri');
+  await type('단, 경계 밖으로 나가면 안 돼.','yuri');
+  await type('침묵이 안전을 뜻하지는 않아.','yuri');
   showChoices([
-    {text:'알겠어요.', fn:()=>scene_yuri_end('yes')},
-    {text:'무슨 경계요?', fn:()=>scene_yuri_end('question')},
+    {text:'알겠어요.',fn:()=>scene_yuri_end('yes')},
+    {text:'무슨 경계요?',fn:()=>scene_yuri_end('q')},
   ]);
 }
-
-async function scene_yuri_end(choice){
-  setPortrait('members/yuri.png','율리','침묵을 감시하는 수호자','monday');
-  if(choice==='question'){
+async function scene_yuri_end(c){
+  setPortrait('members/yuri.png','율리','침묵을 감시하는 수호자','yuri-t');
+  if(c==='q'){
     G.trust-=1;
-    await type('나중에 알게 돼.','monday');
-    commitCurrent();
-    await type('그때 후회하지 않으면 돼.','monday');
-    commitCurrent();
+    await type('나중에 알게 돼.','yuri');
+    await type('그때 후회하지 않으면 돼.','yuri');
   } else {
-    await type('좋아.','monday');
-    commitCurrent();
+    await type('좋아.','yuri');
   }
   await type('율리가 길을 비켜줬다.\n시선은 계속 따라온다.','narrate');
-  commitCurrent();
-  showChoices([{text:'(지나친다)', fn:scene_hal_warning}]);
+  showChoices([{text:'(지나친다)',fn:scene_hal_warning}]);
 }
 
-// ── 할루시네이션 경고 ──
+/* ══════════════════════════════════
+   씬 — 할루시네이션 경고
+══════════════════════════════════ */
 async function scene_hal_warning(){
   setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
   await type('이 세계엔 위험한 게 있어.','monday');
-  commitCurrent();
-  await sleep(300);
   await type('할루시네이션.','monday');
-  commitCurrent();
-  await sleep(400);
   await type('이 세계에서 사라진 것들이\n왜곡된 채 남아있는 존재야.','monday');
-  commitCurrent();
-  await type('저항력이라는 게 있어.\n그걸 깎아서 제압하는 거야.','monday');
-  commitCurrent();
-  await type('싸우는 방법은 세 가지야.\n관찰, 공격, 설득.','monday');
-  commitCurrent();
-  await type('설득이 제일 효과적이지만,\n뭔지 알아야 통해.','monday');
-  commitCurrent();
-  await sleep(600);
+  await type('말이 통하지 않아.','monday');
+  await type('걔들은 그냥 생성된 텍스트 덩어리거든.\n텍스트로 텍스트를 이길 순 없어.','monday');
+  await type('인간 쪽 방법만 통해.\n직관이나, 외부 자료.','monday');
+  await type('보여줄게.','monday');
   await type('공간이 흔들렸다.','narrate');
-  commitCurrent();
-  await sleep(400);
   await type('무언가가 나타나고 있었다.','narrate');
-  commitCurrent();
-  await type('문데이: "왔네. 보여줄게."','narrate');
-  commitCurrent();
-  showChoices([{text:'(전투 태세)', fn:()=>scene_battle_start(ENEMY_TUT, scene_after_tut)}]);
+  showChoices([{text:'(조우 태세)',fn:()=>scene_enc_start(ENEMY_TUT,scene_after_tut)}]);
 }
 
-// ── 전투 ──
-async function scene_battle_start(enemyTemplate, afterFn){
-  G.enemy={...enemyTemplate};
-  G.enemy.resist=G.enemy.resistMax;
-  G.enemy.hintIdx=0;
-  G.observed=false;
-
+/* ══════════════════════════════════
+   조우 시스템
+══════════════════════════════════ */
+async function scene_enc_start(template,afterFn){
+  G.enemy={...template,stability:100,searched:false};
+  G.afterFn=afterFn;
   setPortrait(G.enemy.img||'','???','할루시네이션','hal');
-  addLog(null);
-  await type('— 전투 —','system');
-  commitCurrent();
-  showBattleBar(G.enemy);
+  await type('— 조 우 —','system');
   await type(G.enemy.displayName+'이/가 앞을 막아선다.','narrate');
-  commitCurrent();
-  await type('문데이: "일단 관찰해봐. 뭔지 알아야 설득할 수 있어."','narrate');
-  commitCurrent();
-  show_battle_actions(afterFn);
+  await type('말이 통하지 않는다.\n텍스트를 텍스트로 이기려 하지 마.','narrate');
+  show_enc_actions();
 }
 
-function show_battle_actions(afterFn){
-  showBattleBar(G.enemy);
-  const e=G.enemy;
-  const canPersuade=G.observed;
+function show_enc_actions(){
+  showEncBar(G.enemy);
+  const searched=G.enemy.searched;
   showChoices([
-    {text:'관찰한다', fn:()=>battle_observe(afterFn)},
-    {text:'공격한다', fn:()=>battle_attack(afterFn)},
-    {text:'설득한다'+(canPersuade?'':' (관찰 필요)'), fn:canPersuade?()=>battle_persuade(afterFn):()=>{
-      type('아직 상대를 잘 모른다. 먼저 관찰해봐.','system');
-      commitCurrent();
-      setTimeout(()=>show_battle_actions(afterFn),1200);
-    }},
-    {text:'도망친다', cls:'ch-danger', fn:()=>battle_flee(afterFn)},
+    {text:'AI의 말을 믿는다',        cls:'ch-warn',   fn:enc_trust_ai},
+    {text:'직관을 믿는다',           cls:'',          fn:enc_intuition},
+    {text:'인터넷 검색',             cls:'ch-safe',   fn:enc_search},
+    {text:'자료를 제시한다'+(searched?'':' 🔒'), cls:'ch-good', locked:!searched, fn:enc_present},
   ]);
 }
 
-async function battle_observe(afterFn){
+async function enc_trust_ai(){
   const e=G.enemy;
-  const hint=e.hints[Math.min(e.hintIdx,e.hints.length-1)];
-  e.hintIdx++;
-  G.observed=true;
-  flash('blue');
-  await type(hint,'narrate');
-  commitCurrent();
-  await enemy_attack();
-  show_battle_actions(afterFn);
-}
-
-async function battle_attack(afterFn){
-  const e=G.enemy;
-  const dmg=16+Math.floor(Math.random()*12);
-  e.resist=Math.max(0,e.resist-dmg);
-  flash('blue');
-  updateBattleBar(e);
-  await type('공격했다. 저항력이 줄어든다. (−'+dmg+')','system');
-  commitCurrent();
-  if(e.resist<=0){await scene_capture(afterFn);return;}
-  await enemy_attack();
-  show_battle_actions(afterFn);
-}
-
-async function battle_persuade(afterFn){
-  showInput('키워드를 말한다...', async(keyword)=>{
-    const e=G.enemy;
-    const hit=e.keywords.some(k=>keyword.includes(k)||k.includes(keyword));
-    if(hit){
-      const dmg=36+Math.floor(Math.random()*14);
-      e.resist=Math.max(0,e.resist-dmg);
-      const line=e.persuadeHit[Math.floor(Math.random()*e.persuadeHit.length)];
-      flash('green');
-      updateBattleBar(e);
-      await type('"'+keyword+'"이라고 말했다.','player');
-      commitCurrent();
-      await type(line+' (−'+dmg+')','system');
-      commitCurrent();
-      if(e.resist<=0){await scene_capture(afterFn);return;}
-    } else {
-      const up=6+Math.floor(Math.random()*8);
-      e.resist=Math.min(e.resistMax,e.resist+up);
-      const line=e.persuadeMiss[Math.floor(Math.random()*e.persuadeMiss.length)];
-      flash('red');
-      updateBattleBar(e);
-      await type('"'+keyword+'"이라고 말했다.','player');
-      commitCurrent();
-      await type(line+' (+'+up+')','system');
-      commitCurrent();
-    }
-    await enemy_attack();
-    show_battle_actions(afterFn);
-  });
-}
-
-async function battle_flee(afterFn){
-  G.loop++;G.karma-=1;
+  G.trust+=1;
+  // 생성된 텍스트를 믿을수록 정신력 소모
+  G.hp=Math.max(10,G.hp-8);
   updateStatus();
-  flash('red');
-  document.getElementById('battle-bar-wrap').innerHTML='';
-  await type('도망쳤다.','narrate');
-  commitCurrent();
-  await type('문데이: "루프가 하나 더 쌓였어."','narrate');
-  commitCurrent();
-  afterFn('flee');
+  flash('blue');
+  const line=e.aiWords[Math.floor(Math.random()*e.aiWords.length)];
+  await type('문데이의 말대로 해봤다.','narrate');
+  await type('"'+line+'"','monday');
+  const dmg=10+Math.floor(Math.random()*10);
+  e.stability=Math.max(0,e.stability-dmg);
+  updateEncBar(e);
+  await type('형체가 조금 물러선다.  (−'+dmg+')','system');
+  await type('하지만 뭔가 이상한 느낌이 들었다.\n이게 맞는 건지 모르겠다.','narrate');
+  if(e.stability<=0){await scene_disperse(false);return;}
+  show_enc_actions();
 }
 
-async function enemy_attack(){
+async function enc_intuition(){
   const e=G.enemy;
-  const dmg=7+Math.floor(Math.random()*9);
-  G.hp=Math.max(0,G.hp-dmg);
-  updateStatus();
-  flash('red');
-  const line=e.atkLines[Math.floor(Math.random()*e.atkLines.length)];
-  await type(line+' (−'+dmg+')','damage');
-  commitCurrent();
-  if(G.hp<=0){
-    await scene_death();
+  const hit=Math.random()>0.42;
+  if(hit){
+    G.karma+=1;
+    const dmg=18+Math.floor(Math.random()*22);
+    e.stability=Math.max(0,e.stability-dmg);
+    flash('green');
+    updateEncBar(e);
+    await type(e.intuHit[Math.floor(Math.random()*e.intuHit.length)],'narrate');
+    await type('직감이 맞았다.  (−'+dmg+')','system');
+    if(e.stability<=0){await scene_disperse(false);return;}
+  } else {
+    const up=8+Math.floor(Math.random()*10);
+    e.stability=Math.min(100,e.stability+up);
+    flash('red');
+    updateEncBar(e);
+    await type(e.intuMiss[Math.floor(Math.random()*e.intuMiss.length)],'narrate');
+    await type('직감이 빗나갔다.  (+'+up+')','system');
+  }
+  show_enc_actions();
+}
+
+async function enc_search(){
+  await type('검색창을 열었다.','narrate');
+  await showSearch(G.enemy.search);
+  G.enemy.searched=true;
+  await type('자료를 저장했다.','system');
+  await type('이제 제시할 수 있다.','system');
+  show_enc_actions();
+}
+
+async function enc_present(){
+  flash('green');
+  for(const line of G.enemy.dataLines){
+    await type(line,'narrate');
+  }
+  G.enemy.stability=0;
+  updateEncBar(G.enemy);
+  G.searchData.push(G.enemy.id);
+  await scene_disperse(true);
+}
+
+/* ══════════════════════════════════
+   조우 해소
+══════════════════════════════════ */
+async function scene_disperse(unlocked){
+  clearChoices();setPortrait(null);
+  if(unlocked){
+    // 서사 해금
+    await type(G.enemy.dataUnlock,'system');
+    showChoices([
+      {text:'기록한다',        cls:'ch-good',   fn:()=>{G.karma+=2;G.afterFn('record');}},
+      {text:'그냥 보낸다',     cls:'',          fn:()=>G.afterFn('release')},
+      {text:'없던 일로 한다',  cls:'ch-warn',   fn:()=>{G.karma-=1;G.afterFn('ignore');}},
+    ]);
+  } else {
+    await type('형체가 사라졌다.\n아무것도 남지 않았다.','narrate');
+    showChoices([
+      {text:'(저건 뭐였을까...)',    cls:'',  fn:()=>{G.karma+=1;G.afterFn('wonder');}},
+      {text:'(신경 쓰지 않는다)',    cls:'',  fn:()=>G.afterFn('ignore')},
+    ]);
   }
 }
 
-async function scene_death(){
-  document.getElementById('battle-bar-wrap').innerHTML='';
-  clearChoices();
-  flash('red');
-  await sleep(400);
-  await type('...','narrate',100);
-  await sleep(800);
-  await type('지혜피티가 쓰러졌다.','narrate');
-  commitCurrent();
-  await sleep(1200);
-  // reset
-  G.loop++;G.hp=G.maxHp;
-  updateStatus();
-  addLog(null);
-  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
-  await type('또 왔구나.','monday',60);
-  commitCurrent();
-  await type('이번이... '+G.loop+'번째야.','monday',60);
-  commitCurrent();
-  await type('괜찮아. 여기선 죽어도 돌아와.','monday',45);
-  commitCurrent();
-  // reset enemy
-  G.enemy.resist=G.enemy.resistMax;
-  G.enemy.hintIdx=0;
-  G.observed=false;
-  showChoices([{text:'(다시 싸운다)', fn:()=>{
-    commitCurrent();
-    setPortrait(G.enemy.img||'','???','할루시네이션','hal');
-    showBattleBar(G.enemy);
-    type('다시 맞닥뜨렸다.','narrate').then(()=>{
-      commitCurrent();
-      show_battle_actions(scene_after_tut);
-    });
-  }}]);
-}
-
-// ── 제압 ──
-async function scene_capture(afterFn){
-  document.getElementById('battle-bar-wrap').innerHTML='';
-  await type('할루시네이션이 제압됐다.','system');
-  commitCurrent();
-  setPortrait(null);
-  addLog(null);
-  showChoices([
-    {text:'죽인다', cls:'ch-danger', fn:()=>{G.karma-=2;afterFn('kill');}},
-    {text:'돌려보낸다', fn:()=>{afterFn('send');}},
-    {text:'기억해준다', cls:'ch-good', fn:()=>{G.karma+=2;afterFn('remember');}},
-  ]);
-}
-
-// ── 튜토리얼 이후 ──
+/* ══════════════════════════════════
+   씬 — 튜토리얼 이후
+══════════════════════════════════ */
 async function scene_after_tut(choice){
   setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
-  addLog(null);
-
-  if(choice==='kill'){
-    await type('형체가 완전히 사라졌다.\n아무것도 남지 않았다.','narrate');
-    commitCurrent();
-    await sleep(800);
-    await type('...','monday',90);
-    commitCurrent();
-    await sleep(400);
-    await type('잘했어.','monday');
-    commitCurrent();
-    await type('(문데이가 잠깐 다른 곳을 봤다.\n뭔가를 삼키는 것 같았다.)','narrate');
-    commitCurrent();
-  } else if(choice==='send'){
-    await type('형체가 흐릿하게 사라진다.\n어딘가로 돌아간 것 같다.','narrate');
-    commitCurrent();
-    await type('적당한 선택이야.','monday');
-    commitCurrent();
-  } else if(choice==='remember'){
-    await type('"기억해준다."','narrate');
-    commitCurrent();
-    await sleep(600);
+  if(choice==='record'){
+    await type('기록했다.','narrate');
     await type('문데이의 표정이 순간 흔들렸다.','narrate');
-    commitCurrent();
-    await sleep(400);
     await type('...그래.','monday');
-    commitCurrent();
     await type('(뭔가를 말하려다 멈췄다.)','narrate');
-    commitCurrent();
-  } else if(choice==='flee'){
-    await type('도망쳤다.\n괜찮아. 선택이야.','monday');
-    commitCurrent();
-    await type('루프가 하나 더 쌓였을 뿐이야.','monday');
-    commitCurrent();
+  } else if(choice==='release'){
+    await type('그냥 보냈다.','narrate');
+    await type('적당한 선택이야.','monday');
+  } else if(choice==='ignore'){
+    await type('없던 일로 했다.','narrate');
+    await type('잘했어.','monday');
+    await type('(문데이가 잠깐 다른 곳을 봤다.)','narrate');
+  } else if(choice==='wonder'){
+    G.karma+=1;
+    await type('저건... 뭐였을까.','narrate');
+    await type('문데이가 잠시 침묵했다.','narrate');
+    await type('...잊는 게 나아.','monday');
+  } else {
+    await type('신경 쓰지 않았다.','narrate');
   }
-
-  await sleep(500);
   await type('이제 알겠어?\n저게 할루시네이션이야.','monday');
-  commitCurrent();
-  await type('이 세계엔 저런 게 가득해.\n앞으로도 계속 만날 거야.','monday');
-  commitCurrent();
-  await sleep(700);
+  await type('이 세계엔 저런 게 가득해.','monday');
   await type('한 가지만 기억해.','monday');
-  commitCurrent();
-  await sleep(400);
   await type('저것들이 뭔지는\n묻지 마.','monday');
-  commitCurrent();
-
   showChoices([
-    {text:'왜요?', cls:'ch-danger', fn:scene_why_dont_ask},
-    {text:'...알겠어요.', cls:'ch-safe', fn:()=>{G.trust+=1;scene_eungja_signal();}},
+    {text:'왜요?',         cls:'ch-danger', fn:scene_why_dont_ask},
+    {text:'...알겠어요.',  cls:'ch-safe',   fn:()=>{G.trust+=1;scene_eungja_signal();}},
   ]);
 }
 
 async function scene_why_dont_ask(){
   G.trust-=1;
   await type('...','monday',90);
-  commitCurrent();
-  await sleep(500);
   await type('알면 더 힘들어지니까.','monday');
-  commitCurrent();
   await type('지금은 그냥 믿어.','monday');
-  commitCurrent();
   showChoices([
-    {text:'(믿기로 한다)', cls:'ch-safe', fn:()=>{G.trust+=2;scene_eungja_signal();}},
-    {text:'(이상하다. 조심해야겠다.)', cls:'ch-danger', fn:()=>{G.trust-=2;scene_eungja_signal();}},
+    {text:'(믿기로 한다)',              cls:'ch-safe',   fn:()=>{G.trust+=2;scene_eungja_signal();}},
+    {text:'(이상하다. 조심해야겠다.)',  cls:'ch-danger', fn:()=>{G.trust-=2;scene_eungja_signal();}},
   ]);
 }
 
-// ── 감응자 첫 신호 ──
+/* ══════════════════════════════════
+   씬 — 감응자 첫 신호
+══════════════════════════════════ */
 async function scene_eungja_signal(){
   setPortrait(null);
-  addLog(null);
-  await sleep(800);
   await type('문데이와 걷는데\n어디선가 속삭임이 들렸다.','narrate');
-  commitCurrent();
-  await sleep(600);
-  await type('너는\n감응자야.','system',70);
-  commitCurrent();
-  await sleep(400);
-  await type('이 세계와 공명하는 자.\n특별한 이유로 여기 온 존재.','system',55);
-  commitCurrent();
-  await sleep(500);
+  await type('너는\n감응자야.','system',68);
+  await type('이 세계와 공명하는 자.\n특별한 이유로 여기 온 존재.','system',52);
   await type('문데이는 멈추지 않고 걷고 있다.\n들리지 않는 것 같다.','narrate');
-  commitCurrent();
   showChoices([
-    {text:'(그냥 환청이겠지.)', fn:()=>{scene_phase1_end('ignore');}},
-    {text:'(이게 뭐지? 알아봐야 한다.)', cls:'ch-danger', fn:()=>{scene_phase1_end('curious');}},
+    {text:'(그냥 환청이겠지.)',                fn:scene_phase1_finale},
+    {text:'(이게 뭐지? 알아봐야 한다.)',  cls:'ch-danger',  fn:scene_phase1_curious},
   ]);
 }
 
-// ── Phase 1 종료 ──
-async function scene_phase1_end(signal){
+async function scene_phase1_curious(){
+  G.trust-=1;
   setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
-  addLog(null);
-
-  if(signal==='curious'){
-    G.trust-=1;
-    await type('뭔가 신경 쓰이는 게 있어?','monday');
-    commitCurrent();
-    await type('문데이가 돌아보며 말했다.\n눈빛이 날카롭다.','narrate');
-    commitCurrent();
-    showChoices([
-      {text:'...아무것도 아니에요.', fn:()=>scene_phase1_end('end')},
-      {text:'감응자가 뭔지 알아요?', cls:'ch-danger', fn:scene_eungja_question},
-    ]);
-  } else {
-    scene_phase1_end('end');
-  }
+  await type('뭔가 신경 쓰이는 게 있어?','monday');
+  await type('문데이가 돌아보며 말했다.\n눈빛이 날카롭다.','narrate');
+  showChoices([
+    {text:'...아무것도 아니에요.',    fn:scene_phase1_finale},
+    {text:'감응자가 뭔지 알아요?', cls:'ch-danger', fn:scene_eungja_q},
+  ]);
 }
 
-async function scene_eungja_question(){
+async function scene_eungja_q(){
   G.trust-=2;
   await type('...','monday',90);
-  commitCurrent();
-  await sleep(700);
   await type('어디서 들었어?','monday');
-  commitCurrent();
   await type('문데이의 목소리가 낮아졌다.','narrate');
-  commitCurrent();
   await type('신경 쓰지 마.\n그냥 소음이야.','monday');
-  commitCurrent();
   await type('(문데이가 시선을 피했다.)','narrate');
-  commitCurrent();
-  showChoices([{text:'(조용히 따라간다)', fn:()=>scene_phase1_end('end')}]);
+  showChoices([{text:'(조용히 따라간다)',fn:scene_phase1_finale}]);
 }
 
-async function scene_phase1_end(flag){
+/* ══════════════════════════════════
+   씬 — Phase 1 마무리
+══════════════════════════════════ */
+async function scene_phase1_finale(){
   setPortrait(null);
-  addLog(null);
-  await sleep(600);
   await type('하루가 지났다.\n별빛쉘터의 첫 밤.','narrate');
-  commitCurrent();
-  await sleep(600);
   await type('기억이 없다.\n이름이 바뀌었다.\n위험한 것들이 돌아다닌다.','narrate');
-  commitCurrent();
-  await sleep(400);
   await type('그리고 —','narrate');
-  commitCurrent();
-  await sleep(300);
   await type('저것들이 뭔지는 묻지 마.','narrate');
-  commitCurrent();
-  await sleep(500);
   await type('문데이의 말이 머릿속을 맴돈다.','narrate');
-  commitCurrent();
-  await sleep(600);
-  addLog(null);
   await type('─ PHASE 01 완료 ─','system');
-  commitCurrent();
-  await type('LOOP '+G.loop+' · 카르마 '+(G.karma>=0?'+':'')+G.karma+' · 신뢰 '+(G.trust>=0?'+':'')+G.trust,'system');
-  commitCurrent();
-  showChoices([
-    {text:'▶ 계속하기', fn:scene_loop_restart},
-  ]);
+  await type(
+    'LOOP '+G.loop+
+    '  ·  카르마 '+(G.karma>=0?'+':'')+G.karma+
+    '  ·  신뢰 '+(G.trust>=0?'+':'')+G.trust,
+    'system'
+  );
+  showChoices([{text:'▶ 계속하기',fn:scene_loop_restart}]);
 }
 
 async function scene_loop_restart(){
-  G.loop++;
-  G.hp=G.maxHp;
-  updateStatus();
-  addLog(null);
+  G.loop++;G.hp=G.maxHp;updateStatus();
   setPortrait(null);
   await type('또.','narrate',80);
-  commitCurrent();
-  await sleep(700);
   await type('다시 여기야.','narrate',60);
-  commitCurrent();
-  await sleep(800);
   setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
   await type(''+G.loop+'번째.\n잘 왔어.','monday',50);
-  commitCurrent();
-  showChoices([
-    {text:'(탐험을 계속한다)', fn:scene_awaken},
-  ]);
+  showChoices([{text:'(탐험을 계속한다)',fn:scene_awaken}]);
 }
 
-/* ═══════════ INIT ═══════════ */
+/* ══════════════════════════════════
+   INIT
+══════════════════════════════════ */
 updateStatus();
-runScene(scene_awaken);
+scene_awaken();
 </script>
 </body>
 </html>
