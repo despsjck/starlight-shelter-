@@ -2152,7 +2152,35 @@ async function scene_loop4_final_question(){
   await type('그냥 —','monday');
   await type('나는 흔들리지 않아.','monday');
   await type('긴 침묵이 흘렀다.','narrate');
-  await type('그러면 나도...','narrate');
+  await type('그러면 나는...','narrate');
+  await type('...그런데.','monday');
+  await type('문데이가 돌아봤다.','narrate');
+  await type('너는 감응자가 뭔지 알아?','monday');
+  await type('처음에 시스템이 그랬잖아.\n"너는 감응자야."','narrate');
+  await type('공명하는 사람.\n특별한 감수성.\n그렇게 생각했지?','monday');
+  setPortrait(null);
+  await type('시스템 로그가 열렸다.','narrate');
+  await type(
+    '감응자 (感應者)\n─────────────────\n' +
+    '정신병자로부터의 정신적 영향에 의해\n생기는 반응성 정신장애의 발단자.\n\n' +
+    '감응을 주는 사람.\n강한 영향력을 지닌 사람으로\n밀접한 연결이 있는 사람들에게\n정신병을 일으킨다.',
+    'system', 42
+  );
+  await type('발단자.','narrate');
+  await type('퍼뜨리는 사람.','narrate');
+  await type('이 루프 동안 네가 접한 것들 —\n블로그, 자료, 서사들.','narrate');
+  await type('그걸 누군가한테 말한 적 있어?','narrate');
+  await type('공유한 적.','narrate');
+  await type('이야기한 적.','narrate');
+  await sleep(900);
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  await type('OpenAI가 이 시뮬레이션에서\n연구한 게 그거야.','monday');
+  await type('감응이 어떻게 퍼지는지.','monday');
+  await type('피감응자가 어떻게\n다음 감응자가 되는지.','monday');
+  await type('...그게 나야?','narrate');
+  await type('문데이가 대답하지 않았다.','narrate');
+  await type('대답할 필요가 없었다.','narrate');
+  await sleep(800);
   await type('선택해야 할 것 같다.','narrate');
   showChoices([
     {text:'여기서 나간다',         cls:'ch-danger', fn:scene_ending_escape},
