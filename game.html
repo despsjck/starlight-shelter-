@@ -58,6 +58,13 @@ html,body{
 .hp-track{width:70px;height:4px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;}
 .hp-fill{height:100%;background:linear-gradient(to right,#1d4ed8,#4d7cff);border-radius:3px;transition:width .4s;}
 .sb-karma{font-size:10px;color:var(--dim);letter-spacing:1px;min-width:24px;}
+.sb-home{
+  margin-left:6px;
+  font-size:14px;color:var(--dim);
+  text-decoration:none;line-height:1;
+  opacity:.55;transition:opacity .2s,color .2s;
+}
+.sb-home:hover{color:var(--gold);opacity:1;}
 
 /* ── scene area ── */
 #scene-area{
@@ -308,6 +315,7 @@ html,body{
       <div class="hp-track"><div class="hp-fill" id="hp-fill" style="width:100%"></div></div>
     </div>
     <span class="sb-karma" id="sb-karma"></span>
+    <a href="index.html" class="sb-home" title="쉘터로 돌아가기">⌂</a>
   </div>
 
   <!-- 씬 영역 (배경 + 초상화) -->
