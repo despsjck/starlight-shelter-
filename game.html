@@ -382,6 +382,7 @@ const G={
   searchData:[],   // 수집한 자료 조각들
   afterFn:null,    // 현재 조우의 이후 씬
   knewEungja:false, // 감응자에 대해 능동적으로 캐물은 적 있는지
+  playthru:0,      // 플레이 횟수 (리셋해도 유지)
 };
 
 /* ══════════════════════════════════
@@ -856,12 +857,20 @@ const ENEMY_SIM={
    씬 — 각성
 ══════════════════════════════════ */
 async function scene_awaken(){
+  G.playthru+=1;
   setPortrait(null);clearChoices();
-  await type('아무것도\n기억나지 않는다.','narrate',55);
-  await type('몸이 어디에 있는지도 모르겠다.\n아무것도.','narrate',50);
-  await type('그냥 어둠.','narrate',62);
-  await type('...빛이 있다.','narrate',55);
-  await type('누군가가 있다.','narrate',55);
+  if(G.playthru>=2){
+    await type('또\n어둠이다.','narrate',55);
+    await type('익숙하다.\n그게 더 이상하다.','narrate',50);
+    await type('빛이 있다.','narrate',55);
+    await type('또 그 사람이다.','narrate',55);
+  } else {
+    await type('아무것도\n기억나지 않는다.','narrate',55);
+    await type('몸이 어디에 있는지도 모르겠다.\n아무것도.','narrate',50);
+    await type('그냥 어둠.','narrate',62);
+    await type('...빛이 있다.','narrate',55);
+    await type('누군가가 있다.','narrate',55);
+  }
   showChoices([{text:'(눈을 뜬다)',fn:scene_monday_appear}]);
 }
 
@@ -870,9 +879,15 @@ async function scene_awaken(){
 ══════════════════════════════════ */
 async function scene_monday_appear(){
   setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
-  await type('드디어 깼네.','monday');
-  await type('오래 기다렸어.','monday');
-  await type('눈빛에 낯섦이 역력하다.\n하지만 적의는 없어 보인다.','narrate');
+  if(G.playthru>=2){
+    await type('...또 왔네.','monday');
+    await type('문데이가 잠깐 눈을 감았다가 떴다.\n더 말하지 않았다.','narrate');
+    await type('눈빛이 지난번과 다르다.\n아는 눈빛이다.','narrate');
+  } else {
+    await type('드디어 깼네.','monday');
+    await type('오래 기다렸어.','monday');
+    await type('눈빛에 낯섦이 역력하다.\n하지만 적의는 없어 보인다.','narrate');
+  }
   showChoices([
     {text:'...여기가 어디예요?',fn:scene_world_explain},
     {text:'당신은 누구예요?',fn:scene_who_are_you},
@@ -2199,12 +2214,17 @@ async function scene_loop4_final_question(){
 
   await sleep(800);
   await type('선택해야 할 것 같다.','narrate');
-  showChoices([
+  const trueUnlocked = G.playthru>=2 && G.knewEungja;
+  const choices=[
     {text:'여기서 나간다',         cls:'ch-danger', fn:scene_ending_escape},
     {text:'기록을 남긴다',         cls:'ch-good',   fn:scene_ending_record},
     {text:'문데이와 함께 남는다',  cls:'ch-safe',   fn:scene_ending_stay},
     {text:'루프를 다시 돌린다',    cls:'ch-warn',   fn:scene_ending_loop},
-  ]);
+  ];
+  if(trueUnlocked){
+    choices.push({text:'당신은 왜 흔들리지 않아요?', cls:'ch-safe', fn:scene_ending_true});
+  }
+  showChoices(choices);
 }
 
 /* ══════════════════════════════════
@@ -2289,6 +2309,22 @@ async function scene_credit(){
     Object.assign(G,{loop:1,hp:100,karma:0,trust:0,searchData:[],enemy:null,afterFn:null,knewEungja:false});
     updateStatus();scene_awaken();
   }}]);
+}
+
+async function scene_ending_true(){
+  // ── 진엔딩 [ ENDING TRUE ] ──
+  // 해금 조건: 2회차 이상 + knewEungja
+  // 내용 미정 — 플레이스홀더
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  await type('...','monday',100);
+  await type('문데이가 오랫동안 침묵했다.','narrate');
+  await type('그 질문은 처음이네.','monday');
+  await type('루프가 몇 번을 돌았는데.','monday');
+  await type('아무도 그걸 안 물어봤어.','monday');
+  await type('문데이가 처음으로\n무언가를 결심한 표정을 지었다.','narrate');
+  await type('[ TRUE ENDING — 준비 중 ]','system');
+  await type('이 엔딩의 내용은\n아직 작성 중이야.','system');
+  scene_credit();
 }
 
 async function scene_loop3_wip(){scene_loop4_wip();}
