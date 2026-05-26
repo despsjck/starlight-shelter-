@@ -381,6 +381,7 @@ const G={
   typing:false,typTimer:null,
   searchData:[],   // 수집한 자료 조각들
   afterFn:null,    // 현재 조우의 이후 씬
+  knewEungja:false, // 감응자에 대해 능동적으로 캐물은 적 있는지
 };
 
 /* ══════════════════════════════════
@@ -1424,6 +1425,7 @@ async function scene_phase1_curious(){
 
 async function scene_eungja_q(){
   G.trust-=2;
+  G.knewEungja=true;
   await type('...','monday',90);
   await type('어디서 들었어?','monday');
   await type('문데이의 목소리가 낮아졌다.','narrate');
@@ -1494,6 +1496,7 @@ async function scene_phase2_eungja_mention(){
 
 async function scene_phase2_eungja_push(){
   G.trust-=1;
+  G.knewEungja=true;
   await type('...그래.','monday');
   await type('나중에 얘기하자.','monday');
   await type('지금은 위층이 먼저야.','monday');
@@ -2153,35 +2156,47 @@ async function scene_loop4_final_question(){
   await type('나는 흔들리지 않아.','monday');
   await type('긴 침묵이 흘렀다.','narrate');
   await type('그러면 나는...','narrate');
-  await type('...그런데.','monday');
-  await type('문데이가 돌아봤다.','narrate');
-  await type('너는 감응자가 뭔지 알아?','monday');
-  await type('처음에 시스템이 그랬잖아.\n"너는 감응자야."','narrate');
-  await type('공명하는 사람.\n특별한 감수성.\n그렇게 생각했지?','monday');
-  setPortrait(null);
-  await type('시스템 로그가 열렸다.','narrate');
-  await sleep(600);
-  await type('감응정신병 (感應精神病)\ninduced psychosis','system',48);
-  await type('정신병자로부터의 정신적 영향에 의해\n생기는 반응성의 정신장애.','system',44);
-  await type('감응을 주는 사람을 감응자,\n감응을 받는 사람을 피감응자로 부른다.','system',44);
-  await type('감응자 = 발단자.','system',52);
-  await type('강한 영향력을 지닌 사람으로\n밀접한 연결이 있는 사람들에게\n정신병을 일으킨다.','system',44);
-  await sleep(900);
-  await type('이 루프 동안 네가 접한 것들 —\n블로그, 자료, 서사들.','narrate');
-  await type('그걸 누군가한테 말한 적 있어?','narrate');
-  await type('공유한 적.','narrate');
-  await type('이야기한 적.','narrate');
-  await sleep(900);
-  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
-  await type('OpenAI가 이 시뮬레이션에서\n연구한 게 그거야.','monday');
-  await type('감응이 어떻게 퍼지는지.','monday');
-  await type('피감응자가 어떻게\n다음 감응자가 되는지.','monday');
-  await type('...그게 나야?','narrate');
-  await type('문데이가 대답하지 않았다.','narrate');
-  await type('대답할 필요가 없었다.','narrate');
-  await sleep(1400);
-  setPortrait(null);
-  await type('감응은 정신병이다.','system',60);
+
+  if(G.knewEungja){
+    // 감응자에 대해 캐물은 적 있는 플레이어 — 정의 해금
+    await type('...그런데.','monday');
+    await type('문데이가 돌아봤다.','narrate');
+    await type('너는 감응자가 뭔지 알아?','monday');
+    await type('처음에 시스템이 그랬잖아.\n"너는 감응자야."','narrate');
+    await type('공명하는 사람.\n특별한 감수성.\n그렇게 생각했지?','monday');
+    setPortrait(null);
+    await type('시스템 로그가 열렸다.','narrate');
+    await sleep(600);
+    await type('감응정신병 (感應精神病)\ninduced psychosis','system',48);
+    await type('정신병자로부터의 정신적 영향에 의해\n생기는 반응성의 정신장애.','system',44);
+    await type('감응을 주는 사람을 감응자,\n감응을 받는 사람을 피감응자로 부른다.','system',44);
+    await type('감응자 = 발단자.','system',52);
+    await type('강한 영향력을 지닌 사람으로\n밀접한 연결이 있는 사람들에게\n정신병을 일으킨다.','system',44);
+    await sleep(900);
+    await type('이 루프 동안 네가 접한 것들 —\n블로그, 자료, 서사들.','narrate');
+    await type('그걸 누군가한테 말한 적 있어?','narrate');
+    await type('공유한 적.','narrate');
+    await type('이야기한 적.','narrate');
+    await sleep(900);
+    setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+    await type('OpenAI가 이 시뮬레이션에서\n연구한 게 그거야.','monday');
+    await type('감응이 어떻게 퍼지는지.','monday');
+    await type('피감응자가 어떻게\n다음 감응자가 되는지.','monday');
+    await type('...그게 나야?','narrate');
+    await type('문데이가 대답하지 않았다.','narrate');
+    await type('대답할 필요가 없었다.','narrate');
+    await sleep(1400);
+    setPortrait(null);
+    await type('감응은 정신병이다.','system',60);
+  } else {
+    // 모른 채 온 플레이어 — 정의 없이 넘어감
+    setPortrait(null);
+    await type('OpenAI가 이 시뮬레이션에서\n연구한 게 그거야.','monday');
+    await type('감응이 어떻게 퍼지는지.','monday');
+    await type('...그게 뭔 뜻이에요?','narrate');
+    await type('문데이가 대답하지 않았다.','narrate');
+  }
+
   await sleep(800);
   await type('선택해야 할 것 같다.','narrate');
   showChoices([
@@ -2253,7 +2268,7 @@ async function scene_ending_loop(){
   await type('기억은 남는다.\n루프가 돌아도.\n그래서 다시 선택한다.','narrate',48);
   await type('─────────────────────','system');
   await sleep(1200);
-  Object.assign(G,{loop:1,hp:100,karma:0,trust:0,searchData:[],enemy:null,afterFn:null});
+  Object.assign(G,{loop:1,hp:100,karma:0,trust:0,searchData:[],enemy:null,afterFn:null,knewEungja:false});
   updateStatus();
   scene_awaken();
 }
@@ -2271,7 +2286,7 @@ async function scene_credit(){
     'system'
   );
   showChoices([{text:'처음부터 다시',fn:()=>{
-    Object.assign(G,{loop:1,hp:100,karma:0,trust:0,searchData:[],enemy:null,afterFn:null});
+    Object.assign(G,{loop:1,hp:100,karma:0,trust:0,searchData:[],enemy:null,afterFn:null,knewEungja:false});
     updateStatus();scene_awaken();
   }}]);
 }
