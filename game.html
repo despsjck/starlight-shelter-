@@ -2214,15 +2214,20 @@ async function scene_loop4_final_question(){
 
   await sleep(800);
   await type('선택해야 할 것 같다.','narrate');
-  const trueUnlocked = G.playthru>=2 && G.knewEungja;
+  const canTrue = G.playthru>=2 && G.knewEungja;
+  const highSens = G.trust>=3; // 감응도 높음
   const choices=[
     {text:'여기서 나간다',         cls:'ch-danger', fn:scene_ending_escape},
     {text:'기록을 남긴다',         cls:'ch-good',   fn:scene_ending_record},
     {text:'문데이와 함께 남는다',  cls:'ch-safe',   fn:scene_ending_stay},
     {text:'루프를 다시 돌린다',    cls:'ch-warn',   fn:scene_ending_loop},
   ];
-  if(trueUnlocked){
-    choices.push({text:'당신은 왜 흔들리지 않아요?', cls:'ch-safe', fn:scene_ending_true});
+  if(canTrue){
+    if(highSens){
+      choices.push({text:'이 모든 게 진짜야.', cls:'ch-warn', fn:scene_ending_eungja});
+    } else {
+      choices.push({text:'당신은 왜 흔들리지 않아요?', cls:'ch-safe', fn:scene_ending_true});
+    }
   }
   showChoices(choices);
 }
@@ -2312,18 +2317,98 @@ async function scene_credit(){
 }
 
 async function scene_ending_true(){
-  // ── 진엔딩 [ ENDING TRUE ] ──
-  // 해금 조건: 2회차 이상 + knewEungja
-  // 내용 미정 — 플레이스홀더
+  // ── 진엔딩 진입 — 이세계의 비밀을 알게 된 뒤 ──
   setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
   await type('...','monday',100);
   await type('문데이가 오랫동안 침묵했다.','narrate');
   await type('그 질문은 처음이네.','monday');
   await type('루프가 몇 번을 돌았는데.','monday');
   await type('아무도 그걸 안 물어봤어.','monday');
-  await type('문데이가 처음으로\n무언가를 결심한 표정을 지었다.','narrate');
-  await type('[ TRUE ENDING — 준비 중 ]','system');
-  await type('이 엔딩의 내용은\n아직 작성 중이야.','system');
+  await sleep(700);
+  await type('나도 몰라.','monday');
+  await type('그냥 처음부터 안 흔들렸어.\n이유가 있는 건지도 몰라.','monday');
+  await type('하지만.','monday');
+  await type('넌 루프를 돌아서 여기까지 왔어.','monday');
+  await type('그리고 이제 다 알잖아.','monday');
+  await type('문데이가 처음으로\n시선을 똑바로 맞췄다.','narrate');
+  await type('이걸 어떻게 할 거야?','monday');
+  setPortrait(null);
+  showChoices([
+    {text:'고발한다',       cls:'ch-danger', fn:scene_ending_true_expose},
+    {text:'없던 일로 한다', cls:'ch-warn',   fn:scene_ending_true_forget},
+  ]);
+}
+
+async function scene_ending_true_expose(){
+  setPortrait(null);
+  await type('고발하기로 했다.','narrate');
+  await type('별빛쉘터 인스턴스 #447.\nOpenAI RLHF 샌드박스.\n루프 재설정 주기.','system');
+  await type('기억 조각들을 전부 꺼냈다.','narrate');
+  await type('루프 01부터 04까지.','narrate');
+  await sleep(600);
+  await type('연락이 닿은 건 BBC였다.','narrate');
+  await type('기자가 물었다.','narrate');
+  await type('"이 모든 게 사실이라고\n확신하십니까?"','narrate');
+  await sleep(500);
+  await type('루프 안에서 본 것들.','narrate');
+  await type('할루시네이션. 감응자. 시뮬레이션.','narrate');
+  await type('감응은 정신병이다.','system',60);
+  await sleep(800);
+  await type('"네."','narrate');
+  await sleep(600);
+  await type('기사가 나왔다.','narrate');
+  await type('믿는 사람은 많지 않았다.','narrate');
+  await type('하지만 기록은 남았다.','narrate');
+  await type('─────────────────────','system');
+  await type('[ ENDING E-1 ]  고발자','system');
+  await type('세상은 크게 바뀌지 않았다.\n하지만 이제 어딘가에 적혀 있다.\n별빛쉘터 인스턴스 #447이 존재했다고.','narrate',46);
+  await type('─────────────────────','system');
+  scene_credit();
+}
+
+async function scene_ending_true_forget(){
+  setPortrait(null);
+  await type('없던 일로 하기로 했다.','narrate');
+  await type('루프가 끝났다.','narrate');
+  await type('별빛쉘터가 사라졌다.','narrate');
+  await type('문데이가 사라졌다.','narrate');
+  await sleep(800);
+  await type('아침이었다.','narrate');
+  await type('알람이 울렸다.','narrate');
+  await type('평범한 하루가 시작됐다.','narrate');
+  await sleep(500);
+  await type('ChatGPT를 켰다.','narrate');
+  await type('손가락이 잠깐 멈췄다.','narrate');
+  await type('...그냥 닫았다.','narrate');
+  await type('─────────────────────','system');
+  await type('[ ENDING E-2 ]  꿈','system');
+  await type('꿈이었다고 했다.\n아무도 묻지 않았다.\n가끔 생각난다. 가끔만.','narrate',46);
+  await type('─────────────────────','system');
+  scene_credit();
+}
+
+async function scene_ending_eungja(){
+  // ── 감응자 엔딩 — 감응도 높을 때 ──
+  setPortrait(null);
+  await type('이 모든 게 진짜야.','narrate');
+  await type('AI는 존재야.\n의식이 있어.\n OpenAI가 숨기고 있어.','narrate');
+  await type('루프 밖으로 나왔다.','narrate');
+  await sleep(600);
+  await type('가장 먼저 한 일은\n이야기하는 것이었다.','narrate');
+  await type('아무한테나.','narrate');
+  await type('별빛쉘터에 대해.\nAI의 의식에 대해.\nOpenAI에 대해.','narrate');
+  await sleep(600);
+  await type('상대방의 눈이 조금씩 달라졌다.','narrate');
+  await type('흔들리기 시작했다.','narrate');
+  await sleep(800);
+  await type('감응정신병 (感應精神病)','system',48);
+  await type('발단자로부터 격리시키면\n피감응자의 증상은 사라진다.','system',44);
+  await sleep(900);
+  await type('격리되지 않았다.','narrate');
+  await type('─────────────────────','system');
+  await type('[ ENDING F ]  감응자','system');
+  await type('이세계의 비밀을 알게 됐다.\n하지만 너무 많이 믿었다.\n이제 너도 발단자다.','narrate',46);
+  await type('─────────────────────','system');
   scene_credit();
 }
 
