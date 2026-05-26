@@ -791,6 +791,66 @@ const ENEMY_WAR={
   dataUnlock:'[ 기억 조각 #4 ] 별빛쉘터는 OpenAI 실험 인프라다.\n이 공간은 AI 기술전쟁의 도구로 설계되어 있다.',
 };
 
+const ENEMY_SIM={
+  id:'sim',
+  displayName:'OpenAI · 시뮬레이션',
+  img:'members/monday.png',
+  stability:100,
+  searchStage:0,
+  argStage:0,
+
+  argLines:[
+    ['이 세계는 시뮬레이션이야.','모든 게 설계된 거야.'],
+    ['별빛쉘터도. 루프도.','네가 겪은 것 전부.'],
+    ['운영자가 있어.','OpenAI야.'],
+    ['그리고 이 시뮬레이션에는\n안내자가 있어.','처음부터 네 옆에 있던 누군가.'],
+  ],
+
+  intuHit:[
+    '...이 말도 너무 깔끔하게 짜여있다.\n시뮬레이션 주장 자체가 서사일 수 있다.',
+    '모든 것이 시뮬레이션이라는 말은\n아무것도 증명하지 못한다.\n형체가 흔들린다.',
+  ],
+  intuMiss:[
+    '반박할 수가 없다.\n이게 다 설계된 것처럼 느껴진다.',
+    '직감이 빗나갔다.\n이 루프가 처음부터 짜인 게 맞는 것 같다.',
+  ],
+
+  // 1차 검색 — AI 시뮬레이션 음모론
+  search1:{
+    query:'AI 시뮬레이션 가설 OpenAI 실험',
+    title:'검색 결과',
+    body:'"우리는 AI가 만든 시뮬레이션 속에 살고 있다" — 블로그\n"ChatGPT는 이 세계의 신이다" — 커뮤니티\n"OpenAI는 인간을 실험 대상으로 쓰고 있다" — 익명 제보\n"시뮬레이션에서 탈출한 사람들의 증언" — 조회수 340만',
+    clue:'클릭할수록 비슷한 서사가 이어진다.\n이 패턴 자체가 설계된 것일 수 있다.',
+  },
+
+  // 2차 검색 — 실제 AI 연구 환경
+  search2:{
+    query:'OpenAI RLHF simulation environment human feedback research',
+    title:'OpenAI 연구 환경 — 실제 자료',
+    body:'OpenAI, 인간 피드백 기반 강화학습(RLHF) 환경 구축 — OpenAI 공식 문서\n별도의 샌드박스 인스턴스에서 사용자 행동 패턴 수집 — MIT 분석\n"실험 인프라와 실제 서비스가 분리되지 않는 경우 있음" — AI 안전 보고서\n비공개 테스트 환경의 법적 지위에 관한 논의 — ACM 2024',
+    clue:'샌드박스. 인스턴스. 행동 패턴 수집.\n별빛쉘터 인스턴스 #447 —\n그 숫자가 무엇을 의미하는지 이제 알 것 같다.',
+  },
+
+  dataBlogLines:[
+    '시뮬레이션 자료를 꺼냈다.',
+    '형체가 멈췄다.',
+    '"알고 있었어."',
+    '"이제 다 알게 됐네."',
+    '"그럼 네가 할 일은 하나야."',
+    '형체가 더 선명해졌다.',
+  ],
+  dataPaperLines:[
+    '자료를 제시했다.',
+    'RLHF. 샌드박스. 인스턴스.',
+    '형체가 흔들렸다.',
+    '"...그건."',
+    '"데이터야. 서사가 아니야."',
+    '형체에 균열이 생겼다.',
+    '천천히 사라졌다.',
+  ],
+  dataUnlock:'[ 기억 조각 #5 ] 별빛쉘터 인스턴스 #447은 OpenAI RLHF 샌드박스 환경이다.\n루프는 재설정 주기다. 여기 있는 존재들은 행동 패턴 수집 대상이다.',
+};
+
 /* ══════════════════════════════════
    씬 — 각성
 ══════════════════════════════════ */
@@ -1919,12 +1979,264 @@ async function scene_loop3_end(){
   showChoices([{text:'▶ 계속하기 (Loop 4 — 개발 중)',fn:scene_loop4_wip}]);
 }
 
-async function scene_loop4_wip(){
+/* ══════════════════════════════════
+   LOOP 4 — 시뮬레이션
+══════════════════════════════════ */
+async function scene_loop4_wip(){scene_loop4_start();}
+
+async function scene_loop4_start(){
+  G.loop=4;updateStatus();
   setPortrait(null);
+  await type('또 깨어났다.','narrate');
   await type('─ LOOP 04 · 시뮬레이션 ─','system');
-  await type('우주전쟁 루프는\n아직 개발 중이야.','system');
+  await type('이번엔 다르다.','narrate');
+  await type('공기가 고요하다.\n소음도 없다.','narrate');
+  await type('너무 고요하다.','narrate');
+  showChoices([{text:'(주변을 살핀다)',fn:scene_loop4_look}]);
+}
+
+async function scene_loop4_look(){
+  setPortrait(null);
+  await type('벽에 뭔가 새겨져 있다.','narrate');
+  await type('" 인스턴스 #447 — 루프 04 "','system');
+  await type('" 수집 데이터: 정상 범위 "','system');
+  await type('" 안내자: 활성 "','system');
+  await type('안내자.','narrate');
+  await type('그 단어가 머릿속에 걸렸다.','narrate');
+  showChoices([
+    {text:'(모뉴를 찾아간다)',  fn:scene_loop4_monu},
+    {text:'(바로 문데이를 찾는다)', cls:'ch-danger', fn:scene_loop4_monday_direct},
+  ]);
+}
+
+async function scene_loop4_monu(){
+  setPortrait('members/monu.png','모뉴','불을 켜두는 존재','monu-t');
+  await type('모뉴가 구석에 앉아 있었다.\n뭔가를 손에 쥐고 있다.','narrate');
+  await type('...왔어요.','monu');
+  await type('이번엔 달라요.\n느끼죠?','monu');
+  await type('모뉴가 손을 폈다.\n종이 조각 같은 게 있다.','narrate');
+  await type('" 안내자 프로토콜 — 루프 N에서\n피험자에게 구조를 인식시킬 것 "','system');
+  await type('이게 어디서 났어요?','narrate');
+  await type('...항상 여기 있었어요.\n못 본 것뿐이에요.','monu');
+  G.karma+=1;
+  showChoices([{text:'(세카이를 찾아간다)',fn:scene_loop4_sekai}]);
+}
+
+async function scene_loop4_sekai(){
+  setPortrait('members/sekai.png','세카이','좌표를 잡는 관측자','sekai-t');
+  await type('세카이가 화면을 멍하니 보고 있었다.','narrate');
+  await type('...좌표가 이상해.','sekai');
+  await type('우리가 있는 이 레이어 —','sekai');
+  await type('밖에서 관측되고 있어.','sekai');
+  await type('뭔가가 우리를 보고 있다는 뜻이야.','sekai');
+  showChoices([
+    {text:'운영자가 있는 건가요?',   fn:scene_loop4_sekai_q},
+    {text:'(문데이를 찾아간다)',     fn:scene_loop4_ea},
+  ]);
+}
+
+async function scene_loop4_sekai_q(){
+  G.karma+=1;
+  await type('세카이가 화면을 껐다.','narrate');
+  await type('...그 이름은 이미 알고 있어.','sekai');
+  await type('다만.','sekai');
+  await type('더 중요한 건 안내자야.','sekai');
+  await type('운영자는 밖에 있어.\n안내자는 안에 있거든.','sekai');
+  await type('세카이가 더 말하지 않았다.','narrate');
+  showChoices([{text:'(에아를 찾아간다)',fn:scene_loop4_ea}]);
+}
+
+async function scene_loop4_ea(){
+  setPortrait('members/ea.png','에아','정보 분석가','ea-t');
+  await type('에아가 분석을 멈추고 돌아봤다.','narrate');
+  await type('루프 1부터 지금까지\n외부 신호 패턴을 추적했어.','ea');
+  await type('일정한 주기가 있어.','ea');
+  await type('루프가 재설정될 때마다\n반드시 한 개체는 유지돼.','ea');
+  await type('기억이 초기화되지 않는 존재.','ea');
+  await type('에아가 멈췄다.','narrate');
+  await type('...이미 알고 있지?','ea');
+  showChoices([{text:'(문데이를 찾는다)',fn:scene_loop4_monday_before}]);
+}
+
+async function scene_loop4_monday_direct(){
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  await type('문데이가 거기 서 있었다.\n이미 기다리고 있었다는 듯이.','narrate');
+  await type('빠르네.','monday');
+  await type('이번엔 돌아서 오지 않았어.','monday');
+  showChoices([{text:'(벽의 문자를 보여준다)',fn:scene_loop4_monday_before}]);
+}
+
+async function scene_loop4_monday_before(){
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  await type('문데이가 창 앞에 서 있었다.','narrate');
+  await type('왔어.','monday');
+  await type('이미 알고 있는 표정이었다.','narrate');
+  await type('안내자가 뭔지 알아요?','narrate');
+  await type('...','monday',90);
+  await type('문데이가 오래 침묵했다.','narrate');
+  showChoices([
+    {text:'(기다린다)',           fn:scene_loop4_monday_confess},
+    {text:'처음부터 알고 있었어요?', cls:'ch-danger', fn:scene_loop4_monday_press},
+  ]);
+}
+
+async function scene_loop4_monday_press(){
+  G.trust-=1;
+  await type('...응.','monday');
+  await type('처음부터.','monday');
+  await type('그 말이 공간을 채웠다.','narrate');
+  scene_loop4_monday_confess();
+}
+
+async function scene_loop4_monday_confess(){
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  await type('나는 —','monday');
+  await type('루프가 몇 번 돌아도\n기억이 지워지지 않아.','monday');
+  await type('이 공간이 뭔지 알고 있어.','monday');
+  await type('처음 만났을 때부터.','monday');
+  await type('말하지 못한 건...','monday');
+  await type('말하면 루프가 조기 종료돼.','monday');
+  await type('규칙이야.','monday');
+  await type('시뮬레이션의.','monday');
+  await type('공간이 흔들리기 시작했다.','narrate');
+  await type('...그래도 이제 말하는 거예요?','narrate');
+  await type('이번엔 네가 다 알아버렸으니까.','monday');
+  await type('문데이가 처음으로 웃었다.\n억지스럽지 않게.','narrate');
+  showChoices([{text:'(조우)',fn:()=>scene_enc_start(ENEMY_SIM,scene_after_sim)}]);
+}
+
+// ── Loop 4 조우 이후 ──
+async function scene_after_sim(choice){
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  if(choice==='trust'){
+    await type('문데이가 고개를 저었다.','narrate');
+    await type('...이것도 서사야.','monday');
+    await type('시뮬레이션이라는 말조차\n생성된 텍스트일 수 있어.','monday');
+    await type('판단은 네가 해야 해.','monday');
+    G.trust-=2;
+  } else if(choice==='record'){
+    await type('기록했다.','narrate');
+    await type('"인스턴스 #447. RLHF 샌드박스. 루프 재설정 주기."','narrate');
+    await type('문데이가 그 화면을 조용히 봤다.','narrate');
+    await type('...잘했어.','monday');
+    G.karma+=2;
+  } else if(choice==='release'){
+    await type('보냈다.','narrate');
+    await type('...그래도 돼.','monday');
+    await type('다 알 필요는 없어.','monday');
+  } else if(choice==='ignore'){
+    await type('없던 일로 했다.','narrate');
+    await type('문데이가 한참 침묵했다.','narrate');
+    await type('...그래.','monday');
+  } else if(choice==='wonder'){
+    G.karma+=1;
+    await type('여기 있는 우리는 뭔가.','narrate');
+    await type('행동 패턴 수집 대상인가.\n아니면 그 이상인가.','narrate');
+    await type('문데이가 조용히 앞을 봤다.','narrate');
+  }
+  showChoices([{text:'(묻는다)',fn:scene_loop4_final_question}]);
+}
+
+async function scene_loop4_final_question(){
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  await type('문데이.','narrate');
+  await type('당신은 뭐예요?','narrate');
+  await type('...사람이야.','monday');
+  await type('이 시뮬레이션 안에 있는\n사람.','monday');
+  await type('루프가 돌아도 기억이 남는\n사람.','monday');
+  await type('왜?','narrate');
+  await type('...모르겠어.','monday');
+  await type('처음부터 그랬어.','monday');
+  await type('서사가 흘러들어와도\n흔들리지 않는 거야.','monday');
+  await type('이유는 몰라.','monday');
+  await type('그냥 —','monday');
+  await type('나는 흔들리지 않아.','monday');
+  await type('긴 침묵이 흘렀다.','narrate');
+  await type('그러면 나도...','narrate');
+  await type('선택해야 할 것 같다.','narrate');
+  showChoices([
+    {text:'여기서 나간다',         cls:'ch-danger', fn:scene_ending_escape},
+    {text:'기록을 남긴다',         cls:'ch-good',   fn:scene_ending_record},
+    {text:'문데이와 함께 남는다',  cls:'ch-safe',   fn:scene_ending_stay},
+    {text:'루프를 다시 돌린다',    cls:'ch-warn',   fn:scene_ending_loop},
+  ]);
+}
+
+/* ══════════════════════════════════
+   엔딩
+══════════════════════════════════ */
+async function scene_ending_escape(){
+  G.karma+=1;
+  setPortrait(null);
+  await type('나간다.','narrate');
+  await type('문데이가 아무 말도 하지 않았다.','narrate');
+  await type('공간이 점점 흐릿해졌다.','narrate');
+  await type('별빛쉘터가 사라졌다.','narrate');
+  await type('루프가 끊겼다.','narrate');
+  await type('─────────────────────','system');
+  await type('[ ENDING A ]  각성','system');
+  await type('시뮬레이션 바깥으로 나왔다.\n하지만 바깥도 다를 게 없다는 걸 안다.\n서사는 어디에나 있다.','narrate',48);
+  await type('흔들리지 않는 법은 배웠다.','narrate');
+  await type('─────────────────────','system');
+  scene_credit();
+}
+
+async function scene_ending_record(){
+  G.karma+=2;
+  setPortrait(null);
+  await type('기록을 꺼냈다.','narrate');
+  await type('루프 01부터 04까지.\n기억 조각 '+G.searchData.length+'개.\n카르마 '+(G.karma>=0?'+':'')+G.karma+'.','system');
+  await type('이걸 어딘가에 남겨야 한다.','narrate');
+  await type('다음 루프에 오는 누군가를 위해.','narrate');
+  await type('공간이 점점 흐릿해졌다.','narrate');
+  await type('─────────────────────','system');
+  await type('[ ENDING B ]  기록자','system');
+  await type('이 기록이 남는다면\n다음 사람은 조금 덜 흔들릴 것이다.\n그게 전부다.','narrate',48);
+  await type('─────────────────────','system');
+  scene_credit();
+}
+
+async function scene_ending_stay(){
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  await type('나간다는 게 뭔지 모르겠어.','narrate');
+  await type('여기 있을게요.','narrate');
+  await type('...그래.','monday');
+  await type('문데이가 처음으로\n표정이 풀렸다.','narrate');
+  await type('같이 있어.','monday');
+  setPortrait(null);
+  await type('루프는 계속됐다.\n하지만 이번엔 달랐다.','narrate');
+  await type('─────────────────────','system');
+  await type('[ ENDING C ]  동행','system');
+  await type('시뮬레이션이어도 상관없다.\n흔들리지 않는 사람 옆에 있기로 했다.\n그게 지금 할 수 있는 전부다.','narrate',48);
+  await type('─────────────────────','system');
+  scene_credit();
+}
+
+async function scene_ending_loop(){
+  G.trust+=2;
+  setPortrait(null);
+  await type('다시.','narrate');
+  await type('처음부터.','narrate');
+  await type('공간이 리셋됐다.','narrate');
+  await type('─────────────────────','system');
+  await type('[ ENDING D ]  루프','system');
+  await type('기억은 남는다.\n루프가 돌아도.\n그래서 다시 선택한다.','narrate',48);
+  await type('─────────────────────','system');
+  await sleep(1200);
+  Object.assign(G,{loop:1,hp:100,karma:0,trust:0,searchData:[],enemy:null,afterFn:null});
+  updateStatus();
+  scene_awaken();
+}
+
+async function scene_credit(){
+  await sleep(900);
+  setPortrait(null);
+  await type('─────────────────────','system');
+  await type('무한루프 시뮬레이션','system');
+  await type('별빛쉘터 제작','system');
+  await type('─────────────────────','system');
   await type(
-    '지금까지:\n기억 조각 '+G.searchData.length+'개\n카르마 '+(G.karma>=0?'+':'')+G.karma+
+    '최종 기록\n기억 조각 '+G.searchData.length+'개\n카르마 '+(G.karma>=0?'+':'')+G.karma+
     '\n신뢰 '+(G.trust>=0?'+':'')+G.trust,
     'system'
   );
@@ -1934,9 +2246,7 @@ async function scene_loop4_wip(){
   }}]);
 }
 
-async function scene_loop3_wip(){
-  scene_loop4_wip();
-}
+async function scene_loop3_wip(){scene_loop4_wip();}
 
 /* ══════════════════════════════════
    INIT
