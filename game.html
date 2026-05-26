@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>무한루프 시뮬레이션</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&family=Noto+Serif+KR:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Noto+Sans+KR:wght@300;400;700&family=Noto+Serif+KR:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
@@ -28,9 +28,10 @@ html,body{
   overflow:hidden;
   background:var(--bg);
   color:var(--text);
-  font-family:'Noto Sans KR',sans-serif;
+  font-family:'DotGothic16','Noto Sans KR',sans-serif;
   user-select:none;
   -webkit-tap-highlight-color:transparent;
+  image-rendering:pixelated;
 }
 
 /* ── layout ── */
@@ -55,8 +56,21 @@ html,body{
 .sb-name{color:var(--gold);letter-spacing:1px;}
 .sb-hp-wrap{display:flex;align-items:center;gap:6px;margin-left:auto;}
 .sb-hp-label{color:var(--dim);font-size:10px;}
-.hp-track{width:70px;height:4px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;}
-.hp-fill{height:100%;background:linear-gradient(to right,#1d4ed8,#4d7cff);border-radius:3px;transition:width .4s;}
+.hp-track{
+  display:flex;gap:2px;align-items:center;
+  width:70px;
+}
+.hp-seg{
+  width:6px;height:8px;
+  background:rgba(77,124,255,0.85);
+  border-radius:1px;
+  transition:background .3s;
+  flex-shrink:0;
+}
+.hp-seg.empty{background:rgba(255,255,255,0.1);}
+.hp-seg.low{background:rgba(239,68,68,0.85);}
+/* legacy fill — hidden */
+.hp-fill{display:none;}
 .sb-karma{font-size:10px;color:var(--dim);letter-spacing:1px;min-width:24px;}
 .sb-home{
   margin-left:6px;
@@ -115,33 +129,35 @@ html,body{
 /* ── dialogue box ── */
 #dialogue-wrap{
   flex-shrink:0;
-  padding:10px 13px 8px;
+  padding:10px 12px 8px;
   background:var(--surface);
-  border-top:1px solid var(--border);
+  border-top:2px solid rgba(160,190,255,0.18);
 }
 #dialogue-box{
   position:relative;
-  border:2px solid rgba(77,124,255,.32);
-  border-radius:7px;
-  padding:12px 15px 14px;
-  min-height:88px;
+  border:3px solid rgba(180,210,255,0.82);
+  border-radius:2px;
+  box-shadow:inset 0 0 0 2px rgba(0,2,20,0.95), 0 0 0 1px rgba(0,0,0,0.7);
+  padding:13px 16px 18px;
+  min-height:92px;
   cursor:pointer;
-  background:rgba(3,4,11,.75);
-  transition:border-color .15s;
+  background:rgba(0,3,18,0.96);
 }
-#dialogue-box:active{border-color:rgba(77,124,255,.65);}
+#dialogue-box:active{border-color:rgba(220,240,255,0.95);}
 #speaker-label{
   font-size:11px;letter-spacing:2px;font-weight:700;
-  margin-bottom:7px;min-height:14px;
+  margin-bottom:8px;min-height:14px;
+  font-family:'DotGothic16',sans-serif;
 }
 #dialogue-text{
-  font-size:clamp(14px,3.2vw,17px);
-  line-height:1.95;
+  font-size:clamp(13px,3vw,16px);
+  line-height:2.1;
   white-space:pre-wrap;
-  min-height:1.95em;
+  min-height:2.1em;
+  font-family:'DotGothic16','Noto Sans KR',sans-serif;
 }
 /* text styles */
-.dt-narrate{color:var(--text);font-family:'Noto Serif KR',serif;font-weight:300;}
+.dt-narrate{color:#c8d4f0;font-family:'DotGothic16','Noto Sans KR',sans-serif;}
 .dt-monday{color:var(--monday);}
 .dt-monu{color:var(--monu);}
 .dt-sekai{color:var(--sekai);}
@@ -152,45 +168,65 @@ html,body{
 .dt-damage{color:var(--danger);}
 
 #advance-hint{
-  position:absolute;right:12px;bottom:9px;
-  font-size:11px;color:var(--dim);
+  position:absolute;right:12px;bottom:8px;
+  font-size:13px;color:rgba(180,210,255,0.6);
   opacity:0;
   transition:opacity .3s;
-  animation:blink 1.4s ease-in-out infinite;
+  animation:blink 1.2s ease-in-out infinite;
 }
-@keyframes blink{0%,100%{opacity:.75;}50%{opacity:.15;}}
+@keyframes blink{0%,100%{opacity:.8;}50%{opacity:.15;}}
 
 /* ── choices ── */
 #choices-area{
   flex-shrink:0;
   background:var(--surface);
-  padding:7px 13px 14px;
+  padding:6px 12px 13px;
+  border-top:2px solid rgba(160,190,255,0.12);
 }
-#choices-grid{display:flex;flex-direction:column;gap:6px;}
+#choices-grid{
+  display:flex;flex-direction:column;gap:2px;
+  border:2px solid rgba(180,210,255,0.55);
+  border-radius:2px;
+  box-shadow:inset 0 0 0 1px rgba(0,2,20,0.9);
+  background:rgba(0,3,18,0.92);
+  padding:4px 0;
+  overflow:hidden;
+}
 .ch{
   width:100%;
-  padding:10px 15px;
-  background:rgba(255,255,255,.03);
-  border:1px solid rgba(255,255,255,.09);
-  color:var(--text);
-  font-family:inherit;font-size:clamp(12px,2.8vw,15px);
-  cursor:pointer;text-align:left;border-radius:5px;
-  transition:background .15s,border-color .15s,color .15s;
-  display:flex;align-items:center;gap:10px;
+  padding:9px 14px 9px 12px;
+  background:transparent;
+  border:none;
+  border-radius:0;
+  color:rgba(200,215,255,0.85);
+  font-family:'DotGothic16','Noto Sans KR',sans-serif;
+  font-size:clamp(12px,2.8vw,14px);
+  cursor:pointer;text-align:left;
+  transition:background .08s,color .08s;
+  display:flex;align-items:center;gap:8px;
 }
-.ch:not(.ch-locked):hover,.ch:not(.ch-locked):active{
-  background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.22);
+.ch:not(.ch-locked):hover,.ch:not(.ch-locked):focus{
+  background:rgba(100,140,255,0.22);
+  color:#fff;
+  outline:none;
 }
-.ch-arrow{color:var(--accent);font-size:11px;flex-shrink:0;}
-.ch-danger{border-color:rgba(239,68,68,.18);}
-.ch-danger:not(.ch-locked):hover{background:rgba(239,68,68,.09);border-color:#ef4444;color:#ef4444;}
-.ch-safe{border-color:rgba(77,124,255,.18);}
-.ch-safe:not(.ch-locked):hover{background:rgba(77,124,255,.09);border-color:#4d7cff;color:#7da8ff;}
-.ch-good{border-color:rgba(25,195,125,.18);}
-.ch-good:not(.ch-locked):hover{background:rgba(25,195,125,.09);border-color:#19c37d;color:#19c37d;}
-.ch-warn{border-color:rgba(240,192,96,.14);}
-.ch-warn:not(.ch-locked):hover{background:rgba(240,192,96,.07);border-color:var(--gold);color:var(--gold);}
-.ch-locked{opacity:.38;cursor:default;}
+.ch-arrow{
+  font-size:12px;flex-shrink:0;
+  color:transparent;
+  transition:color .08s;
+  width:12px;
+}
+.ch:not(.ch-locked):hover .ch-arrow,
+.ch:not(.ch-locked):focus .ch-arrow{color:var(--gold);}
+.ch-danger{color:rgba(255,160,160,0.85);}
+.ch-danger:not(.ch-locked):hover{background:rgba(239,68,68,.15);color:#ff9999;}
+.ch-safe{color:rgba(160,190,255,0.85);}
+.ch-safe:not(.ch-locked):hover{background:rgba(77,124,255,.15);color:#aac4ff;}
+.ch-good{color:rgba(100,220,160,0.85);}
+.ch-good:not(.ch-locked):hover{background:rgba(25,195,125,.12);color:#5ddb9e;}
+.ch-warn{color:rgba(240,210,120,0.85);}
+.ch-warn:not(.ch-locked):hover{background:rgba(240,192,96,.1);color:var(--gold);}
+.ch-locked{opacity:.32;cursor:default;}
 
 /* input */
 .input-row{display:flex;gap:8px;margin-top:7px;}
@@ -312,7 +348,7 @@ html,body{
     <span class="sb-name" id="sb-name">지혜피티</span>
     <div class="sb-hp-wrap">
       <span class="sb-hp-label">정신력</span>
-      <div class="hp-track"><div class="hp-fill" id="hp-fill" style="width:100%"></div></div>
+      <div class="hp-track" id="hp-track"></div>
     </div>
     <span class="sb-karma" id="sb-karma"></span>
     <a href="index.html" class="sb-home" title="쉘터로 돌아가기">⌂</a>
@@ -414,7 +450,15 @@ const SP={
 function updateStatus(){
   document.getElementById('sb-loop').textContent='LOOP · '+G.loop;
   document.getElementById('sb-name').textContent=G.name;
-  document.getElementById('hp-fill').style.width=(G.hp/G.maxHp*100)+'%';
+  // 블록 HP
+  const track=document.getElementById('hp-track');
+  const total=10, filled=Math.round(G.hp/G.maxHp*total);
+  const low=G.hp<=30;
+  track.innerHTML=Array.from({length:total},(_,i)=>{
+    const on=i<filled;
+    const cls=on?(low?'hp-seg low':'hp-seg'):'hp-seg empty';
+    return `<div class="${cls}"></div>`;
+  }).join('');
   const k=G.karma;
   document.getElementById('sb-karma').textContent=
     k>0?'▲'.repeat(Math.min(Math.floor(k/2),3)):
@@ -445,6 +489,21 @@ function clearChoices(){
    TYPEWRITER — 클릭/탭으로 진행
 ══════════════════════════════════ */
 let _adv=null;  // 현재 advance 핸들러
+
+// ── 타이핑 blip ──
+let _actx=null;
+function blip(){
+  try{
+    if(!_actx)_actx=new(window.AudioContext||window.webkitAudioContext)();
+    const o=_actx.createOscillator(),g=_actx.createGain();
+    o.connect(g);g.connect(_actx.destination);
+    o.type='square';
+    o.frequency.value=520+Math.random()*80;
+    g.gain.setValueAtTime(0.025,_actx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.0001,_actx.currentTime+0.045);
+    o.start();o.stop(_actx.currentTime+0.045);
+  }catch(e){}
+}
 
 // 다이얼로그 박스 클릭 → advance
 document.getElementById('dialogue-box').addEventListener('click',()=>{
@@ -495,8 +554,11 @@ function type(text,speaker,speed=36){
 
     function tick(){
       textEl.textContent=text.slice(0,i)+(i<text.length?'▌':'');
-      if(i<text.length){i++;G.typTimer=setTimeout(tick,speed);}
-      else finish();
+      if(i<text.length){
+        const ch=text[i];
+        if(ch&&ch!=='\n'&&ch!==' ')blip();
+        i++;G.typTimer=setTimeout(tick,speed);
+      } else finish();
     }
     tick();
   });
