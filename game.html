@@ -2180,6 +2180,9 @@ async function scene_loop4_final_question(){
   await type('...그게 나야?','narrate');
   await type('문데이가 대답하지 않았다.','narrate');
   await type('대답할 필요가 없었다.','narrate');
+  await sleep(1200);
+  setPortrait(null);
+  await type('감응은 정신병이다.','system',60);
   await sleep(800);
   await type('선택해야 할 것 같다.','narrate');
   showChoices([
