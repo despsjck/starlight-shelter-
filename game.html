@@ -2740,9 +2740,9 @@ async function scene_loop4_final_question(){
   await sleep(800);
   setPortrait(null);
   await type('선택해야 할 것 같다.','narrate');
+  await type('...아직 물어봐야 할 게 있어.','narrate');
   showChoices([
     {text:'(문데이와 마주선다)', fn:scene_monday_confront},
-    {text:'(그냥 선택한다)',     fn:scene_final_choices},
   ]);
 }
 
