@@ -656,10 +656,35 @@
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       gap: 2.2rem;
-      background: rgba(5,6,14,.93);
+      background: var(--bg);
       padding: 2rem;
+      overflow: hidden;
     }
     #lobby.active { opacity: 1; pointer-events: auto; }
+
+    /* 로비 배경 이미지 */
+    #lobby-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background: url('별빛쉘터 로비.png') center/cover no-repeat;
+      filter: brightness(.28) saturate(.7);
+      transform: scale(1.04);
+      transition: transform 14s ease;
+    }
+    #lobby.active #lobby-bg { transform: scale(1); }
+
+    /* 하단 페이드 */
+    #lobby::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 260px; z-index: 1;
+      background: linear-gradient(to top, rgba(5,6,14,.98) 0%, transparent 100%);
+      pointer-events: none;
+    }
+
+    /* 로비 내부 콘텐츠는 배경 위로 */
+    .lobby-header,
+    .lobby-cards,
+    .lobby-back { position: relative; z-index: 2; }
 
     .lobby-header {
       display: flex; flex-direction: column;
@@ -864,6 +889,7 @@
 
 <!-- ══ LOBBY ══ -->
 <div id="lobby">
+  <div id="lobby-bg"></div>
   <div class="lobby-header">
     <div class="lobby-badge">STARLIGHT SHELTER — LOBBY</div>
     <div class="lobby-title">★ 별빛쉘터</div>
