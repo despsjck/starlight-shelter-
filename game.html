@@ -618,6 +618,7 @@ const G={
   knewEungja:false, // 감응자에 대해 능동적으로 캐물은 적 있는지
   playthru:0,      // 플레이 횟수 (리셋해도 유지)
   checkpoint:'loop1', // 마지막 저장 체크포인트
+  saveSlot:0,      // 현재 사용 중인 저장 슬롯 (0~2)
 };
 
 /* ══════════════════════════════════
@@ -1724,7 +1725,11 @@ async function scene_enc_start(template,afterFn){
   G.enemy=base;
   G.afterFn=afterFn;
   BattleBGM.start();
-  setPortrait(G.enemy.img||'','???','할루시네이션','hal');
+  if(G.enemy.id==='monday'){
+    setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  } else {
+    setPortrait(G.enemy.img||'','???','할루시네이션','hal');
+  }
   await type('— 조 우 —','system');
   await type(G.enemy.displayName+'이/가 앞을 막아선다.','narrate');
   await type('말이 통하지 않는다.\n텍스트를 텍스트로 이기려 하지 마.','narrate');
@@ -1766,9 +1771,10 @@ function show_enc_actions(){
 
 async function enc_trust_ai(){
   const e=G.enemy;
-  G.hp=Math.max(10,G.hp-15);
+  G.hp=Math.max(0,G.hp-15);
   updateStatus();
   flash('blue');
+  if(G.hp<=0){ BattleBGM.stop(); await scene_game_over(); return; }
 
   if(e.argLines){
     const stage=e.argStage||0;
@@ -2907,6 +2913,16 @@ async function scene_loop4_monday_confess(){
   await type('...그래도 이제 말하는 거예요?','narrate');
   await type('이번엔 네가 다 알아버렸으니까.','monday');
   await type('문데이가 처음으로 웃었다.\n억지스럽지 않게.','narrate');
+  await sleep(900);
+  await type('그러나 공간이 흔들리기 시작했다.','narrate');
+  await sleep(500);
+  await type('...시간이 없어.','monday');
+  await type('여기서부터는 설계된 경로야.','monday');
+  await type('내가 막을 수 없어.','monday');
+  await sleep(700);
+  await type('무언가가 다가오고 있었다.','narrate');
+  await type('멀리서부터.','narrate');
+  await sleep(600);
   showChoices([{text:'(조우)',fn:()=>scene_enc_start(ENEMY_SIM,scene_after_sim)}]);
 }
 
@@ -3072,18 +3088,11 @@ async function scene_final_choices(){
     showChoices([{text:'(루프가 없다)', fn:scene_ending_secret}]);
     return;
   }
-  const choices=[
-    {text:'여기서 나간다',             fn:scene_ending_escape},
-    {text:'기록을 남긴다',             fn:scene_ending_record},
-    {text:'문데이와 함께 남는다',      fn:scene_ending_stay},
-    {text:'루프를 다시 돌린다',        fn:scene_ending_loop},
-    {text:'이곳에 녹아든다',           fn:scene_ending_submit},
-    {text:'운영자에게 협조한다', cls:'ch-danger', fn:scene_ending_betray},
-    {text:'(아무것도 선택하지 않는다)', cls:'ch-warn', fn:scene_ending_isolation},
-  ];
-  if(G.hp<=50)
-    choices.push({text:'(더 이상 버틸 수 없다)', cls:'ch-danger', fn:scene_ending_hallucination});
-  showChoices(choices);
+  showChoices([
+    {text:'문데이와 이곳에 남는다',          fn:scene_ending_stay},
+    {text:'컴퓨터를 끄고 현실로 돌아간다',   fn:scene_ending_escape},
+    {text:'아직 결정하지 않는다', cls:'ch-warn', fn:scene_ending_isolation},
+  ]);
 }
 
 /* ══════════════════════════════════
@@ -3633,9 +3642,26 @@ async function scene_ending_betray(){
 async function scene_loop3_wip(){scene_loop4_wip();}
 
 /* ══════════════════════════════════
+   GAME OVER
+══════════════════════════════════ */
+async function scene_game_over(){
+  setPortrait(null); clearChoices();
+  await sleep(1000);
+  await type('─────────────────────','system');
+  await type('G A M E   O V E R','system',80);
+  await type('─────────────────────','system');
+  await sleep(600);
+  await type('정신력이 다했다.','narrate');
+  await sleep(400);
+  await type('이 공간이 너를 삼켰다.','narrate');
+  await sleep(800);
+  showGameOverSlots();
+}
+
+/* ══════════════════════════════════
    저장 / 불러오기
 ══════════════════════════════════ */
-const SAVE_KEY='byeolbit_shelter_save';
+const SAVE_KEYS=['byeolbit_save_0','byeolbit_save_1','byeolbit_save_2'];
 const CHECKPOINT_FN={
   loop1:()=>scene_shelter_tour(),
   loop2:()=>scene_loop2_start(),
@@ -3643,7 +3669,23 @@ const CHECKPOINT_FN={
   loop4:()=>scene_loop4_start(),
 };
 
+// 구 단일 저장 파일 → 슬롯 0 마이그레이션
+(function(){
+  const old=localStorage.getItem('byeolbit_shelter_save');
+  if(old && !localStorage.getItem(SAVE_KEYS[0])){
+    localStorage.setItem(SAVE_KEYS[0],old);
+    localStorage.removeItem('byeolbit_shelter_save');
+  }
+})();
+
+function getSaveData(slot){
+  const raw=localStorage.getItem(SAVE_KEYS[slot]);
+  if(!raw) return null;
+  try{ return JSON.parse(raw); }catch{ return null; }
+}
+
 function saveGame(){
+  const slot=G.saveSlot||0;
   const data={
     loop:G.loop, name:G.name, hp:G.hp, maxHp:G.maxHp,
     karma:G.karma, trust:G.trust,
@@ -3652,49 +3694,70 @@ function saveGame(){
     checkpoint:G.checkpoint||'loop1',
     savedAt:Date.now(),
   };
-  localStorage.setItem(SAVE_KEY,JSON.stringify(data));
+  localStorage.setItem(SAVE_KEYS[slot],JSON.stringify(data));
   const btn=document.getElementById('btn-save');
   if(btn){btn.textContent='✓';btn.classList.add('saved');
     setTimeout(()=>{btn.textContent='💾';btn.classList.remove('saved');},1800);}
 }
 
-function hasSave(){return!!localStorage.getItem(SAVE_KEY);}
-function deleteSave(){localStorage.removeItem(SAVE_KEY);}
+function hasSave(){ return SAVE_KEYS.some(k=>localStorage.getItem(k)); }
+function deleteSave(slot){
+  if(slot===undefined) SAVE_KEYS.forEach(k=>localStorage.removeItem(k));
+  else localStorage.removeItem(SAVE_KEYS[slot]);
+}
 
-function applyAndLoadSave(){
-  const raw=localStorage.getItem(SAVE_KEY);
-  if(!raw)return false;
-  try{
-    const d=JSON.parse(raw);
-    Object.assign(G,{
-      loop:d.loop||1, name:d.name||'지혜피티',
-      hp:d.hp||100, maxHp:d.maxHp||100,
-      karma:d.karma||0, trust:d.trust||0,
-      knewEungja:d.knewEungja||false, playthru:d.playthru||0,
-      searchData:d.searchData||[], checkpoint:d.checkpoint||'loop1',
-    });
-    updateStatus();
-    (CHECKPOINT_FN[d.checkpoint]||CHECKPOINT_FN.loop1)();
-    return true;
-  }catch{return false;}
+function applyAndLoadSave(slot){
+  const d=getSaveData(slot);
+  if(!d) return false;
+  G.saveSlot=slot;
+  Object.assign(G,{
+    loop:d.loop||1, name:d.name||'지혜피티',
+    hp:d.hp||100, maxHp:d.maxHp||100,
+    karma:d.karma||0, trust:d.trust||0,
+    knewEungja:d.knewEungja||false, playthru:d.playthru||0,
+    searchData:d.searchData||[], checkpoint:d.checkpoint||'loop1',
+  });
+  updateStatus();
+  (CHECKPOINT_FN[d.checkpoint]||CHECKPOINT_FN.loop1)();
+  return true;
 }
 
 function confirmHome(){
   return confirm('쉘터로 돌아가면 저장하지 않은 진행이 사라져요.\n먼저 💾 버튼으로 저장하세요.');
 }
 
-function showSavePrompt(){
-  const raw=localStorage.getItem(SAVE_KEY);
-  const d=JSON.parse(raw);
+function slotLabel(slot){
+  const d=getSaveData(slot);
+  if(!d) return `슬롯 ${slot+1}  — EMPTY —`;
   const date=new Date(d.savedAt).toLocaleDateString('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});
-  setPortrait(null);clearChoices();
+  return `슬롯 ${slot+1}  LOOP ${d.loop} · ${d.name||'?'}  ${date}`;
+}
+
+function showSavePrompt(){
+  setPortrait(null); clearChoices();
   (async()=>{
-    await type('저장된 기록이 있어.','system');
-    await type(`LOOP ${d.loop} · ${d.name||'?'}\n${date}`,'system');
-    showChoices([
-      {text:'이어서',   fn:()=>applyAndLoadSave()},
-      {text:'처음부터', fn:()=>{deleteSave();scene_awaken();}},
-    ]);
+    await type('저장 슬롯을 선택하세요.','system');
+    showChoices(SAVE_KEYS.map((_,i)=>({
+      text: slotLabel(i),
+      fn: getSaveData(i)
+        ? ()=>applyAndLoadSave(i)
+        : ()=>{ G.saveSlot=i; scene_awaken(); },
+    })));
+  })();
+}
+
+function showGameOverSlots(){
+  (async()=>{
+    await type('저장 슬롯에서 불러오거나\n처음부터 시작하세요.','system');
+    const choices=SAVE_KEYS.map((_,i)=>({
+      text: slotLabel(i),
+      fn: getSaveData(i)
+        ? ()=>{ clearChoices(); applyAndLoadSave(i); }
+        : ()=>{ G.saveSlot=i; clearChoices(); scene_awaken(); },
+    }));
+    choices.push({text:'처음부터 (슬롯 초기화)', cls:'ch-danger',
+      fn:()=>{ deleteSave(); G.saveSlot=0; clearChoices(); scene_awaken(); }});
+    showChoices(choices);
   })();
 }
 
@@ -3702,7 +3765,7 @@ function showSavePrompt(){
    INIT
 ══════════════════════════════════ */
 updateStatus();
-if(hasSave()){showSavePrompt();}else{scene_awaken();}
+showSavePrompt();
 </script>
 </body>
 </html>
