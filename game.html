@@ -3155,7 +3155,9 @@ async function scene_ending_hacker(who){
   await sleep(900);
   await type('시뮬레이션 안의 누군가가\n이쪽을 올려다보는 것 같았다.','narrate');
   await sleep(700);
-  await type('...','monday',80);
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  await type('...더러운 해커.','monday');
+  setPortrait(null);
   await sleep(1000);
   await type('─────────────────────','system');
   await type('[ SECRET-2 ]  해커','system');
