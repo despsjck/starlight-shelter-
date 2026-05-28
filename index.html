@@ -1757,6 +1757,11 @@ document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
 /* ── no-src images → placeholder ── */
 document.addEventListener('DOMContentLoaded',()=>{
   document.querySelectorAll('img[data-no-src]').forEach(img=>_replImg(img));
+  // 게임을 지운 자 — SECRET-3 플래그 감지
+  if(localStorage.getItem('byeolbit_gameRemoved')){
+    const gameCard = document.querySelector('.lobby-card.c-green');
+    if(gameCard) gameCard.remove();
+  }
 });
 
 /* ══════════════════════════════════════════════

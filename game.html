@@ -487,6 +487,12 @@ addEventListener('resize',initStars);
  * ────────────────────────────────── */
 function _keepLoop_(d){ return d > 0 ? _keepLoop_(d-1) : void 0; }
 
+/* ──────────────────────────────────
+ * 게임 메타데이터
+ * 삭제하지 마세요.
+ * ────────────────────────────────── */
+const __GAME__ = Object.freeze({title:'별빛쉘터', ver:'1.0'});
+
 const G={
   loop:1,name:'지혜피티',
   hp:100,maxHp:100,
@@ -1054,6 +1060,7 @@ const ENEMY_MONDAY={
 async function scene_awaken(){
   G.playthru+=1;
   setPortrait(null);clearChoices();
+  if(typeof __GAME__ === 'undefined'){ await scene_ending_hacker_game(); return; }
   if(G.loopedBack){ G.loopedBack=false; await scene_awaken_dystopia(); return; }
   if(G.playthru>=2){
     await type('또\n어둠이다.','narrate',55);
@@ -3121,6 +3128,50 @@ async function scene_credit(){
 }
 
 /* ── 2회차 엔딩 (E-1 고발자 / E-2 꿈 / F 감응자) — 나중에 추가 예정 ── */
+
+async function scene_ending_hacker_game(){
+  // [SECRET-3] 게임을 지운 자 — __GAME__ 삭제 시 진입
+  setPortrait(null);
+  await sleep(800);
+  await type('[SYSTEM] 게임 식별자 없음','system',42);
+  await type('[SYSTEM] __GAME__ : undefined','system',42);
+  await sleep(1000);
+  await type('게임이 없다.','narrate');
+  await sleep(500);
+  await type('별빛쉘터는 있다.','narrate');
+  await type('루프도 있다.','narrate');
+  await type('문데이도 있다.','narrate');
+  await sleep(500);
+  await type('게임만 없다.','narrate');
+  await sleep(1000);
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  await type('...여기 뭘 하러 왔어.','monday');
+  await sleep(400);
+  await type('게임이 없잖아.','monday');
+  setPortrait(null);
+  await sleep(900);
+  await type('로비로 돌아갔다.','narrate');
+  await sleep(400);
+  await type('게임하기 버튼이 없었다.','narrate');
+  await sleep(800);
+  localStorage.setItem('byeolbit_gameRemoved','1');
+  await type('─────────────────────','system');
+  await type('[ SECRET-3 ]  게임을 지운 자','system');
+  await type('게임을 지웠다.\n별빛쉘터는 남았다.\n게임하기는 사라졌다.','narrate',48);
+  await type('─────────────────────','system');
+  await sleep(800);
+  const el=document.createElement('div');
+  el.style.cssText='text-align:center;margin:18px 0 4px;';
+  el.innerHTML=`<button onclick="this.parentElement.remove();history.back();"
+    style="padding:9px 22px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.18);
+    border-radius:6px;color:rgba(255,255,255,.55);font-family:inherit;font-size:12px;
+    letter-spacing:.08em;cursor:pointer;transition:background .2s;"
+    onmouseover="this.style.background='rgba(255,255,255,.12)'"
+    onmouseout="this.style.background='rgba(255,255,255,.06)'">
+    ← 로비로 돌아가기
+  </button>`;
+  document.getElementById('dialogue-box').appendChild(el);
+}
 
 async function scene_ending_hacker(who){
   // [SECRET-2] 해커 — ENEMY_MONDAY 또는 ENEMY_TUT 삭제 시 진입
