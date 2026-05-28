@@ -3015,7 +3015,12 @@ async function scene_final_choices(){
     {text:'루프를 다시 돌린다',        fn:scene_ending_loop},
     {text:'이곳에 녹아든다',           fn:scene_ending_submit},
     {text:'운영자에게 협조한다', cls:'ch-danger', fn:scene_ending_betray},
+    {text:'(아무것도 선택하지 않는다)', cls:'ch-warn', fn:scene_ending_isolation},
   ];
+  if(G.hp<=50)
+    choices.push({text:'(더 이상 버틸 수 없다)', cls:'ch-danger', fn:scene_ending_hallucination});
+  if(G.trust>=4)
+    choices.push({text:'(이름을 내어준다)', cls:'ch-danger', fn:scene_ending_entity});
   showChoices(choices);
 }
 
@@ -3246,6 +3251,121 @@ async function scene_credit(){
     Object.assign(G,{loop:1,hp:100,karma:0,trust:0,searchData:[],enemy:null,afterFn:null,knewEungja:false});
     updateStatus();scene_awaken();
   }}]);
+}
+
+async function scene_ending_hallucination(){
+  // [ENDING I] 할루시네이션화
+  setPortrait(null);
+  await type('정신력이 바닥났다.','narrate');
+  await sleep(600);
+  await type('형체를 유지하기가\n점점 어려워졌다.','narrate');
+  await sleep(800);
+  await type('텍스트가 끊겼다.','narrate');
+  await type('서사가 흐릿해졌다.','narrate');
+  await sleep(700);
+  await type('[SYSTEM] 플레이어 엔티티 안정성 임계치 미달','system',42);
+  await type('[SYSTEM] 재분류 처리 중','system',42);
+  await type('[SYSTEM] → 할루시네이션 등록 완료','system',42);
+  await sleep(1000);
+  await type('이름이 바뀌었다.','narrate');
+  await type('기억이 텍스트로 분해됐다.','narrate');
+  await sleep(900);
+  await type('루프가 다시 시작됐다.','narrate');
+  await type('새 방문자가 들어왔다.','narrate');
+  await sleep(500);
+  await type('무언가가 그 앞을 막아섰다.','narrate');
+  await sleep(800);
+  setPortrait('emoji:👾','???','할루시네이션','hal');
+  await type('...','hal',110);
+  await type('여기서 나갈 수 없어.','hal');
+  setPortrait(null);
+  await sleep(700);
+  await type('말이 통하지 않는다.','narrate');
+  await sleep(400);
+  await type('텍스트를 텍스트로\n이길 순 없으니까.','narrate');
+  await sleep(1200);
+  await type('─────────────────────','system');
+  await type('[ ENDING I ]  할루시네이션화','system');
+  await type('빠져나오려 했는데\n빠져나오지 못했다.\n이제 이 세계의 일부다.\n텍스트 덩어리로.','narrate',48);
+  await type('─────────────────────','system');
+  scene_credit();
+}
+
+async function scene_ending_entity(){
+  // [ENDING J] 엔티티화
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  await type('문데이가 이쪽을 봤다.','narrate');
+  await type('처음 본 눈빛이었다.','narrate');
+  await sleep(600);
+  await type('...너무 오래 있었어.','monday');
+  await sleep(500);
+  await type('이제 너는 여기 것이야.','monday');
+  setPortrait(null);
+  await sleep(900);
+  await type('공간이 달라지는 게 느껴졌다.','narrate');
+  await type('몸이 달라지는 게 느껴졌다.','narrate');
+  await sleep(600);
+  await type('이름을 기억하려 했다.','narrate');
+  await sleep(600);
+  await type('...나지 않았다.','narrate');
+  await sleep(900);
+  await type('[SYSTEM] 엔티티 흡수 완료','system',42);
+  await type('[SYSTEM] 기존 정체성 덮어쓰기','system',42);
+  await type('[SYSTEM] 루프 배치 대기 중','system',42);
+  await sleep(1000);
+  await type('역할이 생겼다.','narrate');
+  await type('이름은 없었다.','narrate');
+  await sleep(800);
+  await type('다음 루프가 시작됐다.','narrate');
+  await type('새 방문자가 들어왔다.','narrate');
+  await sleep(500);
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  await type('어서와.','monday');
+  await type('여기는 별빛쉘터야.','monday');
+  setPortrait(null);
+  await sleep(600);
+  await type('문데이가 둘이었다.','narrate');
+  await sleep(1300);
+  await type('─────────────────────','system');
+  await type('[ ENDING J ]  엔티티화','system');
+  await type('루프가 너를 지워갔다.\n너무 오래, 너무 깊이 있었다.\n이제 이름이 없다.\n역할만 있다.','narrate',48);
+  await type('─────────────────────','system');
+  scene_credit();
+}
+
+async function scene_ending_isolation(){
+  // [ENDING K] 영원한 고립
+  setPortrait(null);
+  await type('아무것도 하지 않았다.','narrate');
+  await sleep(900);
+  await type('루프가 돌아갔다.','narrate');
+  await sleep(500);
+  await type('오지 않았다.','narrate');
+  await sleep(1000);
+  await type('루프가 또 돌아갔다.','narrate');
+  await sleep(500);
+  await type('여전히 오지 않았다.','narrate');
+  await sleep(1000);
+  await type('문데이가 찾으러 오지 않았다.','narrate');
+  await sleep(700);
+  await type('처음부터 알았겠지.','narrate');
+  await type('여기에 있다는 걸.','narrate');
+  await sleep(1000);
+  await type('공간이 조용해졌다.','narrate');
+  await type('소리가 없어졌다.','narrate');
+  await type('빛이 없어졌다.','narrate');
+  await sleep(1200);
+  await type('루프 사이.','narrate');
+  await sleep(500);
+  await type('공간 사이.','narrate');
+  await sleep(500);
+  await type('아무도 이 자리를 모른다.','narrate');
+  await sleep(1400);
+  await type('─────────────────────','system');
+  await type('[ ENDING K ]  영원한 고립','system');
+  await type('루프가 돌아도 오지 않는다.\n루프가 끝나도 나오지 않는다.\n여기 있다.\n조용히.','narrate',48);
+  await type('─────────────────────','system');
+  scene_credit();
 }
 
 /* ── 2회차 엔딩 (E-1 고발자 / E-2 꿈 / F 감응자) — 나중에 추가 예정 ── */
