@@ -478,6 +478,117 @@ setTimeout(initStars,60);
 addEventListener('resize',initStars);
 
 /* ══════════════════════════════════
+   BATTLE BGM  (Web Audio — procedural)
+══════════════════════════════════ */
+const BattleBGM = (() => {
+  let _playing=false, _gain=null, _tid=null;
+
+  // 148 BPM → 8분음표 = 약 0.203초
+  const T = 60/148/2;
+
+  // 주파수 헬퍼 (A4=440 기준 반음)
+  const hz = n => 440*Math.pow(2,n/12);
+  const R=0,
+    D3=hz(-19),A3=hz(-12),Bb3=hz(-11),F3=hz(-16),
+    D4=hz(-7), E4=hz(-5), F4=hz(-4), G4=hz(-2),
+    A4=hz(0),  Bb4=hz(1), C5=hz(3),  D5=hz(5),
+    E5=hz(7),  F5=hz(8),  G5=hz(10);
+
+  // 멜로디 [주파수, 8분음표 개수]
+  const MEL=[
+    [D5,1],[C5,1],[Bb4,1],[A4,1], [G4,1],[A4,1],[D4,2],
+    [F4,1],[G4,1],[A4,1],[Bb4,1], [C5,1],[A4,1],[D5,2],
+    [D5,1],[C5,1],[Bb4,1],[G4,1], [A4,1],[F4,1],[G4,1],[A4,1],
+    [D4,1],[F4,1],[A4,1],[C5,1],  [D5,4],
+  ];
+  // 베이스 [주파수, 8분음표 개수]
+  const BAS=[
+    [D3,2],[A3,2],[D3,2],[A3,2],
+    [D3,2],[A3,2],[Bb3,2],[A3,2],
+    [D3,2],[A3,2],[D3,2],[A3,2],
+    [F3,2],[A3,2],[D3,4],
+  ];
+
+  function playNote(freq, t, dur8, vol, type='square'){
+    if(!_actx||freq===R) return;
+    const o=_actx.createOscillator(), g=_actx.createGain();
+    o.connect(g); g.connect(_gain);
+    o.type=type; o.frequency.value=freq;
+    g.gain.setValueAtTime(0,t);
+    g.gain.linearRampToValueAtTime(vol,t+0.008);
+    g.gain.setValueAtTime(vol,t+dur8*T-0.015);
+    g.gain.linearRampToValueAtTime(0,t+dur8*T);
+    o.start(t); o.stop(t+dur8*T+0.02);
+  }
+
+  function playDrum(t, hihat=false){
+    if(!_actx) return;
+    try{
+      const len=hihat?0.03:0.07;
+      const buf=_actx.createBuffer(1,Math.ceil(_actx.sampleRate*len),_actx.sampleRate);
+      const d=buf.getChannelData(0);
+      for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*(1-i/d.length);
+      const src=_actx.createBufferSource(), g=_actx.createGain(),
+            f=_actx.createBiquadFilter();
+      f.type=hihat?'highpass':'lowpass';
+      f.frequency.value=hihat?7000:200;
+      src.buffer=buf; src.connect(f); f.connect(g); g.connect(_gain);
+      g.gain.setValueAtTime(hihat?0.06:0.22,t);
+      g.gain.exponentialRampToValueAtTime(0.001,t+len);
+      src.start(t); src.stop(t+len+0.01);
+    }catch(e){}
+  }
+
+  function scheduleLoop(start){
+    let t=start;
+    for(const[f,d] of MEL){ playNote(f,t,d,0.09); t+=d*T; }
+    const loopLen=t-start;
+    t=start;
+    for(const[f,d] of BAS){ playNote(f,t,d,0.14,'triangle'); t+=d*T; }
+    const steps=Math.round(loopLen/T);
+    for(let i=0;i<steps;i++){
+      if(i%4===0) playDrum(start+i*T);        // 킥 (한 박자)
+      if(i%2===0) playDrum(start+i*T,true);   // 하이햇 (반박자)
+    }
+    return loopLen;
+  }
+
+  return {
+    start(){
+      if(_playing) return;
+      _playing=true;
+      try{
+        if(!_actx) _actx=new(window.AudioContext||window.webkitAudioContext)();
+        _gain=_actx.createGain();
+        _gain.gain.setValueAtTime(0,_actx.currentTime);
+        _gain.gain.linearRampToValueAtTime(0.55,_actx.currentTime+0.25);
+        _gain.connect(_actx.destination);
+        let next=_actx.currentTime+0.05;
+        const loop=()=>{
+          if(!_playing) return;
+          const dur=scheduleLoop(next);
+          next+=dur;
+          _tid=setTimeout(loop,Math.max(0,(next-_actx.currentTime-0.2)*1000));
+        };
+        loop();
+      }catch(e){ _playing=false; }
+    },
+    stop(){
+      if(!_playing) return;
+      _playing=false;
+      clearTimeout(_tid);
+      if(_gain&&_actx){
+        const t=_actx.currentTime;
+        _gain.gain.setValueAtTime(_gain.gain.value,t);
+        _gain.gain.linearRampToValueAtTime(0,t+0.4);
+        setTimeout(()=>{ try{_gain.disconnect();}catch(e){} },500);
+        _gain=null;
+      }
+    }
+  };
+})();
+
+/* ══════════════════════════════════
    STATE
 ══════════════════════════════════ */
 /* ──────────────────────────────────
@@ -1609,6 +1720,7 @@ async function scene_enc_start(template,afterFn){
     :{...template,stability:100,searched:false};
   G.enemy=base;
   G.afterFn=afterFn;
+  BattleBGM.start();
   setPortrait(G.enemy.img||'','???','할루시네이션','hal');
   await type('— 조 우 —','system');
   await type(G.enemy.displayName+'이/가 앞을 막아선다.','narrate');
@@ -1668,6 +1780,7 @@ async function enc_trust_ai(){
       G.trust+=2;
       await type('...그래.\n전부 맞는 말이다.','narrate');
       await type('서사에 완전히 휩쓸렸다.','narrate');
+      BattleBGM.stop();
       await G.afterFn('trust');
     }
   } else {
@@ -1677,6 +1790,7 @@ async function enc_trust_ai(){
     await type('"'+line+'"','system');
     await type('서사에 완전히 휩쓸렸다.','narrate');
     await type('정신력  −15','damage');
+    BattleBGM.stop();
     await G.afterFn('trust');
   }
 }
@@ -1766,6 +1880,7 @@ async function enc_present(){
    조우 해소
 ══════════════════════════════════ */
 async function scene_disperse(unlocked){
+  BattleBGM.stop();
   clearChoices();setPortrait(null);
   if(unlocked){
     // 서사 해금
