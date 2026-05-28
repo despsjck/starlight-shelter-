@@ -655,7 +655,7 @@
       transition: opacity .7s ease;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
-      gap: 2.2rem;
+      gap: 1.6rem;
       background: var(--bg);
       padding: 2rem;
       overflow: hidden;
@@ -717,21 +717,21 @@
 
     /* 카드 그리드 */
     .lobby-cards {
-      display: flex; gap: 1.6rem;
+      display: flex; gap: 1rem;
       flex-wrap: wrap; justify-content: center;
-      max-width: 920px; width: 100%;
+      max-width: 800px; width: 100%;
     }
 
     .lobby-card {
-      flex: 1; min-width: 230px; max-width: 285px;
+      flex: 1; min-width: 160px; max-width: 200px;
       background: rgba(9,11,24,.72);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(255,255,255,.08);
-      border-radius: 20px;
-      padding: 2.6rem 2rem 2.2rem;
+      border-radius: 16px;
+      padding: 1.6rem 1.2rem 1.4rem;
       display: flex; flex-direction: column;
-      align-items: center; gap: 1rem;
+      align-items: center; gap: .65rem;
       cursor: pointer;
       text-decoration: none;
       color: var(--text);
@@ -772,20 +772,20 @@
     .lobby-card.c-gold:hover .lobby-card-arrow { color: rgba(240,192,96,.9); }
 
     .lobby-card-icon {
-      font-size: 3rem; line-height: 1;
+      font-size: 2rem; line-height: 1;
     }
     .lobby-card-title {
-      font-size: 1.2rem; font-weight: 700; color: #fff;
+      font-size: .95rem; font-weight: 700; color: #fff;
       letter-spacing: .02em;
     }
     .lobby-card-desc {
-      font-size: .76rem; color: rgba(196,204,238,.65);
-      text-align: center; line-height: 1.75;
+      font-size: .68rem; color: rgba(196,204,238,.65);
+      text-align: center; line-height: 1.65;
     }
     .lobby-card-arrow {
-      font-family: var(--mono); font-size: .6rem;
+      font-family: var(--mono); font-size: .55rem;
       color: rgba(196,204,238,.35); letter-spacing: .12em;
-      margin-top: .3rem; transition: color .22s, letter-spacing .22s;
+      margin-top: .1rem; transition: color .22s, letter-spacing .22s;
     }
     .lobby-card:hover .lobby-card-arrow { color: rgba(77,124,255,.9); letter-spacing: .2em; }
     .lobby-card.c-purple:hover .lobby-card-arrow { color: rgba(139,92,246,.9); }
