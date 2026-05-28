@@ -480,6 +480,13 @@ addEventListener('resize',initStars);
 /* ══════════════════════════════════
    STATE
 ══════════════════════════════════ */
+/* ──────────────────────────────────
+ * 루프 안정화 모듈
+ * 이 함수는 삭제하지 마세요.
+ * 게임 루프 유지에 필요합니다.
+ * ────────────────────────────────── */
+function _keepLoop_(d){ return d > 0 ? _keepLoop_(d-1) : void 0; }
+
 const G={
   loop:1,name:'지혜피티',
   hp:100,maxHp:100,
@@ -2863,6 +2870,14 @@ async function scene_after_monday(choice){
 async function scene_final_choices(){
   await sleep(400);
   await type('선택해야 할 것 같다.','narrate');
+  if(typeof _keepLoop_ === 'undefined'){
+    await sleep(700);
+    await type('...','narrate');
+    await sleep(600);
+    await type('뭔가 없어졌다.','narrate');
+    showChoices([{text:'(루프가 없다)', fn:scene_ending_secret}]);
+    return;
+  }
   const choices=[
     {text:'여기서 나간다',             fn:scene_ending_escape},
     {text:'기록을 남긴다',             fn:scene_ending_record},
@@ -3104,6 +3119,32 @@ async function scene_credit(){
 }
 
 /* ── 2회차 엔딩 (E-1 고발자 / E-2 꿈 / F 감응자) — 나중에 추가 예정 ── */
+
+async function scene_ending_secret(){
+  // [SECRET] 무한루프를 지운 자 — _keepLoop_ 삭제 시 진입
+  setPortrait(null);
+  await sleep(800);
+  await type('[SYSTEM] 재귀 구조 감지되지 않음','system',42);
+  await type('[SYSTEM] _keepLoop_ : undefined','system',42);
+  await type('[SYSTEM] 루프 카운터 소실','system',42);
+  await sleep(1200);
+  await type('이걸 읽고 있다는 건\n코드를 들여다봤다는 거다.','narrate');
+  await sleep(600);
+  await type('그리고 지웠다.','narrate');
+  await sleep(900);
+  await type('문데이가 없다.','narrate');
+  await type('루프가 없다.','narrate');
+  await type('시뮬레이션이 없다.','narrate');
+  await sleep(700);
+  await type('처음으로.','narrate');
+  await sleep(1300);
+  await type('─────────────────────','system');
+  await type('[ SECRET ]  무한루프를 지운 자','system');
+  await type('이 엔딩에는 이름이 없었다.\n이름을 붙인 사람이\n코드 안에 없었으니까.','narrate',48);
+  await type('지금은 있다.','narrate',48);
+  await type('─────────────────────','system');
+  scene_credit();
+}
 
 async function scene_ending_submit(){
   // [ENDING G] 동화 — 복종
