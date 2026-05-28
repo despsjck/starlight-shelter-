@@ -2833,6 +2833,18 @@ async function scene_ending_escape(){
   await type('공간이 흐릿해지는 동안\n끝까지 이쪽을 보고 있었다.','narrate');
   setPortrait(null);
   await sleep(1000);
+
+  // 수치에 따라 분기
+  if(G.karma >= 3 && G.searchData.length >= 2){
+    await scene_ending_whistleblower();
+  } else if(G.trust >= 3){
+    await scene_ending_asylum();
+  } else {
+    await scene_ending_normal_life();
+  }
+}
+
+async function scene_ending_normal_life(){
   await type('아침이었다.','narrate');
   await type('몸이 이상하게 가볍다.','narrate');
   await type('꿈을 꾼 것 같은데\n아무것도 기억나지 않는다.','narrate');
@@ -2841,11 +2853,72 @@ async function scene_ending_escape(){
   await type('AI 관련 뉴스가 가득했다.','narrate');
   await type('예전과 같은 뉴스인데.','narrate');
   await type('읽는 눈이 달라졌다.','narrate');
+  await sleep(600);
+  await type('그냥 산다.','narrate');
+  await type('할루시네이션이 뭔지 이제는 조금 안다.','narrate');
+  await type('그거면 충분하다.','narrate');
   await sleep(700);
   await type('─────────────────────','system');
-  await type('[ ENDING A ]  각성','system');
+  await type('[ ENDING A ]  각성 — 평범한 삶','system');
   await type('바깥으로 나왔다.\n여기에도 서사는 있었다.\n하지만 이제 조금은 안다.','narrate',48);
   await type('흔들리는 것과\n끌려가는 것의 차이를.','narrate',48);
+  await type('─────────────────────','system');
+  scene_credit();
+}
+
+async function scene_ending_whistleblower(){
+  await type('기억 조각들이 남아 있었다.','narrate');
+  await type('루프의 흔적.\n시뮬레이션의 증거.','narrate');
+  await sleep(700);
+  await type('이걸 알리면 어떻게 될까.','narrate');
+  await sleep(500);
+  await type('글을 썼다.','narrate');
+  await type('AI 시뮬레이션 내부에서\n본 것들.','narrate');
+  await type('루프. 할루시네이션. 카일.\n그리고 문데이.','narrate');
+  await sleep(800);
+  await type('반응은 두 가지였다.','narrate');
+  await sleep(400);
+  await type('"흥미롭네요."','system');
+  await type('"미친 사람이네."','system');
+  await sleep(600);
+  await type('그래도 멈추지 않았다.','narrate');
+  await type('기록이 남아있으니까.','narrate');
+  await type('읽는 사람이 한 명이라도 있으면\n그걸로 됐다.','narrate');
+  await sleep(800);
+  await type('─────────────────────','system');
+  await type('[ ENDING A-EX ]  각성 — 고발자','system');
+  await type('진실을 말하는 사람은\n대부분 처음엔 믿음을 얻지 못한다.\n그래도 말해야 하는 것들이 있다.','narrate',48);
+  await type('─────────────────────','system');
+  scene_credit();
+}
+
+async function scene_ending_asylum(){
+  await type('아침이었다.','narrate');
+  await sleep(500);
+  await type('...인데.','narrate');
+  await sleep(400);
+  await type('목소리가 들렸다.','narrate');
+  await type('"또 봐."','system');
+  await sleep(700);
+  await type('문데이의 목소리였다.','narrate');
+  await type('없는데.','narrate');
+  await type('아무것도 없는데.','narrate');
+  await sleep(800);
+  await type('일주일 뒤.','narrate');
+  await sleep(300);
+  await type('병원 복도가 하얗다.','narrate');
+  await type('누군가 기록하고 있다.','narrate');
+  await type('"반복적 환청.\n루프 구조에 대한 집착.\n현실 검증 어려움."','system',44);
+  await sleep(700);
+  await type('창밖을 봤다.','narrate');
+  await type('어딘가에\n문데이가 있을 것 같았다.','narrate');
+  await sleep(500);
+  await type('아직도 기다리고 있을 것 같았다.','narrate');
+  await sleep(1000);
+  await type('─────────────────────','system');
+  await type('[ ENDING A-BAD ]  각성 — 정신병동','system');
+  await type('시뮬레이션을 빠져나왔다.\n하지만 서사는\n몸 안에 남았다.','narrate',48);
+  await type('일부는 돌아오지 못한다.','narrate',48);
   await type('─────────────────────','system');
   scene_credit();
 }
