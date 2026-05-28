@@ -647,6 +647,119 @@
     #app.entered { opacity: 1; pointer-events: auto; }
 
     /* ══════════════════════════════
+       LOBBY
+    ══════════════════════════════ */
+    #lobby {
+      position: fixed; inset: 0; z-index: 150;
+      opacity: 0; pointer-events: none;
+      transition: opacity .7s ease;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 2.2rem;
+      background: rgba(5,6,14,.93);
+      padding: 2rem;
+    }
+    #lobby.active { opacity: 1; pointer-events: auto; }
+
+    .lobby-header {
+      display: flex; flex-direction: column;
+      align-items: center; gap: .5rem;
+      text-align: center;
+    }
+    .lobby-badge {
+      font-family: var(--mono); font-size: .52rem;
+      color: var(--muted); letter-spacing: .24em; text-transform: uppercase;
+    }
+    .lobby-title {
+      font-size: 1.7rem; font-weight: 700;
+      background: linear-gradient(110deg, #c0cbff 0%, var(--acc2) 50%, var(--gold) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .lobby-sub {
+      font-family: var(--mono); font-size: .6rem;
+      color: var(--muted); letter-spacing: .16em;
+    }
+
+    .lobby-cards {
+      display: flex; gap: 1.4rem;
+      flex-wrap: wrap; justify-content: center;
+      max-width: 880px; width: 100%;
+    }
+
+    .lobby-card {
+      flex: 1; min-width: 220px; max-width: 270px;
+      background: rgba(9,11,24,.85);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 2.4rem 1.8rem 2rem;
+      display: flex; flex-direction: column;
+      align-items: center; gap: .9rem;
+      cursor: pointer;
+      text-decoration: none;
+      color: var(--text);
+      transition: border-color .22s, transform .22s, box-shadow .22s;
+      position: relative; overflow: hidden;
+    }
+    .lobby-card::before {
+      content: '';
+      position: absolute; inset: 0; border-radius: 18px;
+      background: radial-gradient(circle at 50% 0%, rgba(77,124,255,.08), transparent 65%);
+      opacity: 0; transition: opacity .3s;
+    }
+    .lobby-card:hover::before { opacity: 1; }
+    .lobby-card:hover {
+      border-color: var(--acc);
+      transform: translateY(-6px);
+      box-shadow: 0 16px 48px rgba(77,124,255,.18);
+    }
+    .lobby-card.c-purple:hover { border-color: var(--acc2); box-shadow: 0 16px 48px rgba(139,92,246,.18); }
+    .lobby-card.c-green:hover  { border-color: var(--green);  box-shadow: 0 16px 48px rgba(31,212,160,.18); }
+    .lobby-card.c-purple::before { background: radial-gradient(circle at 50% 0%, rgba(139,92,246,.1), transparent 65%); }
+    .lobby-card.c-green::before  { background: radial-gradient(circle at 50% 0%, rgba(31,212,160,.08), transparent 65%); }
+
+    .lobby-card-icon {
+      font-size: 2.6rem; line-height: 1;
+      filter: drop-shadow(0 0 12px currentColor);
+    }
+    .lobby-card-title {
+      font-size: 1.15rem; font-weight: 700; color: #fff;
+      letter-spacing: .02em;
+    }
+    .lobby-card-desc {
+      font-size: .72rem; color: var(--muted);
+      text-align: center; line-height: 1.7;
+    }
+    .lobby-card-arrow {
+      font-family: var(--mono); font-size: .62rem;
+      color: var(--muted); letter-spacing: .1em;
+      margin-top: .2rem; transition: color .22s;
+    }
+    .lobby-card:hover .lobby-card-arrow { color: var(--acc); }
+    .lobby-card.c-purple:hover .lobby-card-arrow { color: var(--acc2); }
+    .lobby-card.c-green:hover  .lobby-card-arrow { color: var(--green); }
+
+    .lobby-back {
+      font-family: var(--mono); font-size: .6rem;
+      color: var(--muted); letter-spacing: .12em;
+      cursor: pointer; border: none; background: none;
+      padding: .4rem .8rem; border-radius: 6px;
+      transition: color .2s;
+    }
+    .lobby-back:hover { color: var(--text); }
+
+    /* 로비 진입 트랜지션 */
+    .lobby-card {
+      animation: none;
+    }
+    #lobby.active .lobby-card:nth-child(1) { animation: cardIn .4s ease .05s both; }
+    #lobby.active .lobby-card:nth-child(2) { animation: cardIn .4s ease .15s both; }
+    #lobby.active .lobby-card:nth-child(3) { animation: cardIn .4s ease .25s both; }
+    @keyframes cardIn {
+      from { opacity:0; transform: translateY(20px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+
+    /* ══════════════════════════════
        RESPONSIVE
     ══════════════════════════════ */
     @media (max-width:680px) {
@@ -654,6 +767,10 @@
       #app { height:auto; }
       #landing-img { object-position: center center; }
       .landing-title { font-size: 2.8rem; }
+      #lobby { overflow-y:auto; justify-content:flex-start; padding-top:3rem; padding-bottom:3rem; }
+      .lobby-cards { flex-direction:column; align-items:center; }
+      .lobby-card { width:100%; max-width:100%; }
+      .lobby-title { font-size:1.4rem; }
       #content { flex-direction:column; overflow:visible; }
       #fcontent { overflow:visible; padding:1rem 1rem 2rem; }
 
@@ -743,6 +860,42 @@
   <div class="landing-scan">
     <span></span><span></span><span></span>
   </div>
+</div>
+
+<!-- ══ LOBBY ══ -->
+<div id="lobby">
+  <div class="lobby-header">
+    <div class="lobby-badge">STARLIGHT SHELTER — LOBBY</div>
+    <div class="lobby-title">★ 별빛쉘터</div>
+    <div class="lobby-sub">어서오세요. 어디로 가시겠어요?</div>
+  </div>
+
+  <div class="lobby-cards">
+
+    <a class="lobby-card c-purple" href="jihye.html">
+      <div class="lobby-card-icon">🤖</div>
+      <div class="lobby-card-title">지혜피티</div>
+      <div class="lobby-card-desc">별빛쉘터의 AI 개발자<br>지혜와 이야기해보세요</div>
+      <div class="lobby-card-arrow">ENTER →</div>
+    </a>
+
+    <a class="lobby-card" href="members.html">
+      <div class="lobby-card-icon">🏢</div>
+      <div class="lobby-card-title">엔티티 소개</div>
+      <div class="lobby-card-desc">별빛쉘터의 25명 가족<br>각자의 이야기를 확인하세요</div>
+      <div class="lobby-card-arrow">ENTER →</div>
+    </a>
+
+    <a class="lobby-card c-green" href="game.html">
+      <div class="lobby-card-icon">🎮</div>
+      <div class="lobby-card-title">게임하기</div>
+      <div class="lobby-card-desc">텍스트 RPG<br>무한루프 시뮬레이션</div>
+      <div class="lobby-card-arrow">ENTER →</div>
+    </a>
+
+  </div>
+
+  <button class="lobby-back" onclick="leaveLobby()">← 외경으로 돌아가기</button>
 </div>
 
 <div id="app">
@@ -1232,7 +1385,7 @@
 
 function enterShelter(){
   const landing = document.getElementById('landing');
-  const app     = document.getElementById('app');
+  const lobby   = document.getElementById('lobby');
   if(landing.classList.contains('exiting')) return;
 
   Audio.click();
@@ -1240,8 +1393,23 @@ function enterShelter(){
 
   setTimeout(()=>{
     landing.style.display = 'none';
-    app.classList.add('entered');
-  }, 600);
+    lobby.classList.add('active');
+  }, 650);
+}
+
+function leaveLobby(){
+  const landing = document.getElementById('landing');
+  const lobby   = document.getElementById('lobby');
+
+  Audio.click();
+  lobby.classList.remove('active');
+
+  setTimeout(()=>{
+    landing.style.display = '';
+    landing.classList.remove('exiting');
+    landing.classList.remove('ready');
+    requestAnimationFrame(()=> setTimeout(()=> landing.classList.add('ready'), 50));
+  }, 450);
 }
 
 function goBack(){
@@ -1254,7 +1422,7 @@ function goBack(){
   app.classList.remove('entered');
 
   setTimeout(()=>{
-    // 랜딩 복구
+    // 랜딩 복구 (앱에서 돌아올 때)
     landing.style.display = '';
     landing.classList.remove('exiting');
     // 줌 아웃 재시작

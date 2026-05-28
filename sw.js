@@ -1,4 +1,4 @@
-const CACHE = 'starlight-v1';
+const CACHE = 'starlight-v3';
 const ASSETS = [
   '/starlight-shelter-/',
   '/starlight-shelter-/index.html',
