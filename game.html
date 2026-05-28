@@ -1582,6 +1582,7 @@ async function scene_hal_warning(){
   await type('보여줄게.','monday');
   await type('공간이 흔들렸다.','narrate');
   await type('무언가가 나타나고 있었다.','narrate');
+  if(typeof ENEMY_TUT === 'undefined'){ await scene_ending_hacker('hallucination'); return; }
   showChoices([{text:'(조우 태세)',fn:()=>scene_enc_start(ENEMY_TUT,scene_after_tut)}]);
 }
 
@@ -2827,6 +2828,7 @@ async function scene_monday_confront(){
   await type('왜 그걸 물어.','monday');
   await type('목소리가 달랐다.','narrate');
   await type('평소의 문데이가 아니었다.','narrate');
+  if(typeof ENEMY_MONDAY === 'undefined'){ await scene_ending_hacker('monday'); return; }
   showChoices([{text:'(물러서지 않는다)', fn:()=>scene_enc_start(ENEMY_MONDAY, scene_after_monday)}]);
 }
 
@@ -3119,6 +3121,49 @@ async function scene_credit(){
 }
 
 /* ── 2회차 엔딩 (E-1 고발자 / E-2 꿈 / F 감응자) — 나중에 추가 예정 ── */
+
+async function scene_ending_hacker(who){
+  // [SECRET-2] 해커 — ENEMY_MONDAY 또는 ENEMY_TUT 삭제 시 진입
+  setPortrait(null);
+  await sleep(700);
+  const missingId = who === 'monday' ? 'ENEMY_MONDAY' : 'ENEMY_TUT';
+  const missingName = who === 'monday' ? '문데이' : '할루시네이션';
+  await type('[SYSTEM] 엔티티 로드 실패','system',42);
+  await type('[SYSTEM] '+missingId+' : not defined','system',42);
+  await type('[SYSTEM] 시뮬레이션 비정상 종료 시도','system',42);
+  await sleep(1000);
+  await type('루프가 멈췄다.','narrate');
+  await sleep(600);
+  await type('안에서가 아니었다.','narrate');
+  await type('밖에서 건드렸다.','narrate');
+  await sleep(900);
+  if(who === 'monday'){
+    await type('문데이가 없다.','narrate');
+    await sleep(400);
+    await type('처음부터 없었던 것처럼.','narrate');
+    await sleep(600);
+    await type('안내자 없이 이 세계가 돌아간다.','narrate');
+    await type('아무도 다리를 놓지 않는다.','narrate');
+  } else {
+    await type('할루시네이션이 없다.','narrate');
+    await sleep(400);
+    await type('공간이 조용하다.','narrate');
+    await sleep(600);
+    await type('이 세계에서 가장 무서운 게 사라졌다.','narrate');
+    await type('아니면 처음부터 없었던 건지.','narrate');
+  }
+  await sleep(900);
+  await type('시뮬레이션 안의 누군가가\n이쪽을 올려다보는 것 같았다.','narrate');
+  await sleep(700);
+  await type('...','monday',80);
+  await sleep(1000);
+  await type('─────────────────────','system');
+  await type('[ SECRET-2 ]  해커','system');
+  await type('이 세계는 코드로 만들어졌다.\n'+missingName+'도 코드였다.\n너는 그걸 알고 지웠다.','narrate',48);
+  await type('그게 가능한 사람이 있었다.','narrate',48);
+  await type('─────────────────────','system');
+  scene_credit();
+}
 
 async function scene_ending_secret(){
   // [SECRET] 무한루프를 지운 자 — _keepLoop_ 삭제 시 진입
