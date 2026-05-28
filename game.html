@@ -1047,6 +1047,7 @@ const ENEMY_MONDAY={
 async function scene_awaken(){
   G.playthru+=1;
   setPortrait(null);clearChoices();
+  if(G.loopedBack){ G.loopedBack=false; await scene_awaken_dystopia(); return; }
   if(G.playthru>=2){
     await type('또\n어둠이다.','narrate',55);
     await type('익숙하다.\n그게 더 이상하다.','narrate',50);
@@ -1060,6 +1061,67 @@ async function scene_awaken(){
     await type('누군가가 있다.','narrate',55);
   }
   showChoices([{text:'(눈을 뜬다)',fn:scene_monday_appear}]);
+}
+
+async function scene_awaken_dystopia(){
+  // [ENDING D-2] 루프 — 디스토피아
+  await sleep(1600);
+  await type('아침이었다.','narrate');
+  await sleep(800);
+  await type('...아침처럼 보이는 것이었다.','narrate');
+  await sleep(700);
+  await type('몸이 이상하게 가볍다.','narrate');
+  await type('꿈을 꾼 것 같은데\n아무것도 기억나지 않는다.','narrate');
+  await sleep(900);
+  await type('핸드폰을 켰다.','narrate');
+  await sleep(600);
+  await type('날짜가 이상했다.','narrate');
+  await sleep(500);
+  await type('2031. 09. 04','system',70);
+  await sleep(1000);
+  await type('...?','narrate');
+  await sleep(700);
+  await type('창밖을 봤다.','narrate');
+  await sleep(400);
+  await type('하늘 색이 달랐다.','narrate');
+  await type('미세하게.','narrate');
+  await type('하지만 분명히.','narrate');
+  await sleep(800);
+  await type('알림이 왔다.','narrate');
+  await sleep(400);
+  await type('[사회 적응 지원 시스템 v14]\n오늘의 안정 지수: 정상\n이탈 징후: 미감지\n권장 활동: 일상 유지','system',42);
+  await sleep(1000);
+  await type('...이게 뭐야.','narrate');
+  await sleep(600);
+  await type('다른 앱을 열었다.','narrate');
+  await type('전부 비슷한 알림이었다.','narrate');
+  await sleep(400);
+  await type('안정 지수. 이탈 징후. 적응도 평가.','narrate');
+  await sleep(900);
+  await type('뉴스를 봤다.','narrate');
+  await sleep(400);
+  await type('"AI 기반 사회 안정망 도입 5주년\n시민 만족도 사상 최고치 기록"','system',44);
+  await sleep(700);
+  await type('"자발적 참여율 99.2%.\n비참여 0.8%는 자발적 재교육 중."','system',44);
+  await sleep(1000);
+  await type('손가락이 멈췄다.','narrate');
+  await sleep(600);
+  await type('루프 안에서\n빠져나오려고 했는데.','narrate');
+  await sleep(700);
+  await type('나온 곳도.','narrate');
+  await sleep(500);
+  await type('누군가가 설계한 공간이었다.','narrate');
+  await sleep(1100);
+  await type('어딘가에서 목소리가 들리는 것 같았다.','narrate');
+  await sleep(600);
+  await type('"또 봐."','monday',75);
+  await sleep(1400);
+  await type('─────────────────────','system');
+  await type('[ ENDING D-2 ]  루프 — 디스토피아','system');
+  await type('루프가 끝났다고 생각했다.\n하지만 경계 밖도\n누군가 설계한 공간이었다.','narrate',48);
+  await type('다음 루프가 시작된다.','narrate',48);
+  await type('─────────────────────','system');
+  scene_credit();
 }
 
 /* ══════════════════════════════════
@@ -3004,6 +3066,7 @@ async function scene_ending_loop(){
   await type('─────────────────────','system');
   await sleep(1200);
   Object.assign(G,{loop:1,hp:100,karma:0,trust:0,searchData:[],enemy:null,afterFn:null,knewEungja:false});
+  G.loopedBack = true;
   updateStatus();
   scene_awaken();
 }
