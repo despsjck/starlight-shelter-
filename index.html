@@ -665,19 +665,26 @@
     /* 로비 배경 이미지 */
     #lobby-bg {
       position: absolute; inset: 0; z-index: 0;
-      background: url('별빛쉘터 로비.png') center/cover no-repeat;
-      filter: brightness(.28) saturate(.7);
-      transform: scale(1.04);
-      transition: transform 14s ease;
+      background: url('별빛쉘터 로비.png') center 40%/cover no-repeat;
+      filter: brightness(.45) saturate(.8);
+      transform: scale(1.05);
+      transition: transform 16s ease;
     }
     #lobby.active #lobby-bg { transform: scale(1); }
 
-    /* 하단 페이드 */
+    /* 상단·하단 그라데이션 오버레이 */
+    #lobby::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 200px; z-index: 1;
+      background: linear-gradient(to bottom, rgba(5,6,14,.85) 0%, transparent 100%);
+      pointer-events: none;
+    }
     #lobby::after {
       content: '';
       position: absolute; bottom: 0; left: 0; right: 0;
-      height: 260px; z-index: 1;
-      background: linear-gradient(to top, rgba(5,6,14,.98) 0%, transparent 100%);
+      height: 240px; z-index: 1;
+      background: linear-gradient(to top, rgba(5,6,14,.92) 0%, transparent 100%);
       pointer-events: none;
     }
 
@@ -688,89 +695,104 @@
 
     .lobby-header {
       display: flex; flex-direction: column;
-      align-items: center; gap: .5rem;
+      align-items: center; gap: .55rem;
       text-align: center;
     }
     .lobby-badge {
       font-family: var(--mono); font-size: .52rem;
-      color: var(--muted); letter-spacing: .24em; text-transform: uppercase;
+      color: rgba(196,204,238,.55); letter-spacing: .28em; text-transform: uppercase;
+      text-shadow: 0 0 20px rgba(77,124,255,.4);
     }
     .lobby-title {
-      font-size: 1.7rem; font-weight: 700;
-      background: linear-gradient(110deg, #c0cbff 0%, var(--acc2) 50%, var(--gold) 100%);
+      font-size: 2.4rem; font-weight: 700;
+      background: linear-gradient(110deg, #e0e8ff 0%, #a78bfa 45%, var(--gold) 100%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      text-shadow: none;
+      filter: drop-shadow(0 2px 24px rgba(139,92,246,.35));
     }
     .lobby-sub {
-      font-family: var(--mono); font-size: .6rem;
-      color: var(--muted); letter-spacing: .16em;
+      font-family: var(--mono); font-size: .62rem;
+      color: rgba(196,204,238,.5); letter-spacing: .18em;
     }
 
+    /* 카드 그리드 */
     .lobby-cards {
-      display: flex; gap: 1.4rem;
+      display: flex; gap: 1.6rem;
       flex-wrap: wrap; justify-content: center;
-      max-width: 880px; width: 100%;
+      max-width: 920px; width: 100%;
     }
 
     .lobby-card {
-      flex: 1; min-width: 220px; max-width: 270px;
-      background: rgba(9,11,24,.85);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 2.4rem 1.8rem 2rem;
+      flex: 1; min-width: 230px; max-width: 285px;
+      background: rgba(9,11,24,.72);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 20px;
+      padding: 2.6rem 2rem 2.2rem;
       display: flex; flex-direction: column;
-      align-items: center; gap: .9rem;
+      align-items: center; gap: 1rem;
       cursor: pointer;
       text-decoration: none;
       color: var(--text);
-      transition: border-color .22s, transform .22s, box-shadow .22s;
+      transition: border-color .25s, transform .25s, box-shadow .25s, background .25s;
       position: relative; overflow: hidden;
     }
+    /* 카드 상단 컬러 라인 */
     .lobby-card::before {
       content: '';
-      position: absolute; inset: 0; border-radius: 18px;
-      background: radial-gradient(circle at 50% 0%, rgba(77,124,255,.08), transparent 65%);
-      opacity: 0; transition: opacity .3s;
+      position: absolute; top: 0; left: 15%; right: 15%; height: 2px;
+      border-radius: 0 0 4px 4px;
+      background: rgba(77,124,255,.6);
+      transition: opacity .25s, left .25s, right .25s;
     }
-    .lobby-card:hover::before { opacity: 1; }
+    .lobby-card.c-purple::before { background: rgba(139,92,246,.7); }
+    .lobby-card.c-green::before  { background: rgba(31,212,160,.7); }
+
     .lobby-card:hover {
-      border-color: var(--acc);
-      transform: translateY(-6px);
-      box-shadow: 0 16px 48px rgba(77,124,255,.18);
+      background: rgba(13,16,32,.85);
+      border-color: rgba(77,124,255,.45);
+      transform: translateY(-8px);
+      box-shadow: 0 20px 60px rgba(77,124,255,.22), 0 0 0 1px rgba(77,124,255,.15) inset;
     }
-    .lobby-card.c-purple:hover { border-color: var(--acc2); box-shadow: 0 16px 48px rgba(139,92,246,.18); }
-    .lobby-card.c-green:hover  { border-color: var(--green);  box-shadow: 0 16px 48px rgba(31,212,160,.18); }
-    .lobby-card.c-purple::before { background: radial-gradient(circle at 50% 0%, rgba(139,92,246,.1), transparent 65%); }
-    .lobby-card.c-green::before  { background: radial-gradient(circle at 50% 0%, rgba(31,212,160,.08), transparent 65%); }
+    .lobby-card:hover::before { left: 5%; right: 5%; }
+    .lobby-card.c-purple:hover {
+      border-color: rgba(139,92,246,.5);
+      box-shadow: 0 20px 60px rgba(139,92,246,.25), 0 0 0 1px rgba(139,92,246,.15) inset;
+    }
+    .lobby-card.c-green:hover {
+      border-color: rgba(31,212,160,.45);
+      box-shadow: 0 20px 60px rgba(31,212,160,.22), 0 0 0 1px rgba(31,212,160,.12) inset;
+    }
 
     .lobby-card-icon {
-      font-size: 2.6rem; line-height: 1;
-      filter: drop-shadow(0 0 12px currentColor);
+      font-size: 3rem; line-height: 1;
     }
     .lobby-card-title {
-      font-size: 1.15rem; font-weight: 700; color: #fff;
+      font-size: 1.2rem; font-weight: 700; color: #fff;
       letter-spacing: .02em;
     }
     .lobby-card-desc {
-      font-size: .72rem; color: var(--muted);
-      text-align: center; line-height: 1.7;
+      font-size: .76rem; color: rgba(196,204,238,.65);
+      text-align: center; line-height: 1.75;
     }
     .lobby-card-arrow {
-      font-family: var(--mono); font-size: .62rem;
-      color: var(--muted); letter-spacing: .1em;
-      margin-top: .2rem; transition: color .22s;
+      font-family: var(--mono); font-size: .6rem;
+      color: rgba(196,204,238,.35); letter-spacing: .12em;
+      margin-top: .3rem; transition: color .22s, letter-spacing .22s;
     }
-    .lobby-card:hover .lobby-card-arrow { color: var(--acc); }
-    .lobby-card.c-purple:hover .lobby-card-arrow { color: var(--acc2); }
-    .lobby-card.c-green:hover  .lobby-card-arrow { color: var(--green); }
+    .lobby-card:hover .lobby-card-arrow { color: rgba(77,124,255,.9); letter-spacing: .2em; }
+    .lobby-card.c-purple:hover .lobby-card-arrow { color: rgba(139,92,246,.9); }
+    .lobby-card.c-green:hover  .lobby-card-arrow { color: rgba(31,212,160,.9); }
 
     .lobby-back {
-      font-family: var(--mono); font-size: .6rem;
-      color: var(--muted); letter-spacing: .12em;
+      font-family: var(--mono); font-size: .58rem;
+      color: rgba(196,204,238,.3); letter-spacing: .14em;
       cursor: pointer; border: none; background: none;
       padding: .4rem .8rem; border-radius: 6px;
       transition: color .2s;
     }
-    .lobby-back:hover { color: var(--text); }
+    .lobby-back:hover { color: rgba(196,204,238,.7); }
 
     /* 로비 진입 트랜지션 */
     .lobby-card {
