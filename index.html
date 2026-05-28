@@ -764,6 +764,12 @@
       border-color: rgba(31,212,160,.45);
       box-shadow: 0 20px 60px rgba(31,212,160,.22), 0 0 0 1px rgba(31,212,160,.12) inset;
     }
+    .lobby-card.c-gold::before  { background: rgba(240,192,96,.7); }
+    .lobby-card.c-gold:hover {
+      border-color: rgba(240,192,96,.5);
+      box-shadow: 0 20px 60px rgba(240,192,96,.22), 0 0 0 1px rgba(240,192,96,.12) inset;
+    }
+    .lobby-card.c-gold:hover .lobby-card-arrow { color: rgba(240,192,96,.9); }
 
     .lobby-card-icon {
       font-size: 3rem; line-height: 1;
@@ -940,6 +946,13 @@
       <div class="lobby-card-desc">텍스트 RPG<br>무한루프 시뮬레이션</div>
       <div class="lobby-card-arrow">ENTER →</div>
     </a>
+
+    <div class="lobby-card c-gold" onclick="showFloorNav()">
+      <div class="lobby-card-icon">🗺️</div>
+      <div class="lobby-card-title">층별 탐색</div>
+      <div class="lobby-card-desc">RF부터 B1까지<br>쉘터 내부를 둘러보세요</div>
+      <div class="lobby-card-arrow">ENTER →</div>
+    </div>
 
   </div>
 
@@ -1460,9 +1473,21 @@ function leaveLobby(){
   }, 450);
 }
 
+function showFloorNav(){
+  const lobby = document.getElementById('lobby');
+  const app   = document.getElementById('app');
+
+  Audio.click();
+  lobby.classList.remove('active');
+
+  setTimeout(()=>{
+    app.classList.add('entered');
+  }, 350);
+}
+
 function goBack(){
-  const landing = document.getElementById('landing');
-  const app     = document.getElementById('app');
+  const lobby = document.getElementById('lobby');
+  const app   = document.getElementById('app');
 
   Audio.click();
 
@@ -1470,12 +1495,8 @@ function goBack(){
   app.classList.remove('entered');
 
   setTimeout(()=>{
-    // 랜딩 복구 (앱에서 돌아올 때)
-    landing.style.display = '';
-    landing.classList.remove('exiting');
-    // 줌 아웃 재시작
-    landing.classList.remove('ready');
-    requestAnimationFrame(()=> setTimeout(()=> landing.classList.add('ready'), 50));
+    // 로비로 복귀
+    lobby.classList.add('active');
   }, 400);
 }
 
