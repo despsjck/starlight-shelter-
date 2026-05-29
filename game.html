@@ -3798,56 +3798,87 @@ async function scene_game_over(){
 }
 
 /* ══════════════════════════════════
-   저장 / 불러오기
+   프로필 / 저장 시스템
 ══════════════════════════════════ */
-const SAVE_KEYS=['byeolbit_save_0','byeolbit_save_1','byeolbit_save_2'];
+
+// ── 프로필 관리 ──
+function _safeId(name){ return name.replace(/[^a-zA-Z0-9가-힣_\-]/g,'_').slice(0,20); }
+function _makeKeys(name){ const s=_safeId(name); return [0,1,2].map(i=>`byeolbit_p_${s}_${i}`); }
+
+function getProfiles(){
+  try{ return JSON.parse(localStorage.getItem('byeolbit_profiles')||'[]'); }
+  catch{ return []; }
+}
+function _saveProfiles(arr){ localStorage.setItem('byeolbit_profiles',JSON.stringify(arr)); }
+function getCurrentProfile(){ return localStorage.getItem('byeolbit_current_profile')||''; }
+
+function selectProfile(name){
+  localStorage.setItem('byeolbit_current_profile',name);
+  SAVE_KEYS=_makeKeys(name);
+}
+function addProfile(name){
+  name=name.trim().slice(0,12); if(!name) return false;
+  const list=getProfiles();
+  if(!list.includes(name)){ list.push(name); _saveProfiles(list); }
+  selectProfile(name); return true;
+}
+function deleteProfileData(name){
+  _makeKeys(name).forEach(k=>localStorage.removeItem(k));
+  _saveProfiles(getProfiles().filter(n=>n!==name));
+  if(getCurrentProfile()===name) localStorage.removeItem('byeolbit_current_profile');
+}
+function _profileHasSave(name){
+  return _makeKeys(name).some(k=>localStorage.getItem(k));
+}
+
+// ── SAVE_KEYS (동적, 프로필 전환 시 갱신) ──
 const CHECKPOINT_FN={
   loop1:()=>scene_shelter_tour(),
   loop2:()=>scene_loop2_start(),
   loop3:()=>scene_loop3_start(),
   loop4:()=>scene_loop4_start(),
 };
+let SAVE_KEYS=_makeKeys(getCurrentProfile()||'__tmp__');
 
-// 구 단일 저장 파일 → 슬롯 0 마이그레이션
+// 구 저장 파일 → 플레이어 1 프로필로 마이그레이션
 (function(){
   const old=localStorage.getItem('byeolbit_shelter_save');
-  if(old && !localStorage.getItem(SAVE_KEYS[0])){
-    localStorage.setItem(SAVE_KEYS[0],old);
-    localStorage.removeItem('byeolbit_shelter_save');
+  const leg=[0,1,2].map(i=>localStorage.getItem(`byeolbit_save_${i}`));
+  if(old||leg.some(Boolean)){
+    const pName=t('플레이어 1','Player 1');
+    const keys=_makeKeys(pName);
+    if(old && !localStorage.getItem(keys[0])) localStorage.setItem(keys[0],old);
+    leg.forEach((v,i)=>{ if(v && !localStorage.getItem(keys[i])) localStorage.setItem(keys[i],v); });
+    ['byeolbit_shelter_save','byeolbit_save_0','byeolbit_save_1','byeolbit_save_2']
+      .forEach(k=>localStorage.removeItem(k));
+    const list=getProfiles();
+    if(!list.includes(pName)){ list.push(pName); _saveProfiles(list); }
   }
 })();
 
+// ── 저장 / 불러오기 ──
 function getSaveData(slot){
   const raw=localStorage.getItem(SAVE_KEYS[slot]);
   if(!raw) return null;
   try{ return JSON.parse(raw); }catch{ return null; }
 }
-
 function saveGame(){
   const slot=G.saveSlot||0;
-  const data={
-    loop:G.loop, name:G.name, hp:G.hp, maxHp:G.maxHp,
-    karma:G.karma, trust:G.trust,
-    knewEungja:G.knewEungja, playthru:G.playthru,
-    searchData:G.searchData,
-    checkpoint:G.checkpoint||'loop1',
-    savedAt:Date.now(),
-  };
+  const data={ loop:G.loop, name:G.name, hp:G.hp, maxHp:G.maxHp,
+    karma:G.karma, trust:G.trust, knewEungja:G.knewEungja, playthru:G.playthru,
+    searchData:G.searchData, checkpoint:G.checkpoint||'loop1', savedAt:Date.now() };
   localStorage.setItem(SAVE_KEYS[slot],JSON.stringify(data));
   const btn=document.getElementById('btn-save');
-  if(btn){btn.textContent='✓';btn.classList.add('saved');
-    setTimeout(()=>{btn.textContent='💾';btn.classList.remove('saved');},1800);}
+  if(btn){ btn.textContent='✓'; btn.classList.add('saved');
+    setTimeout(()=>{ btn.textContent='💾'; btn.classList.remove('saved'); },1800); }
 }
-
 function hasSave(){ return SAVE_KEYS.some(k=>localStorage.getItem(k)); }
 function deleteSave(slot){
   if(slot===undefined) SAVE_KEYS.forEach(k=>localStorage.removeItem(k));
   else localStorage.removeItem(SAVE_KEYS[slot]);
 }
-
 function applyAndLoadSave(slot){
-  const d=getSaveData(slot);
-  if(!d) return false;
+  const d=getSaveData(slot); if(!d) return false;
   G.saveSlot=slot;
   Object.assign(G,{
     loop:d.loop||1, name:d.name||'지혜피티',
@@ -3860,14 +3891,12 @@ function applyAndLoadSave(slot){
   (CHECKPOINT_FN[d.checkpoint]||CHECKPOINT_FN.loop1)();
   return true;
 }
-
 function confirmHome(){
   return confirm(t(
     '쉘터로 돌아가면 저장하지 않은 진행이 사라져요.\n먼저 💾 버튼으로 저장하세요.',
     'Returning to the shelter will lose unsaved progress.\nSave first with the 💾 button.'
   ));
 }
-
 function slotLabel(slot){
   const d=getSaveData(slot);
   if(!d) return t(`슬롯 ${slot+1}  — EMPTY —`,`Slot ${slot+1}  — EMPTY —`);
@@ -3876,30 +3905,69 @@ function slotLabel(slot){
   return t(`슬롯 ${slot+1}`,`Slot ${slot+1}`)+`  LOOP ${d.loop} · ${d.name||'?'}  ${date}`;
 }
 
-function showSavePrompt(){
+// ── 프로필 선택 화면 ──
+function showProfileSelect(){
   setPortrait(null); clearChoices();
   (async()=>{
-    await type(t('저장 슬롯을 선택하세요.','Select a save slot.'),'system');
-    showChoices(SAVE_KEYS.map((_,i)=>({
-      text: slotLabel(i),
-      fn: getSaveData(i)
-        ? ()=>applyAndLoadSave(i)
-        : ()=>{ G.saveSlot=i; scene_awaken(); },
-    })));
+    await type(t('플레이어를 선택하세요.','Select a player.'),'system');
+    const profiles=getProfiles();
+    const choices=profiles.map(name=>({
+      text: name + '  ' + (_profileHasSave(name)?'[ ● ]':'[ — ]'),
+      fn: ()=>{ selectProfile(name); showSavePrompt(); },
+    }));
+    choices.push({ text:t('+ 새 플레이어','+ New Player'), cls:'ch-good', fn:showNewProfileInput });
+    showChoices(choices);
   })();
 }
+function _confirmNewProfile(){
+  const v=document.getElementById('pin-input')?.value?.trim();
+  if(!v) return;
+  addProfile(v);
+  clearChoices();
+  (async()=>{
+    await type(t('안녕하세요, ','Hello, ')+v+t('. 슬롯을 선택하세요.','. Choose a slot.'),'system');
+    showSavePrompt();
+  })();
+}
+function showNewProfileInput(){
+  clearChoices();
+  const grid=document.getElementById('choices-grid');
+  grid.innerHTML=`
+    <div class="input-row" style="padding:6px 10px;">
+      <input id="pin-input" class="txt-input" type="text" maxlength="12"
+        placeholder="${LANG==='en'?'Name (max 12 chars)':'이름 입력 (최대 12자)'}"
+        autocomplete="off" spellcheck="false"
+        onkeydown="if(event.key==='Enter') _confirmNewProfile()">
+      <button class="txt-submit" onclick="_confirmNewProfile()">${LANG==='en'?'OK':'확인'}</button>
+    </div>`;
+  setTimeout(()=>document.getElementById('pin-input')?.focus(),80);
+}
 
+// ── 슬롯 선택 ──
+function showSavePrompt(){
+  const pName=getCurrentProfile();
+  setPortrait(null); clearChoices();
+  (async()=>{
+    await type(t(`[ ${pName} ] 저장 슬롯`,`[ ${pName} ] Save Slots`),'system');
+    const choices=[0,1,2].map(i=>({
+      text: slotLabel(i),
+      fn: getSaveData(i) ? ()=>applyAndLoadSave(i) : ()=>{ G.saveSlot=i; scene_awaken(); },
+    }));
+    choices.push({ text:t('← 플레이어 변경','← Switch Player'), cls:'ch-warn', fn:showProfileSelect });
+    showChoices(choices);
+  })();
+}
 function showGameOverSlots(){
   (async()=>{
     await type(t('저장 슬롯에서 불러오거나\n처음부터 시작하세요.','Load from a save slot or\nstart fresh.'),'system');
-    const choices=SAVE_KEYS.map((_,i)=>({
+    const choices=[0,1,2].map(i=>({
       text: slotLabel(i),
       fn: getSaveData(i)
         ? ()=>{ clearChoices(); applyAndLoadSave(i); }
         : ()=>{ G.saveSlot=i; clearChoices(); scene_awaken(); },
     }));
-    choices.push({text:t('처음부터 (슬롯 초기화)','New Game (Reset slots)'), cls:'ch-danger',
-      fn:()=>{ deleteSave(); G.saveSlot=0; clearChoices(); scene_awaken(); }});
+    choices.push({ text:t('처음부터 (슬롯 초기화)','New Game (Reset slots)'), cls:'ch-danger',
+      fn:()=>{ deleteSave(); G.saveSlot=0; clearChoices(); scene_awaken(); } });
     showChoices(choices);
   })();
 }
@@ -3909,7 +3977,10 @@ function showGameOverSlots(){
 ══════════════════════════════════ */
 updateStatus();
 applyGameLang();
-showSavePrompt();
+// 이전에 선택한 프로필이 있으면 바로 슬롯으로, 없으면 프로필 선택
+const _cp=getCurrentProfile();
+if(_cp && getProfiles().includes(_cp)) showSavePrompt();
+else showProfileSelect();
 </script>
 </body>
 </html>
