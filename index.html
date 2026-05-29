@@ -812,46 +812,46 @@
     #tarot-widget {
       position:relative; z-index:2;
       margin:0 auto 1.5rem;
-      max-width:340px; width:88%;
-      background:rgba(8,4,28,.72);
-      border:1px solid rgba(139,92,246,.28);
-      border-radius:12px;
-      padding:.75rem 1rem;
+      max-width:380px; width:90%;
+      background:rgba(8,4,28,.75);
+      border:1px solid rgba(139,92,246,.3);
+      border-radius:14px;
+      padding:1rem 1.1rem;
       cursor:default;
       backdrop-filter:blur(10px);
       transition:border-color .3s, box-shadow .3s;
     }
     #tarot-widget:hover {
-      border-color:rgba(139,92,246,.55);
-      box-shadow:0 0 20px rgba(139,92,246,.15);
+      border-color:rgba(139,92,246,.6);
+      box-shadow:0 0 24px rgba(139,92,246,.18);
     }
     .tarot-badge {
       font-family:var(--mono); font-size:.52rem; letter-spacing:.18em;
-      color:rgba(139,92,246,.65); text-align:center; margin-bottom:.65rem;
+      color:rgba(139,92,246,.65); text-align:center; margin-bottom:.8rem;
     }
-    .tarot-body { display:flex; align-items:center; gap:.9rem; }
+    .tarot-body { display:flex; align-items:center; gap:1.1rem; }
     .tarot-img-wrap {
-      flex-shrink:0; width:58px; height:92px;
-      border-radius:6px; overflow:hidden;
-      box-shadow:0 0 16px rgba(139,92,246,.3);
+      flex-shrink:0; width:90px; height:144px;
+      border-radius:8px; overflow:hidden;
+      box-shadow:0 4px 20px rgba(139,92,246,.4), 0 0 0 1px rgba(139,92,246,.2);
     }
     .tarot-img-wrap img {
       width:100%; height:100%; object-fit:cover;
     }
     .tarot-info { flex:1; min-width:0; }
     .tarot-char-lbl {
-      font-family:var(--mono); font-size:.55rem;
-      color:rgba(196,204,238,.38); letter-spacing:.08em; margin-bottom:.25rem;
+      font-family:var(--mono); font-size:.56rem;
+      color:rgba(196,204,238,.4); letter-spacing:.08em; margin-bottom:.3rem;
     }
     .tarot-card-name {
-      font-size:.98rem; font-weight:700; color:#e2d5ff; margin-bottom:.12rem;
+      font-size:1.1rem; font-weight:700; color:#e2d5ff; margin-bottom:.1rem;
     }
     .tarot-card-en {
-      font-family:var(--mono); font-size:.52rem;
-      color:rgba(139,92,246,.6); letter-spacing:.12em; margin-bottom:.45rem;
+      font-family:var(--mono); font-size:.53rem;
+      color:rgba(139,92,246,.65); letter-spacing:.12em; margin-bottom:.55rem;
     }
     .tarot-msg {
-      font-size:.74rem; color:rgba(196,204,238,.65); line-height:1.65; font-style:italic;
+      font-size:.76rem; color:rgba(196,204,238,.68); line-height:1.7; font-style:italic;
     }
 
     /* 로비 진입 트랜지션 */
@@ -1000,7 +1000,7 @@
     <div class="tarot-badge">✦  오늘의 카드</div>
     <div class="tarot-body">
       <div class="tarot-img-wrap">
-        <img id="tarot-img" src="tarot/moon.png" alt="오늘의 타로 카드" onerror="this.style.outline='2px solid red';this.alt='ERROR: '+this.src">
+        <img id="tarot-img" src="" alt="오늘의 타로 카드">
       </div>
       <div class="tarot-info">
         <div class="tarot-char-lbl" id="tarot-char"></div>
