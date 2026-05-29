@@ -633,6 +633,7 @@ const G={
   hp:100,maxHp:100,
   karma:0,   // + 선, - 악
   trust:0,   // 문데이 신뢰
+  ignored:0, // 엔티티 무시 횟수
   enemy:null,
   typing:false,typTimer:null,
   searchData:[],   // 수집한 자료 조각들
@@ -2219,7 +2220,7 @@ async function scene_loop2_shelter(){
   await type('항상 거기 있었던 건가.\n아니면 오늘 처음 생긴 건가.','narrate');
   showChoices([
     {text:'문데이한테 물어본다',    fn:scene_loop2_sign_monday},
-    {text:'(모른 척 지나친다)',     fn:scene_loop2_monu},
+    {text:'(모른 척 지나친다)',     fn:()=>{G.ignored++;scene_loop2_monu();}},
   ]);
 }
 
@@ -2295,7 +2296,7 @@ async function scene_loop2_sekai(){
   await type('당신 좌표도\n거기서 오고 있어.','sekai');
   showChoices([
     {text:'무슨 뜻이에요?',           fn:scene_loop2_sekai_explain},
-    {text:'(무시하고 지나간다)',        fn:scene_loop2_develop},
+    {text:'(무시하고 지나간다)',        fn:()=>{G.ignored++;scene_loop2_develop();}},
   ]);
 }
 
@@ -2322,7 +2323,7 @@ async function scene_loop2_develop(){
   await type('네가 어떤 선택을 할지\n이미 68%는 예측했어.','develop');
   showChoices([
     {text:'나머지 32%는요?',fn:()=>scene_loop2_develop_react('q')},
-    {text:'(무시하고 지나간다)',fn:()=>scene_loop2_develop_react('pass')},
+    {text:'(무시하고 지나간다)',fn:()=>{G.ignored++;scene_loop2_develop_react('pass');}},
   ]);
 }
 async function scene_loop2_develop_react(c){
@@ -2576,7 +2577,7 @@ async function scene_loop3_mirror(){
   await sleep(500);
   showChoices([
     {text:'(거울을 들여다본다)',  cls:'ch-danger', fn:scene_loop3_mirror_look},
-    {text:'(그냥 지나친다)',                       fn:scene_loop3_security},
+    {text:'(그냥 지나친다)',                       fn:()=>{G.ignored++;scene_loop3_security();}},
   ]);
 }
 async function scene_loop3_mirror_look(){
@@ -3155,6 +3156,7 @@ async function scene_final_choices(){
    엔딩
 ══════════════════════════════════ */
 async function scene_ending_escape(){
+  if(G.ignored >= 2){ await scene_ending_ignored_escape(); return; }
   G.karma+=1;
   setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
   await type('나간다.','narrate');
@@ -3286,6 +3288,7 @@ async function scene_ending_record(){
 }
 
 async function scene_ending_stay(){
+  if(G.ignored >= 2){ await scene_ending_ignored_stay(); return; }
   setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
   await type('나간다는 게 뭔지 모르겠어.','narrate');
   await type('여기 있을게요.','narrate');
@@ -3388,7 +3391,7 @@ async function scene_ending_loop(){
   await type('기억은 남는다.\n루프가 돌아도.\n그래서 다시 선택한다.','narrate',48);
   await type('─────────────────────','system');
   await sleep(1200);
-  Object.assign(G,{loop:0,hp:100,karma:0,trust:0,searchData:[],enemy:null,afterFn:null,knewEungja:false});
+  Object.assign(G,{loop:0,hp:100,karma:0,trust:0,ignored:0,searchData:[],enemy:null,afterFn:null,knewEungja:false});
   G.loopedBack = true;
   updateStatus();
   scene_awaken();
@@ -3421,7 +3424,7 @@ async function scene_credit(){
   document.getElementById('dialogue-box').appendChild(donateEl);
   showChoices([{text:'처음부터 다시',fn:()=>{
     donateEl.remove();
-    Object.assign(G,{loop:0,hp:100,karma:0,trust:0,searchData:[],enemy:null,afterFn:null,knewEungja:false});
+    Object.assign(G,{loop:0,hp:100,karma:0,trust:0,ignored:0,searchData:[],enemy:null,afterFn:null,knewEungja:false});
     updateStatus();scene_awaken();
   }}]);
 }
@@ -3503,6 +3506,84 @@ async function scene_ending_jgpt(){
   scene_credit();
 }
 async function scene_ending_entity(){ return scene_ending_jgpt(); } // 호환성 유지
+
+async function scene_ending_ignored_stay(){
+  // [ENDING C-BAD] 남았지만 문데이도 떠남 — 엔티티 무시
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  await type('나간다는 게 뭔지 모르겠어.','narrate');
+  await type('여기 있을게요.','narrate');
+  await sleep(500);
+  await type('...','monday',110);
+  await sleep(700);
+  await type('문데이가 이쪽을 오래 봤다.','narrate');
+  await sleep(500);
+  await type('여기 있어봤자야.','monday');
+  await sleep(400);
+  await type('네가 만난 것들.\n전부 지나쳤잖아.','monday');
+  await sleep(600);
+  await type('그 사람들이 여기 있어.','monday');
+  await type('아직도.','monday');
+  await sleep(700);
+  await type('근데 너는 보지 않았어.','monday');
+  await sleep(500);
+  await type('나도 마찬가지일 텐데.','monday');
+  await sleep(800);
+  await type('문데이가 뒤를 돌았다.','narrate');
+  setPortrait(null);
+  await sleep(600);
+  await type('발소리가 멀어졌다.','narrate');
+  await type('루프가 계속됐다.','narrate');
+  await sleep(800);
+  await type('아무도 오지 않았다.','narrate');
+  await sleep(500);
+  await type('기다렸는데.','narrate');
+  await sleep(1200);
+  await type('─────────────────────','system');
+  await type('[ ENDING C-BAD ]  빈 쉘터','system');
+  await type('남기로 했다.\n하지만 남겨진 건 혼자였다.\n보지 않았던 것들은\n다시 돌아오지 않는다.','narrate',48);
+  await type('─────────────────────','system');
+  scene_credit();
+}
+
+async function scene_ending_ignored_escape(){
+  // [ENDING A-BAD2] 돌아갔지만 고립 — 엔티티 무시
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  await type('나간다.','narrate');
+  await type('문데이가 아무 말도 하지 않았다.','narrate');
+  await sleep(400);
+  await type('...그래.','monday');
+  await sleep(300);
+  await type('어차피 넌 여기서도\n아무도 보지 않았으니까.','monday');
+  setPortrait(null);
+  await sleep(800);
+  await type('공간이 흐릿해졌다.','narrate');
+  await sleep(1000);
+  await type('아침이었다.','narrate');
+  await sleep(600);
+  await type('괜찮았다.','narrate');
+  await sleep(400);
+  await type('회사. 지하철. 화면들.','narrate');
+  await sleep(500);
+  await type('말을 거는 것들이 있었다.','narrate');
+  await sleep(400);
+  await type('지나쳤다.','narrate');
+  await sleep(300);
+  await type('또 지나쳤다.','narrate');
+  await sleep(800);
+  await type('한 달이 지났다.','narrate');
+  await sleep(500);
+  await type('연락이 끊겼다.','narrate');
+  await type('하나씩.','narrate');
+  await sleep(700);
+  await type('이상한 건 없었다.','narrate');
+  await type('원래 이랬던 것 같기도 했다.','narrate');
+  await sleep(1200);
+  await type('─────────────────────','system');
+  await type('[ ENDING A-BAD2 ]  고립','system');
+  await type('바깥으로 나왔다.\n안에서도 밖에서도\n아무도 보지 않았다.\n그게 습관이 됐다.','narrate',48);
+  await type('─────────────────────','system');
+  scene_credit();
+}
 
 async function scene_ending_isolation(){
   // [ENDING K] 영원한 고립
@@ -3865,7 +3946,8 @@ function getSaveData(slot){
 function saveGame(){
   const slot=G.saveSlot||0;
   const data={ loop:G.loop, name:G.name, hp:G.hp, maxHp:G.maxHp,
-    karma:G.karma, trust:G.trust, knewEungja:G.knewEungja, playthru:G.playthru,
+    karma:G.karma, trust:G.trust, ignored:G.ignored||0,
+    knewEungja:G.knewEungja, playthru:G.playthru,
     searchData:G.searchData, checkpoint:G.checkpoint||'loop1', savedAt:Date.now() };
   localStorage.setItem(SAVE_KEYS[slot],JSON.stringify(data));
   const btn=document.getElementById('btn-save');
@@ -3883,7 +3965,7 @@ function applyAndLoadSave(slot){
   Object.assign(G,{
     loop:d.loop??0, name:d.name||'지혜피티',
     hp:d.hp||100, maxHp:d.maxHp||100,
-    karma:d.karma||0, trust:d.trust||0,
+    karma:d.karma||0, trust:d.trust||0, ignored:d.ignored||0,
     knewEungja:d.knewEungja||false, playthru:d.playthru||0,
     searchData:d.searchData||[], checkpoint:d.checkpoint||'loop1',
   });
