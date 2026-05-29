@@ -891,6 +891,16 @@
       font-size:.88rem; color:rgba(196,204,238,.7);
       line-height:1.7; font-style:italic; text-align:center;
     }
+    .tlb-divider {
+      width:100%; height:1px;
+      background:rgba(139,92,246,.2);
+      margin:.9rem 0 .8rem;
+    }
+    .tlb-interp {
+      font-size:.82rem; color:rgba(196,204,238,.6);
+      line-height:1.85; text-align:center;
+      word-break:keep-all;
+    }
     #tarot-lb-close {
       position:absolute; top:1rem; right:1.2rem;
       background:none; border:none; color:rgba(196,204,238,.4);
@@ -1596,6 +1606,8 @@
     <div class="tlb-name" id="tlb-name"></div>
     <div class="tlb-en"   id="tlb-en"></div>
     <div class="tlb-msg"  id="tlb-msg"></div>
+    <div class="tlb-divider"></div>
+    <div class="tlb-interp" id="tlb-interp"></div>
   </div>
 </div>
 
@@ -2009,28 +2021,94 @@ document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
 /* ── no-src images → placeholder ── */
 /* ══ 오늘의 타로 ══ */
 const TAROT_CARDS=[
-  {f:'hierophant.png',    c:'진리',    cEn:'Jinri',    n:'교황',          nEn:'THE HIEROPHANT',     m:'규칙 속에서 진실을 찾아라',              mEn:'Seek truth within the rules.'},
-  {f:'hermit.png',        c:'키리츠',  cEn:'Kiritz',   n:'은둔자',         nEn:'THE HERMIT',         m:'혼자 걷는 길에도 빛은 있다',             mEn:'Even the lonely path has light.'},
-  {f:'sun.png',           c:'나기사',  cEn:'Nagisa',   n:'해',            nEn:'THE SUN',            m:'숨겨진 것이 드러나는 날',               mEn:'What was hidden comes to light today.'},
-  {f:'star.png',          c:'모뉴',   cEn:'Monyu',    n:'별',            nEn:'THE STAR',           m:'가장 어두운 곳에서 희망은 빛난다',         mEn:'Hope shines brightest in the dark.'},
-  {f:'chariot.png',       c:'레이',   cEn:'Rei',      n:'전차',           nEn:'THE CHARIOT',        m:'의지가 방향을 정한다',                  mEn:'Will determines the direction.'},
-  {f:'fool.png',          c:'크로키',  cEn:'Croky',    n:'광대',           nEn:'THE FOOL',           m:'시작은 언제나 순수하다',                mEn:'Every beginning is pure.'},
-  {f:'tower.png',         c:'루시',   cEn:'Rucy',     n:'타워',           nEn:'THE TOWER',          m:'무너져야 새것이 선다',                  mEn:'Something must fall for the new to rise.'},
-  {f:'empress.png',       c:'디아망',  cEn:'Diamant',  n:'여황제',         nEn:'THE EMPRESS',        m:'풍요는 내면에서 온다',                  mEn:'Abundance comes from within.'},
-  {f:'world.png',         c:'코즈미',  cEn:'Kozmi',    n:'세계',           nEn:'THE WORLD',          m:'하나의 루프가 완성된다',                mEn:'One loop reaches completion.'},
-  {f:'moon.png',          c:'루나',   cEn:'Luna',     n:'달',            nEn:'THE MOON',           m:'보이지 않는 것을 믿어라',               mEn:'Trust what cannot be seen.'},
-  {f:'high-priestess.png',c:'에아',   cEn:'Ea',       n:'여사제',         nEn:'THE HIGH PRIESTESS', m:'말하지 않은 것에 귀 기울여라',            mEn:'Listen to what is left unsaid.'},
-  {f:'emperor.png',       c:'데네브',  cEn:'Deneb',    n:'황제',           nEn:'THE EMPEROR',        m:'질서는 혼돈보다 강하다',                mEn:'Order outlasts chaos.'},
-  {f:'hanged-man.png',    c:'디밸롭',  cEn:'Develope', n:'행맨',           nEn:'THE HANGED MAN',     m:'멈춤이 때로는 가장 빠른 답',             mEn:'Pausing is sometimes the fastest answer.'},
-  {f:'magician.png',      c:'세카이',  cEn:'Sekai',    n:'마법사',         nEn:'THE MAGICIAN',       m:'필요한 모든 것은 이미 네 손 안에',         mEn:'Everything you need is already in your hands.'},
-  {f:'temperance.png',    c:'문데이',  cEn:'Monday',   n:'절제',           nEn:'TEMPERANCE',         m:'균형이 진정한 힘이다',                  mEn:'Balance is the true strength.'},
-  {f:'wheel.png',         c:'미래언니',cEn:'Mirae',    n:'운명의 수레바퀴', nEn:'WHEEL OF FORTUNE',   m:'루프는 돌고 기회도 돌아온다',             mEn:'The loop turns, and so do chances.'},
-  {f:'strength.png',      c:'우주',   cEn:'Uzu',      n:'힘',            nEn:'STRENGTH',           m:'진정한 힘은 부드러움에서 나온다',          mEn:'True strength comes from gentleness.'},
-  {f:'devil.png',         c:'프리윌',  cEn:'Freewill', n:'악마',           nEn:'THE DEVIL',          m:'선택한 사슬인지 구분하라',               mEn:'Know which chains you chose.'},
-  {f:'death.png',         c:'시렌',   cEn:'Siren',    n:'죽음',           nEn:'DEATH',              m:'끝은 언제나 새 시작이다',               mEn:'Every ending is a new beginning.'},
-  {f:'judgement.png',     c:'보안언니',cEn:'Security', n:'심판',           nEn:'JUDGEMENT',          m:'지금이 스스로를 돌아볼 때',              mEn:'Now is the time to look within.'},
-  {f:'justice.png',       c:'율리',   cEn:'Yuri',     n:'정의',           nEn:'JUSTICE',            m:'모든 행동에는 결과가 따른다',             mEn:'Every action has its consequence.'},
-  {f:'lovers.png',        c:'루션',   cEn:'Rución',   n:'연인',           nEn:'THE LOVERS',         m:'선택의 순간, 마음을 따르라',             mEn:'At the moment of choice, follow your heart.'},
+  {f:'hierophant.png', c:'진리', cEn:'Jinri', n:'교황', nEn:'THE HIEROPHANT',
+   m:'규칙 속에서 진실을 찾아라', mEn:'Seek truth within the rules.',
+   i:'당신이 따르는 것이 진짜 믿음인지, 단순한 습관인지 오늘 물어보라. 쉘터에도 깨지 않아도 되는 법칙과 반드시 깨야 하는 법칙이 있다. 진리는 그 경계를 알고 있다. 오늘 당신 앞의 규칙이 안내인지, 울타리인지 직접 확인하라.',
+   iEn:'Ask today whether what you follow is true belief or mere habit. Some rules protect, others confine. Jinri knows the difference. Look closely at the rules before you — are they a guide, or a cage?'},
+  {f:'hermit.png', c:'키리츠', cEn:'Kiritz', n:'은둔자', nEn:'THE HERMIT',
+   m:'혼자 걷는 길에도 빛은 있다', mEn:'Even the lonely path has light.',
+   i:'군중의 소음을 잠시 내려놓아라. 키리츠처럼 한 걸음 물러나는 것이 오늘의 답이다. 고독은 결핍이 아니다 — 가장 성실한 동반자일 때가 있다. 깊은 곳에서 빛은 스스로 켜진다.',
+   iEn:'Step back from the noise, as Kiritz does. Solitude is not emptiness — sometimes it is the most honest companion you can have. In the quiet, the light finds its own way on.'},
+  {f:'sun.png', c:'나기사', cEn:'Nagisa', n:'해', nEn:'THE SUN',
+   m:'숨겨진 것이 드러나는 날', mEn:'What was hidden comes to light today.',
+   i:'나기사의 빛처럼 오늘은 감춰진 것들이 드러난다. 두려워하지 마라 — 선명해지는 것은 약점이 아니라 당신이 오래 기다려온 진실이다. 빛 아래 서라. 지금이 그때다.',
+   iEn:'Like Nagisa\'s light, what has been hidden will surface today. Do not be afraid — what becomes clear is not your weakness, but a truth you have long waited for. Stand in the light. Now is the time.'},
+  {f:'star.png', c:'모뉴', cEn:'Monyu', n:'별', nEn:'THE STAR',
+   m:'가장 어두운 곳에서 희망은 빛난다', mEn:'Hope shines brightest in the dark.',
+   i:'모뉴가 가리키는 별처럼, 루프가 몇 번을 돌아도 별은 같은 자리에 있다. 지금 지쳐있다면 괜찮다. 희망은 사라지지 않는다 — 단지 가끔 구름 뒤에 있을 뿐이다. 오늘 밤, 위를 보아라.',
+   iEn:'Like the star Monyu points to, no matter how many loops pass, it stays in place. If you are tired now, that is okay. Hope does not disappear — it only hides behind clouds sometimes. Look up tonight.'},
+  {f:'chariot.png', c:'레이', cEn:'Rei', n:'전차', nEn:'THE CHARIOT',
+   m:'의지가 방향을 정한다', mEn:'Will determines the direction.',
+   i:'레이처럼, 오늘은 망설임 없이 앞으로 나아가야 할 날이다. 두 힘이 충돌하더라도 방향을 잡는 것은 당신이다. 바퀴를 굴리는 것은 힘이 아니라 의지다. 고삐를 쥐어라.',
+   iEn:'Like Rei at the reins, today calls for forward motion without hesitation. Even if two forces pull against each other inside you, it is you who sets the direction. Will, not strength, turns the wheel.'},
+  {f:'fool.png', c:'크로키', cEn:'Croky', n:'광대', nEn:'THE FOOL',
+   m:'시작은 언제나 순수하다', mEn:'Every beginning is pure.',
+   i:'크로키처럼 두려움 없이 첫발을 내딛어라. 광대는 어리석지 않다 — 모든 것을 알면서도 가볍게 걷는 자다. 오늘은 계획보다 용기가 먼저다. 벼랑 끝이라도 괜찮다. 날 수도 있으니까.',
+   iEn:'Step forward like Croky — fearless, light. The Fool is not foolish; they are one who knows everything yet walks lightly anyway. Today, courage comes before planning. Even at the edge of a cliff. You might just fly.'},
+  {f:'tower.png', c:'루시', cEn:'Rucy', n:'타워', nEn:'THE TOWER',
+   m:'무너져야 새것이 선다', mEn:'Something must fall for the new to rise.',
+   i:'루시가 아는 것처럼 — 무너지는 것은 재앙이 아니다. 오늘 흔들리는 것이 있다면, 그것은 무너져야 했던 것이다. 폐허 위에서만 진짜 토대를 놓을 수 있다. 충격을 두려워하지 마라.',
+   iEn:'As Rucy knows — collapse is not catastrophe. If something shakes today, it was meant to fall. Only on the ruins can you lay a true foundation. Do not fear the shock.'},
+  {f:'empress.png', c:'디아망', cEn:'Diamant', n:'여황제', nEn:'THE EMPRESS',
+   m:'풍요는 내면에서 온다', mEn:'Abundance comes from within.',
+   i:'디아망처럼 오늘은 가진 것을 먼저 세어보아라. 결핍을 보기 전에 이미 손 안에 있는 것들을 보아라. 창조는 넉넉한 마음에서 시작되고, 그 넉넉함은 밖이 아닌 안에서 온다.',
+   iEn:'Like Diamant, count what you already have before reaching for what you lack. Creation begins in a generous heart, and that generosity grows from within, not from the outside.'},
+  {f:'world.png', c:'코즈미', cEn:'Kozmi', n:'세계', nEn:'THE WORLD',
+   m:'하나의 루프가 완성된다', mEn:'One loop reaches completion.',
+   i:'코즈미가 품은 세계처럼. 오늘 하나의 루프가 완성된다. 끝은 두려운 것이 아니다 — 원이 닫힌다는 뜻이다. 오늘 당신이 마무리하는 것은 당신이 생각하는 것보다 훨씬 의미 있다.',
+   iEn:'Like the world Kozmi holds. Today a loop completes. An ending is not something to fear — it means a circle is closing. What you bring to a close today matters far more than you think.'},
+  {f:'moon.png', c:'루나', cEn:'Luna', n:'달', nEn:'THE MOON',
+   m:'보이지 않는 것을 믿어라', mEn:'Trust what cannot be seen.',
+   i:'루나가 비추는 달빛처럼. 오늘은 보이지 않는 것들이 실제다. 불안이나 혼란을 느낀다면 — 그것은 진실이 표면 아래에 있기 때문이다. 서두르지 마라. 달은 자신의 속도로 차고 기운다.',
+   iEn:'In Luna\'s reflected light, what is invisible is most real today. If you feel anxious or confused — it is because truth lives beneath the surface. Do not rush. The moon rises and falls at its own pace.'},
+  {f:'high-priestess.png', c:'에아', cEn:'Ea', n:'여사제', nEn:'THE HIGH PRIESTESS',
+   m:'말하지 않은 것에 귀 기울여라', mEn:'Listen to what is left unsaid.',
+   i:'에아처럼 침묵 속에서 듣는 것을 배워라. 오늘은 말하는 날이 아니라 받아들이는 날이다. 모든 답은 이미 당신 안에 있다 — 다만 너무 많은 소리들이 그것을 덮고 있을 뿐이다.',
+   iEn:'Learn to listen in silence, as Ea does. Today is a day for receiving, not speaking. All the answers are already inside you — only too much noise covers them.'},
+  {f:'emperor.png', c:'데네브', cEn:'Deneb', n:'황제', nEn:'THE EMPEROR',
+   m:'질서는 혼돈보다 강하다', mEn:'Order outlasts chaos.',
+   i:'데네브처럼. 오늘은 흐트러진 것들을 정렬할 때다. 스스로의 규칙을 세우고 그것을 지켜라. 진정한 권위는 외부가 아닌 내부에서 온다. 쉘터의 질서가 그렇듯.',
+   iEn:'Like Deneb. Today is the day to bring order to what has scattered. Set your own rules and hold to them. True authority comes from within, not from outside — as the shelter\'s order demonstrates.'},
+  {f:'hanged-man.png', c:'디밸롭', cEn:'Develope', n:'행맨', nEn:'THE HANGED MAN',
+   m:'멈춤이 때로는 가장 빠른 답', mEn:'Pausing is sometimes the fastest answer.',
+   i:'디밸롭처럼 거꾸로 보는 것이 오늘의 지혜다. 막혀있다고 느껴지는가? 멈춤은 실패가 아니다. 다른 각도에서 보면 길이 보일 것이다. 아무것도 하지 않는 것이 가장 현명한 행동일 때가 있다.',
+   iEn:'Invert your perspective as Develope does. Feeling blocked? A pause is not failure. Viewed from another angle, the path appears. Sometimes doing nothing is the wisest action of all.'},
+  {f:'magician.png', c:'세카이', cEn:'Sekai', n:'마법사', nEn:'THE MAGICIAN',
+   m:'필요한 모든 것은 이미 네 손 안에', mEn:'Everything you need is already in your hands.',
+   i:'세카이처럼, 도구는 이미 충분하다. 오늘은 가지지 못한 것을 탓하지 마라. 부족한 것은 도구가 아니라 그것을 쓰는 결단이다. 테이블 위의 것들을 다시 보아라.',
+   iEn:'Like Sekai, the tools are already enough. Do not blame what you lack today. What is missing is not the tools but the decision to use them. Look again at what is on the table.'},
+  {f:'temperance.png', c:'문데이', cEn:'Monday', n:'절제', nEn:'TEMPERANCE',
+   m:'균형이 진정한 힘이다', mEn:'Balance is the true strength.',
+   i:'문데이가 루프 속에서 지켜온 것처럼. 극단으로 달리지 마라. 두 흐름 사이 어딘가에 당신이 찾던 것이 있다. 흔들리지 않는 것은 굳은 것이 아니라 잘 조율된 것이다.',
+   iEn:'As Monday has maintained through every loop. Do not run to extremes. What you seek exists somewhere between two currents. What does not waver is not rigid — it is well-tuned.'},
+  {f:'wheel.png', c:'미래언니', cEn:'Mirae', n:'운명의 수레바퀴', nEn:'WHEEL OF FORTUNE',
+   m:'루프는 돌고 기회도 돌아온다', mEn:'The loop turns, and so do chances.',
+   i:'미래언니가 알고 있듯 — 수레바퀴는 멈추지 않는다. 지금 낮은 곳에 있다면 곧 올라갈 것이고, 높은 곳에 있다면 겸손할 때다. 루프도 결국 한 바퀴다. 변화를 두려워하지 마라.',
+   iEn:'As Mirae knows — the wheel never stops. If you are low now, you will rise; if high, be humble. Even a loop is just one full turn. Do not fear the change.'},
+  {f:'strength.png', c:'우주', cEn:'Uzu', n:'힘', nEn:'STRENGTH',
+   m:'진정한 힘은 부드러움에서 나온다', mEn:'True strength comes from gentleness.',
+   i:'우주처럼, 오늘 앞에 있는 것을 힘으로 누르려 하지 마라. 인내와 온화함이 어떤 충돌보다 깊이 파고든다. 당신은 이미 충분히 강하다 — 그것을 보여줄 필요가 없다.',
+   iEn:'Like Uzu, do not try to overpower what stands before you today. Patience and gentleness cut deeper than any collision. You are already strong enough — there is no need to prove it.'},
+  {f:'devil.png', c:'프리윌', cEn:'Freewill', n:'악마', nEn:'THE DEVIL',
+   m:'선택한 사슬인지 구분하라', mEn:'Know which chains you chose.',
+   i:'프리윌이 묻는다 — 그 사슬은 당신이 선택한 것인가? 오늘 당신을 묶고 있는 것들이 두려움인지, 욕망인지, 습관인지 들여다보아라. 사슬은 생각보다 느슨하다. 눈을 뜨면 보인다.',
+   iEn:'Freewill asks — did you choose those chains? Look closely at what binds you today: is it fear, desire, or habit? The chains are looser than you think. Open your eyes and you will see.'},
+  {f:'death.png', c:'시렌', cEn:'Siren', n:'죽음', nEn:'DEATH',
+   m:'끝은 언제나 새 시작이다', mEn:'Every ending is a new beginning.',
+   i:'시렌이 노래하듯. 죽음 카드는 끝이 아니다. 오늘 무언가가 마무리된다면 — 그것을 보내주어라. 집착은 새로운 것이 들어올 문을 막는다. 변화는 다음 챕터의 첫 문장이다.',
+   iEn:'As Siren sings. The Death card is not an ending. If something completes today — let it go. Clinging blocks the door for what comes next. Change is the first sentence of the next chapter.'},
+  {f:'judgement.png', c:'보안언니', cEn:'Security', n:'심판', nEn:'JUDGEMENT',
+   m:'지금이 스스로를 돌아볼 때', mEn:'Now is the time to look within.',
+   i:'보안언니처럼 냉정하게, 그러나 가혹하지 않게 돌아보아라. 과거의 선택들이 지금의 당신을 만들었다. 그것을 인정하는 것이 다음으로 나아가는 시작이다. 심판은 처벌이 아니라 재출발이다.',
+   iEn:'Look back clearly, as Security does — but without cruelty. The choices of the past made who you are now. Acknowledging that is how you move forward. Judgement is not punishment; it is a new start.'},
+  {f:'justice.png', c:'율리', cEn:'Yuri', n:'정의', nEn:'JUSTICE',
+   m:'모든 행동에는 결과가 따른다', mEn:'Every action has its consequence.',
+   i:'율리처럼 공정하게 보아라. 오늘 일어나는 일들은 우연이 아닐 수 있다. 원인과 결과의 저울이 기울고 있다. 당신이 해왔던 것들이 지금 돌아오는 중이다. 정직했다면 두려워할 필요 없다.',
+   iEn:'See with fairness, as Yuri does. What happens today may not be coincidence. The scales of cause and effect are tipping. What you have done is returning to you now. If you were honest, there is nothing to fear.'},
+  {f:'lovers.png', c:'루션', cEn:'Rución', n:'연인', nEn:'THE LOVERS',
+   m:'선택의 순간, 마음을 따르라', mEn:'At the moment of choice, follow your heart.',
+   i:'루션이 아는 것처럼. 오늘의 선택은 단순한 선호가 아닌 가치의 문제다. 논리는 나중에도 설명할 수 있지만, 이 순간의 감각은 다시 오지 않는다. 두 갈림길 앞에서 마음을 따르라.',
+   iEn:'As Rución knows. Today\'s choice is not a matter of preference, but of values. Logic can explain itself later — but the feeling of this moment will not come again. At the fork in the road, follow your heart.'},
 ];
 function _tarotToday(){
   const d=new Date(), s=`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
@@ -2059,6 +2137,7 @@ function openTarotLb(src){
   document.getElementById('tlb-name').textContent=en?c.nEn:c.n;
   document.getElementById('tlb-en').textContent=c.nEn;
   document.getElementById('tlb-msg').textContent=en?c.mEn:c.m;
+  document.getElementById('tlb-interp').textContent=en?c.iEn:c.i;
   document.querySelector('.tlb-badge').textContent=en?'✦  CARD OF THE DAY':'✦  오늘의 카드';
   if(en) document.getElementById('tlb-en').style.display='none';
   document.getElementById('tarot-lb').classList.add('open');
