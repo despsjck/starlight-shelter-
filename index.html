@@ -841,30 +841,60 @@
     }
     .tarot-img-wrap:hover img { transform:scale(1.04); }
 
-    /* 타로 라이트박스 */
+    /* 타로 팝업 */
     #tarot-lb {
       display:none; position:fixed; inset:0; z-index:9000;
-      background:rgba(2,1,14,.88); backdrop-filter:blur(12px);
+      background:rgba(2,1,14,.85); backdrop-filter:blur(14px);
       align-items:center; justify-content:center;
       cursor:pointer;
-      animation:fdIn .22s ease;
     }
-    #tarot-lb.open { display:flex; }
-    #tarot-lb img {
-      max-height:88vh; max-width:88vw;
-      border-radius:14px;
-      box-shadow:0 0 60px rgba(139,92,246,.5), 0 0 0 1px rgba(139,92,246,.3);
+    #tarot-lb.open { display:flex; animation:fdIn .25s ease; }
+    #tarot-lb-card {
+      position:relative;
+      display:flex; flex-direction:column; align-items:center;
+      background:rgba(10,6,30,.92);
+      border:1px solid rgba(139,92,246,.35);
+      border-radius:20px;
+      padding:2rem 2rem 2.4rem;
+      width:min(340px,88vw);
+      box-shadow:0 0 60px rgba(139,92,246,.25);
       cursor:default;
-      animation:lbIn .3s cubic-bezier(.22,.8,.4,1);
+      animation:lbIn .32s cubic-bezier(.22,.8,.4,1);
     }
     @keyframes lbIn {
-      from{ opacity:0; transform:scale(.88); }
-      to  { opacity:1; transform:scale(1); }
+      from{ opacity:0; transform:scale(.9) translateY(12px); }
+      to  { opacity:1; transform:scale(1) translateY(0); }
+    }
+    #tarot-lb-card img {
+      width:160px; height:256px; object-fit:cover;
+      border-radius:10px;
+      box-shadow:0 8px 32px rgba(139,92,246,.5), 0 0 0 1px rgba(139,92,246,.25);
+      margin-bottom:1.3rem;
+    }
+    .tlb-badge {
+      font-family:var(--mono); font-size:.52rem; letter-spacing:.18em;
+      color:rgba(139,92,246,.6); margin-bottom:1.2rem;
+    }
+    .tlb-char {
+      font-family:var(--mono); font-size:.62rem;
+      color:rgba(196,204,238,.4); letter-spacing:.1em; margin-bottom:.3rem;
+    }
+    .tlb-name {
+      font-size:1.5rem; font-weight:700; color:#ede0ff;
+      margin-bottom:.2rem; text-align:center;
+    }
+    .tlb-en {
+      font-family:var(--mono); font-size:.6rem;
+      color:rgba(139,92,246,.65); letter-spacing:.14em; margin-bottom:1rem;
+    }
+    .tlb-msg {
+      font-size:.88rem; color:rgba(196,204,238,.7);
+      line-height:1.7; font-style:italic; text-align:center;
     }
     #tarot-lb-close {
-      position:absolute; top:1.2rem; right:1.4rem;
-      background:none; border:none; color:rgba(196,204,238,.5);
-      font-size:1.6rem; cursor:pointer; line-height:1;
+      position:absolute; top:1rem; right:1.2rem;
+      background:none; border:none; color:rgba(196,204,238,.4);
+      font-size:1.4rem; cursor:pointer; line-height:1;
       transition:color .15s;
     }
     #tarot-lb-close:hover { color:#fff; }
@@ -1026,7 +1056,7 @@
   </div>
 
   <!-- 오늘의 타로 -->
-  <div id="tarot-widget">
+  <div id="tarot-widget" onclick="openTarotLb(document.getElementById('tarot-img').src)" style="cursor:pointer;">
     <div class="tarot-badge">✦  오늘의 카드</div>
     <div class="tarot-body">
       <div class="tarot-img-wrap">
@@ -1556,10 +1586,17 @@
   </div><!-- /content -->
 </div><!-- /app -->
 
-<!-- 타로 라이트박스 -->
+<!-- 타로 팝업 -->
 <div id="tarot-lb" onclick="closeTarotLb()">
-  <button id="tarot-lb-close" onclick="closeTarotLb()">✕</button>
-  <img id="tarot-lb-img" src="" alt="" onclick="event.stopPropagation()">
+  <div id="tarot-lb-card" onclick="event.stopPropagation()">
+    <button id="tarot-lb-close" onclick="closeTarotLb()">✕</button>
+    <div class="tlb-badge">✦  오늘의 카드</div>
+    <img id="tarot-lb-img" src="" alt="">
+    <div class="tlb-char" id="tlb-char"></div>
+    <div class="tlb-name" id="tlb-name"></div>
+    <div class="tlb-en"   id="tlb-en"></div>
+    <div class="tlb-msg"  id="tlb-msg"></div>
+  </div>
 </div>
 
 <!-- ══ MODAL ══ -->
@@ -2016,7 +2053,14 @@ function _initTarot(){
 }
 
 function openTarotLb(src){
+  const c=_tarotToday(), en=LANG==='en';
   document.getElementById('tarot-lb-img').src=src;
+  document.getElementById('tlb-char').textContent=en?c.cEn:c.c;
+  document.getElementById('tlb-name').textContent=en?c.nEn:c.n;
+  document.getElementById('tlb-en').textContent=c.nEn;
+  document.getElementById('tlb-msg').textContent=en?c.mEn:c.m;
+  document.querySelector('.tlb-badge').textContent=en?'✦  CARD OF THE DAY':'✦  오늘의 카드';
+  if(en) document.getElementById('tlb-en').style.display='none';
   document.getElementById('tarot-lb').classList.add('open');
   document.body.style.overflow='hidden';
 }
