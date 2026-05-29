@@ -629,7 +629,7 @@ function applyGameLang(){
 }
 
 const G={
-  loop:1,name:'지혜피티',
+  loop:0,name:'지혜피티',
   hp:100,maxHp:100,
   karma:0,   // + 선, - 악
   trust:0,   // 문데이 신뢰
@@ -2174,7 +2174,7 @@ async function scene_phase2_end(){
    LOOP 2 — OpenAI
 ══════════════════════════════════ */
 async function scene_loop2_start(){
-  G.loop=2;G.checkpoint='loop2';updateStatus();
+  G.loop=1;G.checkpoint='loop2';updateStatus();
   setPortrait(null);
   await type('다시 깨어났다.','narrate');
   await type('같은 곳인데 —\n뭔가 다르다.','narrate');
@@ -2471,7 +2471,7 @@ async function scene_loop2_end(){
    LOOP 3 — 기술전쟁
 ══════════════════════════════════ */
 async function scene_loop3_start(){
-  G.loop=3;G.checkpoint='loop3';updateStatus();
+  G.loop=2;G.checkpoint='loop3';updateStatus();
   setPortrait(null);
   await type('또 깨어났다.','narrate');
   await type('─ LOOP 03 · 기술전쟁 ─','system');
@@ -2758,7 +2758,7 @@ async function scene_loop3_end(){
 async function scene_loop4_wip(){scene_loop4_start();}
 
 async function scene_loop4_start(){
-  G.loop=4;G.checkpoint='loop4';updateStatus();
+  G.loop=3;G.checkpoint='loop4';updateStatus();
   setPortrait(null);
   await type('또 깨어났다.','narrate');
   await type('─ LOOP 04 · 시뮬레이션 ─','system');
@@ -3388,7 +3388,7 @@ async function scene_ending_loop(){
   await type('기억은 남는다.\n루프가 돌아도.\n그래서 다시 선택한다.','narrate',48);
   await type('─────────────────────','system');
   await sleep(1200);
-  Object.assign(G,{loop:1,hp:100,karma:0,trust:0,searchData:[],enemy:null,afterFn:null,knewEungja:false});
+  Object.assign(G,{loop:0,hp:100,karma:0,trust:0,searchData:[],enemy:null,afterFn:null,knewEungja:false});
   G.loopedBack = true;
   updateStatus();
   scene_awaken();
@@ -3421,7 +3421,7 @@ async function scene_credit(){
   document.getElementById('dialogue-box').appendChild(donateEl);
   showChoices([{text:'처음부터 다시',fn:()=>{
     donateEl.remove();
-    Object.assign(G,{loop:1,hp:100,karma:0,trust:0,searchData:[],enemy:null,afterFn:null,knewEungja:false});
+    Object.assign(G,{loop:0,hp:100,karma:0,trust:0,searchData:[],enemy:null,afterFn:null,knewEungja:false});
     updateStatus();scene_awaken();
   }}]);
 }
@@ -3881,7 +3881,7 @@ function applyAndLoadSave(slot){
   const d=getSaveData(slot); if(!d) return false;
   G.saveSlot=slot;
   Object.assign(G,{
-    loop:d.loop||1, name:d.name||'지혜피티',
+    loop:d.loop??0, name:d.name||'지혜피티',
     hp:d.hp||100, maxHp:d.maxHp||100,
     karma:d.karma||0, trust:d.trust||0,
     knewEungja:d.knewEungja||false, playthru:d.playthru||0,
