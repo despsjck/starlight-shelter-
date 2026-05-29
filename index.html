@@ -1031,6 +1031,16 @@
     <div class="tarot-body">
       <div class="tarot-img-wrap">
         <img id="tarot-img" src="" alt="오늘의 타로 카드" onclick="openTarotLb(this.src)">
+        <script>
+        (function(){
+          var files=['hierophant','hermit','sun','star','chariot','fool','tower','empress',
+            'world','moon','high-priestess','emperor','hanged-man','magician','temperance',
+            'wheel','strength','devil','death','judgement','justice','lovers'];
+          var d=new Date(), s=d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate(), h=0;
+          for(var i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))&0x7fffffff;
+          document.getElementById('tarot-img').src='tarot/'+files[h%files.length]+'.png';
+        })();
+        </script>
       </div>
       <div class="tarot-info">
         <div class="tarot-char-lbl" id="tarot-char"></div>
