@@ -837,8 +837,8 @@
     }
     .tarot-img-wrap img {
       width:100%; height:100%; object-fit:cover;
-      opacity:0; transform:scale(.88) translateY(5px);
-      transition:opacity .9s .35s, transform .9s .35s;
+      opacity:0; transform:scale(.9) translateY(4px);
+      transition:opacity .7s, transform .7s;
     }
     #tarot-widget.t-reveal .tarot-img-wrap img {
       opacity:1; transform:scale(1) translateY(0);
@@ -1559,6 +1559,7 @@ function enterShelter(){
   setTimeout(()=>{
     landing.style.display = 'none';
     lobby.classList.add('active');
+    setTimeout(()=>document.getElementById('tarot-widget')?.classList.add('t-reveal'),300);
   }, 650);
 }
 
@@ -1970,7 +1971,7 @@ function _initTarot(){
   const badge=document.querySelector('.tarot-badge');
   if(badge) badge.textContent=en?'✦  CARD OF THE DAY':'✦  오늘의 카드';
   if(en){ const el=document.getElementById('tarot-card-en'); if(el) el.style.display='none'; }
-  setTimeout(()=>document.getElementById('tarot-widget')?.classList.add('t-reveal'),350);
+  // t-reveal은 enterLobby에서 호출됨
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
