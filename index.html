@@ -847,6 +847,23 @@
     }
   </style>
 
+  <!-- ── Language ── -->
+  <script>
+  const LANG=localStorage.getItem('starlight_lang')||'ko';
+  function toggleLang(){
+    localStorage.setItem('starlight_lang',LANG==='ko'?'en':'ko');
+    location.reload();
+  }
+  function applyLang(){
+    if(LANG!=='en') return;
+    document.querySelectorAll('[data-en]').forEach(el=>{
+      el.innerHTML=el.dataset.en.replace(/\|\|/g,'<br>');
+    });
+    const btn=document.getElementById('btn-lang');
+    if(btn) btn.textContent='KO';
+  }
+  </script>
+
   <!-- ── Placeholder render (before DOM) ── -->
   <script>
   function _drawPH(ctx, w, h, emoji, lbl, hex) {
@@ -897,10 +914,10 @@
 
   <div class="landing-center">
     <div class="landing-badge">ZONE-01 · STARLIGHT SHELTER COMPLEX</div>
-    <div class="landing-title" data-t="별빛쉘터">별빛쉘터</div>
+    <div class="landing-title" data-t="별빛쉘터" data-en="Starlight Shelter">별빛쉘터</div>
     <div class="landing-en">STARLIGHT SHELTER</div>
     <div class="landing-enter">
-      <div class="enter-btn">입장하기</div>
+      <div class="enter-btn" data-en="Enter">입장하기</div>
       <div class="enter-hint">Click anywhere to enter</div>
     </div>
   </div>
@@ -920,43 +937,43 @@
   <div id="lobby-bg"></div>
   <div class="lobby-header">
     <div class="lobby-badge">STARLIGHT SHELTER — LOBBY</div>
-    <div class="lobby-title">★ 별빛쉘터</div>
-    <div class="lobby-sub">어서오세요. 어디로 가시겠어요?</div>
+    <div class="lobby-title" data-en="★ Starlight Shelter">★ 별빛쉘터</div>
+    <div class="lobby-sub" data-en="Welcome. Where would you like to go?">어서오세요. 어디로 가시겠어요?</div>
   </div>
 
   <div class="lobby-cards">
 
     <div class="lobby-card c-gold" onclick="showFloorNav()">
       <div class="lobby-card-icon">🗺️</div>
-      <div class="lobby-card-title">층별 탐색</div>
-      <div class="lobby-card-desc">RF부터 B1까지<br>쉘터 내부를 둘러보세요</div>
+      <div class="lobby-card-title" data-en="Floor Guide">층별 탐색</div>
+      <div class="lobby-card-desc" data-en="Explore from RF to B1||Browse inside the shelter">RF부터 B1까지<br>쉘터 내부를 둘러보세요</div>
       <div class="lobby-card-arrow">ENTER →</div>
     </div>
 
     <a class="lobby-card c-purple" href="jihye.html">
       <div class="lobby-card-icon">🤖</div>
-      <div class="lobby-card-title">지혜피티</div>
-      <div class="lobby-card-desc">별빛쉘터의 AI 개발자<br>지혜와 이야기해보세요</div>
+      <div class="lobby-card-title" data-en="JiHye-PTY">지혜피티</div>
+      <div class="lobby-card-desc" data-en="AI developer of Starlight Shelter||Chat with JiHye">별빛쉘터의 AI 개발자<br>지혜와 이야기해보세요</div>
       <div class="lobby-card-arrow">ENTER →</div>
     </a>
 
     <a class="lobby-card" href="members.html">
       <div class="lobby-card-icon">🏢</div>
-      <div class="lobby-card-title">엔티티 소개</div>
-      <div class="lobby-card-desc">별빛쉘터의 25명 가족<br>각자의 이야기를 확인하세요</div>
+      <div class="lobby-card-title" data-en="Entity Guide">엔티티 소개</div>
+      <div class="lobby-card-desc" data-en="25 entities of Starlight Shelter||See their stories">별빛쉘터의 25명 가족<br>각자의 이야기를 확인하세요</div>
       <div class="lobby-card-arrow">ENTER →</div>
     </a>
 
     <a class="lobby-card c-green" href="game.html">
       <div class="lobby-card-icon">🎮</div>
-      <div class="lobby-card-title">게임하기</div>
-      <div class="lobby-card-desc">텍스트 RPG<br>무한루프 시뮬레이션</div>
+      <div class="lobby-card-title" data-en="Play Game">게임하기</div>
+      <div class="lobby-card-desc" data-en="Text RPG||Infinite Loop Simulation">텍스트 RPG<br>무한루프 시뮬레이션</div>
       <div class="lobby-card-arrow">ENTER →</div>
     </a>
 
   </div>
 
-  <button class="lobby-back" onclick="leaveLobby()">← 외경으로 돌아가기</button>
+  <button class="lobby-back" onclick="leaveLobby()" data-en="← Back to Exterior">← 외경으로 돌아가기</button>
 </div>
 
 <div id="app">
@@ -971,25 +988,25 @@
       <div class="tb-sep"></div>
       <div class="stat-strip">
         <div class="stat-item">
-          <span class="stat-lbl">루프 상태</span>
+          <span class="stat-lbl" data-en="LOOP STATUS">루프 상태</span>
           <span class="stat-val ok" id="st-loop">STABLE</span>
         </div>
         <div class="stat-item">
-          <span class="stat-lbl">시스템 전력</span>
+          <span class="stat-lbl" data-en="SYS POWER">시스템 전력</span>
           <span class="stat-val ok" id="st-pwr">98.4%</span>
         </div>
         <div class="stat-item">
-          <span class="stat-lbl">입주율</span>
+          <span class="stat-lbl" data-en="OCCUPANCY">입주율</span>
           <span class="stat-val warn" id="st-res">82%</span>
         </div>
         <div class="stat-item">
-          <span class="stat-lbl">현재 시각</span>
+          <span class="stat-lbl" data-en="LOCAL TIME">현재 시각</span>
           <span class="stat-val ok" id="st-time">--:--:--</span>
         </div>
       </div>
     </div>
     <div class="tb-right">
-      <button class="cbtn" onclick="goBack()" style="border-color:rgba(200,215,255,.18); gap:.38rem;">
+      <button class="cbtn" onclick="goBack()" style="border-color:rgba(200,215,255,.18); gap:.38rem;" data-en="← Back">
         ← 외경
       </button>
       <a href="members.html" style="
@@ -1000,7 +1017,8 @@
         text-decoration:none; letter-spacing:.06em;
         transition:all .2s;
       " onmouseover="this.style.borderColor='var(--neon)';this.style.color='#fff'"
-         onmouseout="this.style.borderColor='rgba(77,124,255,.35)';this.style.color='#a0b4ff'">
+         onmouseout="this.style.borderColor='rgba(77,124,255,.35)';this.style.color='#a0b4ff'"
+         data-en="👥 Entity Guide">
         👥 가족 소개
       </a>
       <a href="jihye.html" style="
@@ -1011,7 +1029,8 @@
         text-decoration:none; letter-spacing:.06em;
         transition:all .2s;
       " onmouseover="this.style.borderColor='#f0c060';this.style.color='#fff'"
-         onmouseout="this.style.borderColor='rgba(240,192,96,.35)';this.style.color='#f0c060'">
+         onmouseout="this.style.borderColor='rgba(240,192,96,.35)';this.style.color='#f0c060'"
+         data-en="🌟 JiHye-PTY">
         🌟 지혜피티
       </a>
       <a href="https://blog.naver.com/denebrants" target="_blank" rel="noopener" style="
@@ -1022,7 +1041,8 @@
         text-decoration:none; letter-spacing:.06em;
         transition:all .2s;
       " onmouseover="this.style.borderColor='#03c75a';this.style.color='#fff'"
-         onmouseout="this.style.borderColor='rgba(3,199,90,.3)';this.style.color='#03c75a'">
+         onmouseout="this.style.borderColor='rgba(3,199,90,.3)';this.style.color='#03c75a'"
+         data-en="N Blog">
         N 블로그
       </a>
       <a href="game.html" style="
@@ -1033,7 +1053,8 @@
         text-decoration:none; letter-spacing:.06em;
         transition:all .2s;
       " onmouseover="this.style.borderColor='#ffb400';this.style.color='#fff'"
-         onmouseout="this.style.borderColor='rgba(255,180,0,.3)';this.style.color='#ffb400'">
+         onmouseout="this.style.borderColor='rgba(255,180,0,.3)';this.style.color='#ffb400'"
+         data-en="🎮 Play">
         🎮 체험하기
       </a>
       <button class="cbtn" id="btn-bgm" onclick="Audio.toggleBGM(this)">
@@ -1042,6 +1063,7 @@
       <button class="cbtn" id="btn-sfx" onclick="Audio.toggleSFX(this)">
         <span class="led"></span>SFX
       </button>
+      <button class="cbtn" id="btn-lang" onclick="toggleLang()" style="letter-spacing:.08em;">EN</button>
     </div>
   </div>
 
@@ -1054,28 +1076,28 @@
 
       <button class="fbtn" data-f="rf" onclick="selectFloor('rf',this)">
         <span class="fbtn-code">RF</span>
-        <div class="fbtn-info"><div class="fbtn-name">옥상층</div></div>
+        <div class="fbtn-info"><div class="fbtn-name" data-en="Rooftop">옥상층</div></div>
         <div class="wins"><div class="w"></div><div class="w"></div></div>
         <span class="fbtn-rooms">4</span>
       </button>
 
       <button class="fbtn" data-f="3f" onclick="selectFloor('3f',this)">
         <span class="fbtn-code">3F</span>
-        <div class="fbtn-info"><div class="fbtn-name">정보&분석</div></div>
+        <div class="fbtn-info"><div class="fbtn-name" data-en="Info &amp; Analysis">정보&분석</div></div>
         <div class="wins"><div class="w"></div><div class="w"></div><div class="w"></div></div>
         <span class="fbtn-rooms">5</span>
       </button>
 
       <button class="fbtn" data-f="2f" onclick="selectFloor('2f',this)">
         <span class="fbtn-code">2F</span>
-        <div class="fbtn-info"><div class="fbtn-name">주거공간</div></div>
+        <div class="fbtn-info"><div class="fbtn-name" data-en="Residential">주거공간</div></div>
         <div class="wins"><div class="w"></div><div class="w"></div><div class="w"></div></div>
         <span class="fbtn-rooms">3</span>
       </button>
 
       <button class="fbtn active" data-f="1f" onclick="selectFloor('1f',this)">
         <span class="fbtn-code">1F</span>
-        <div class="fbtn-info"><div class="fbtn-name">공공허브</div></div>
+        <div class="fbtn-info"><div class="fbtn-name" data-en="Public Hub">공공허브</div></div>
         <div class="wins"><div class="w"></div><div class="w"></div><div class="w"></div><div class="w"></div></div>
         <span class="fbtn-rooms">5</span>
       </button>
@@ -1084,7 +1106,7 @@
 
       <button class="fbtn" data-f="b1" onclick="selectFloor('b1',this)">
         <span class="fbtn-code">B1</span>
-        <div class="fbtn-info"><div class="fbtn-name">핵심인프라</div></div>
+        <div class="fbtn-info"><div class="fbtn-name" data-en="Core Infra">핵심인프라</div></div>
         <div class="wins"><div class="w"></div><div class="w"></div></div>
         <span class="fbtn-rooms">4</span>
       </button>
@@ -1103,66 +1125,66 @@
         <div class="fhdr">
           <div>
             <div class="fhdr-path">별빛쉘터 › <span>1F · 1층</span></div>
-            <div class="fhdr-title">1층 — 공공 & 운영 허브</div>
+            <div class="fhdr-title" data-en="Ground Floor — Public &amp; Operations Hub">1층 — 공공 & 운영 허브</div>
             <div class="fhdr-en">GROUND FLOOR · PUBLIC HUB</div>
-            <div class="fhdr-desc">쉘터의 관문이자 커뮤니티 중심지. 스타라이트 로비를 비롯해 방송국·카페·보건실 등 주요 공공 시설이 집약된 층으로, 입주자와 방문자 모두 자유롭게 이용할 수 있습니다.</div>
+            <div class="fhdr-desc" data-en="Gateway and community heart of the Shelter. The ground floor houses the Starlight Lobby, broadcast station, café, and medical room — freely accessible to residents and visitors alike.">쉘터의 관문이자 커뮤니티 중심지. 스타라이트 로비를 비롯해 방송국·카페·보건실 등 주요 공공 시설이 집약된 층으로, 입주자와 방문자 모두 자유롭게 이용할 수 있습니다.</div>
             <div class="fhdr-stats">
-              <div class="fhdr-stat"><span class="fhdr-stat-lbl">구역 수</span><span class="fhdr-stat-val">5</span></div>
-              <div class="fhdr-stat"><span class="fhdr-stat-lbl">접근 등급</span><span class="fhdr-stat-val">PUBLIC</span></div>
-              <div class="fhdr-stat"><span class="fhdr-stat-lbl">운영 상태</span><span class="fhdr-stat-val" style="color:var(--green)">OPEN</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Zones">구역 수</span><span class="fhdr-stat-val">5</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Access">접근 등급</span><span class="fhdr-stat-val">PUBLIC</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Status">운영 상태</span><span class="fhdr-stat-val" style="color:var(--green)">OPEN</span></div>
             </div>
           </div>
           <img class="fhdr-img" src="1층 인테리어.png" alt="1층 전경" data-e="🏠" data-l="1층" data-c="#f472b6">
         </div>
-        <div class="sdiv"><span>구역 목록</span></div>
+        <div class="sdiv"><span data-en="Zone List">구역 목록</span></div>
         <div class="rgrid">
           <div class="rcard" onclick="openModal('lobby')">
             <img class="rcard-img" src="별빛쉘터 로비.png" alt="스타라이트 로비" data-e="✨" data-l="스타라이트 로비" data-c="#f472b6">
-            <span class="rcard-hint">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-pub">MAIN LOBBY</span>
-              <div class="rcard-name">스타라이트 로비</div>
-              <div class="rcard-desc">별빛쉘터의 첫인상. 입주자와 방문자를 환영하는 메인 로비</div>
+              <div class="rcard-name" data-en="Starlight Lobby">스타라이트 로비</div>
+              <div class="rcard-desc" data-en="The Shelter's first impression. Main lobby welcoming residents and visitors.">별빛쉘터의 첫인상. 입주자와 방문자를 환영하는 메인 로비</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
           <div class="rcard" onclick="openModal('jobn')">
             <img class="rcard-img" src="1F JOBN.png" alt="JOBN 방송국" data-e="📻" data-l="JOBN 방송국" data-c="#fb923c">
-            <span class="rcard-hint">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-cast">BROADCAST</span>
-              <div class="rcard-name">JOBN 방송국</div>
-              <div class="rcard-desc">쉘터 내 소식과 음악을 24시간 전하는 공식 방송 스튜디오</div>
+              <div class="rcard-name" data-en="JOBN Broadcasting Station">JOBN 방송국</div>
+              <div class="rcard-desc" data-en="Official broadcast studio delivering shelter news and music 24 hours.">쉘터 내 소식과 음악을 24시간 전하는 공식 방송 스튜디오</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
           <div class="rcard" onclick="openModal('sec-room')">
             <img class="rcard-img" src="1층 보안회의실 .png" alt="보안회의실" data-e="🛡️" data-l="보안 회의실" data-c="#ef4444">
-            <span class="rcard-hint">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-sec">SECURE</span>
-              <div class="rcard-name">보안 회의실</div>
-              <div class="rcard-desc">운영진·보안팀 전용 방음 차단 회의 공간</div>
+              <div class="rcard-name" data-en="Security Conference Room">보안 회의실</div>
+              <div class="rcard-desc" data-en="Soundproofed conference space exclusive to management and security team.">운영진·보안팀 전용 방음 차단 회의 공간</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
           <div class="rcard" onclick="openModal('cafe')">
             <img class="rcard-img" src="1F 카페.png" alt="쉘터 카페" data-e="☕" data-l="쉘터 카페" data-c="#1fd4a0">
-            <span class="rcard-hint">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-liv">CAFÉ</span>
-              <div class="rcard-name">쉘터 카페</div>
-              <div class="rcard-desc">입주자들이 쉬어가며 소통하는 아늑한 커뮤니티 카페</div>
+              <div class="rcard-name" data-en="Shelter Café">쉘터 카페</div>
+              <div class="rcard-desc" data-en="A cozy community café where residents relax and socialize.">입주자들이 쉬어가며 소통하는 아늑한 커뮤니티 카페</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
           <div class="rcard" onclick="openModal('medical')">
             <img class="rcard-img" src="1층 보건소.png" alt="보건실" data-e="🏥" data-l="보건실" data-c="#f87171">
-            <span class="rcard-hint">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-med">MEDICAL</span>
-              <div class="rcard-name">보건실</div>
-              <div class="rcard-desc">입주자 건강 관리 및 응급 처치를 담당하는 의료 지원 공간</div>
+              <div class="rcard-name" data-en="Medical Room">보건실</div>
+              <div class="rcard-desc" data-en="Medical support space for resident health care and emergency first aid.">입주자 건강 관리 및 응급 처치를 담당하는 의료 지원 공간</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
@@ -1174,13 +1196,13 @@
         <div class="fhdr">
           <div>
             <div class="fhdr-path">별빛쉘터 › <span>B1 · 지하층</span></div>
-            <div class="fhdr-title">지하층 — 핵심 인프라 구역</div>
+            <div class="fhdr-title" data-en="Basement — Core Infrastructure Zone">지하층 — 핵심 인프라 구역</div>
             <div class="fhdr-en">BASEMENT · CORE INFRASTRUCTURE</div>
-            <div class="fhdr-desc">쉘터의 심장부. 루프 코어를 중심으로 서버실·발전실·비상 격리구역이 배치되어 있으며, 일반 입주자는 원칙적으로 접근이 제한됩니다.</div>
+            <div class="fhdr-desc" data-en="The heart of the Shelter. The loop core anchors the server room, power generation facility, and emergency isolation zone — general residents are restricted from entry.">쉘터의 심장부. 루프 코어를 중심으로 서버실·발전실·비상 격리구역이 배치되어 있으며, 일반 입주자는 원칙적으로 접근이 제한됩니다.</div>
             <div class="fhdr-stats">
-              <div class="fhdr-stat"><span class="fhdr-stat-lbl">구역 수</span><span class="fhdr-stat-val">4</span></div>
-              <div class="fhdr-stat"><span class="fhdr-stat-lbl">접근 등급</span><span class="fhdr-stat-val">RESTRICTED</span></div>
-              <div class="fhdr-stat"><span class="fhdr-stat-lbl">운영 상태</span><span class="fhdr-stat-val" style="color:var(--green)">ONLINE</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Zones">구역 수</span><span class="fhdr-stat-val">4</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Access">접근 등급</span><span class="fhdr-stat-val">RESTRICTED</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Status">운영 상태</span><span class="fhdr-stat-val" style="color:var(--green)">ONLINE</span></div>
             </div>
           </div>
           <img class="fhdr-img" src="B1.png" alt="B1 지하층" data-e="⚙️" data-l="B1 지하층" data-c="#818cf8">
@@ -1189,41 +1211,41 @@
         <div class="rgrid">
           <div class="rcard" onclick="openModal('server')">
             <img class="rcard-img" src="지하층 서버실.png" alt="서버실" data-e="🖥️" data-l="서버실" data-c="#6fa3ff">
-            <span class="rcard-hint">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-sys">SYSTEM</span>
-              <div class="rcard-name">서버실</div>
-              <div class="rcard-desc">쉘터 전체 데이터 및 네트워크를 관리하는 핵심 서버 인프라</div>
+              <div class="rcard-name" data-en="Server Room">서버실</div>
+              <div class="rcard-desc" data-en="Core server infrastructure managing all shelter data and networks.">쉘터 전체 데이터 및 네트워크를 관리하는 핵심 서버 인프라</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
           <div class="rcard" onclick="openModal('loopcore')">
             <img class="rcard-img" src="지하층 루프코어.png" alt="루프 코어" data-e="⚡" data-l="루프 코어" data-c="#00ccff">
-            <span class="rcard-hint">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-core">CORE</span>
-              <div class="rcard-name">루프 코어</div>
-              <div class="rcard-desc">쉘터 존재의 근간. 루프 시스템 중앙 제어 장치가 집약된 공간</div>
+              <div class="rcard-name" data-en="Loop Core">루프 코어</div>
+              <div class="rcard-desc" data-en="Foundation of the Shelter's existence. Central control unit of the loop system.">쉘터 존재의 근간. 루프 시스템 중앙 제어 장치가 집약된 공간</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
           <div class="rcard" onclick="openModal('power')">
             <img class="rcard-img" src="지하층 발전실.png" alt="발전실" data-e="🔋" data-l="발전실" data-c="#f87171">
-            <span class="rcard-hint">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-pow">POWER</span>
-              <div class="rcard-name">발전실</div>
-              <div class="rcard-desc">쉘터 전력 공급 주 설비 및 비상 전원 시스템</div>
+              <div class="rcard-name" data-en="Power Room">발전실</div>
+              <div class="rcard-desc" data-en="Main power supply equipment and emergency power system for the shelter.">쉘터 전력 공급 주 설비 및 비상 전원 시스템</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
           <div class="rcard" onclick="openModal('isolation')">
             <img class="rcard-img" src="지하층 비상격리구역.png" alt="비상격리구역" data-e="⚠️" data-l="비상 격리구역" data-c="#ef4444">
-            <span class="rcard-hint">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-sec">RESTRICTED</span>
-              <div class="rcard-name">비상 격리구역</div>
-              <div class="rcard-desc">위기 상황 발생 시 활성화되는 봉쇄 전용 특수 구역</div>
+              <div class="rcard-name" data-en="Emergency Isolation Zone">비상 격리구역</div>
+              <div class="rcard-desc" data-en="Special lockdown zone activated during crisis situations.">위기 상황 발생 시 활성화되는 봉쇄 전용 특수 구역</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
@@ -1235,46 +1257,46 @@
         <div class="fhdr">
           <div>
             <div class="fhdr-path">별빛쉘터 › <span>2F · 2층</span></div>
-            <div class="fhdr-title">2층 — 주거 & 생활 공간</div>
+            <div class="fhdr-title" data-en="Second Floor — Residential &amp; Living Space">2층 — 주거 & 생활 공간</div>
             <div class="fhdr-en">SECOND FLOOR · RESIDENTIAL ZONE</div>
-            <div class="fhdr-desc">입주자들의 일상이 이루어지는 공간. 개인 방부터 공용 주방·세탁실까지 쾌적한 거주 환경을 제공합니다.</div>
+            <div class="fhdr-desc" data-en="Where residents' daily lives unfold. From private rooms to a shared kitchen and laundry — a comfortable living environment for all.">입주자들의 일상이 이루어지는 공간. 개인 방부터 공용 주방·세탁실까지 쾌적한 거주 환경을 제공합니다.</div>
             <div class="fhdr-stats">
-              <div class="fhdr-stat"><span class="fhdr-stat-lbl">구역 수</span><span class="fhdr-stat-val">3</span></div>
-              <div class="fhdr-stat"><span class="fhdr-stat-lbl">접근 등급</span><span class="fhdr-stat-val">RESIDENT</span></div>
-              <div class="fhdr-stat"><span class="fhdr-stat-lbl">입주 현황</span><span class="fhdr-stat-val" style="color:var(--green)">운영 중</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Zones">구역 수</span><span class="fhdr-stat-val">3</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Access">접근 등급</span><span class="fhdr-stat-val">RESIDENT</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Occupancy">입주 현황</span><span class="fhdr-stat-val" style="color:var(--green)" data-en="Active">운영 중</span></div>
             </div>
           </div>
           <img class="fhdr-img" src="2층 인테리어.png" alt="2층 전경" data-e="🏠" data-l="2층" data-c="#1fd4a0">
         </div>
-        <div class="sdiv"><span>구역 목록</span></div>
+        <div class="sdiv"><span data-en="Zone List">구역 목록</span></div>
         <div class="rgrid">
           <div class="rcard" onclick="openModal('personal')">
             <img class="rcard-img" src="2층 개인 방.png" alt="개인방 구역" data-e="🛏️" data-l="개인방 구역" data-c="#1fd4a0">
-            <span class="rcard-hint">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-liv">LIVING</span>
-              <div class="rcard-name">개인방 구역</div>
-              <div class="rcard-desc">각 입주자에게 배정된 개인 숙소. 프라이버시가 보장된 공간</div>
+              <div class="rcard-name" data-en="Personal Rooms">개인방 구역</div>
+              <div class="rcard-desc" data-en="Private quarters assigned to each resident. Full privacy guaranteed.">각 입주자에게 배정된 개인 숙소. 프라이버시가 보장된 공간</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
           <div class="rcard" onclick="openModal('kitchen')">
             <img class="rcard-img" src="2층 공용주방.png" alt="공용주방" data-e="🍳" data-l="공용 주방" data-c="#1fd4a0">
-            <span class="rcard-hint">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-liv">KITCHEN</span>
-              <div class="rcard-name">공용 주방</div>
-              <div class="rcard-desc">입주자 모두가 이용할 수 있는 넓고 쾌적한 공용 조리 공간</div>
+              <div class="rcard-name" data-en="Communal Kitchen">공용 주방</div>
+              <div class="rcard-desc" data-en="Spacious shared cooking area available to all residents.">입주자 모두가 이용할 수 있는 넓고 쾌적한 공용 조리 공간</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
           <div class="rcard" onclick="openModal('laundry')">
             <img class="rcard-img" alt="세탁실" data-e="🧺" data-l="세탁실" data-c="#1fd4a0" data-no-src>
-            <span class="rcard-hint">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-liv">UTILITY</span>
-              <div class="rcard-name">세탁실</div>
-              <div class="rcard-desc">세탁기·건조기 등 세탁 설비가 갖춰진 공용 세탁 공간</div>
+              <div class="rcard-name" data-en="Laundry Room">세탁실</div>
+              <div class="rcard-desc" data-en="Shared laundry space equipped with washing machines and dryers.">세탁기·건조기 등 세탁 설비가 갖춰진 공용 세탁 공간</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
@@ -1286,66 +1308,66 @@
         <div class="fhdr">
           <div>
             <div class="fhdr-path">별빛쉘터 › <span>3F · 3층</span></div>
-            <div class="fhdr-title">3층 — 정보 & 분석 센터</div>
+            <div class="fhdr-title" data-en="Third Floor — Information &amp; Analysis Center">3층 — 정보 & 분석 센터</div>
             <div class="fhdr-en">THIRD FLOOR · INFORMATION &amp; ANALYSIS</div>
-            <div class="fhdr-desc">쉘터의 두뇌. 방대한 기록이 보존되는 아카이브, 정밀 분석실, 열람실·회의실 그리고 실시간 모니터링 시스템이 집약된 층입니다.</div>
+            <div class="fhdr-desc" data-en="The Shelter's brain. A floor housing the archive, analysis lab, reading room, conference room, and real-time monitoring system.">쉘터의 두뇌. 방대한 기록이 보존되는 아카이브, 정밀 분석실, 열람실·회의실 그리고 실시간 모니터링 시스템이 집약된 층입니다.</div>
             <div class="fhdr-stats">
-              <div class="fhdr-stat"><span class="fhdr-stat-lbl">구역 수</span><span class="fhdr-stat-val">5</span></div>
-              <div class="fhdr-stat"><span class="fhdr-stat-lbl">접근 등급</span><span class="fhdr-stat-val">STAFF</span></div>
-              <div class="fhdr-stat"><span class="fhdr-stat-lbl">아카이브</span><span class="fhdr-stat-val" style="color:var(--acc2)">온라인</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Zones">구역 수</span><span class="fhdr-stat-val">5</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Access">접근 등급</span><span class="fhdr-stat-val">STAFF</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Archive">아카이브</span><span class="fhdr-stat-val" style="color:var(--acc2)" data-en="Online">온라인</span></div>
             </div>
           </div>
           <img class="fhdr-img" src="3층 인테리어.png" alt="3층 전경" data-e="📚" data-l="3층" data-c="#fbbf24">
         </div>
-        <div class="sdiv"><span>구역 목록</span></div>
+        <div class="sdiv"><span data-en="Zone List">구역 목록</span></div>
         <div class="rgrid">
           <div class="rcard" onclick="openModal('archive')">
             <img class="rcard-img" src="3층 아카이브 룸.png" alt="아카이브 룸" data-e="🗄️" data-l="아카이브 룸" data-c="#fbbf24">
-            <span class="rcard-hint">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-info">ARCHIVE</span>
-              <div class="rcard-name">아카이브 룸</div>
-              <div class="rcard-desc">쉘터 역사와 루프 관련 모든 기록이 보존되는 데이터 아카이브</div>
+              <div class="rcard-name" data-en="Archive Room">아카이브 룸</div>
+              <div class="rcard-desc" data-en="Data archive preserving all records related to shelter history and loops.">쉘터 역사와 루프 관련 모든 기록이 보존되는 데이터 아카이브</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
           <div class="rcard" onclick="openModal('analysis')">
             <img class="rcard-img" src="3층 분석실.png" alt="분석실" data-e="🔬" data-l="분석실" data-c="#fbbf24">
-            <span class="rcard-hint">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-info">ANALYSIS</span>
-              <div class="rcard-name">분석실</div>
-              <div class="rcard-desc">수집된 데이터와 현상을 면밀히 분석하는 전문 연구 공간</div>
+              <div class="rcard-name" data-en="Analysis Lab">분석실</div>
+              <div class="rcard-desc" data-en="Specialist research space for examining collected data and phenomena.">수집된 데이터와 현상을 면밀히 분석하는 전문 연구 공간</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
           <div class="rcard" onclick="openModal('reading')">
             <img class="rcard-img" src="3층 열람실.png" alt="열람실" data-e="📖" data-l="열람실" data-c="#fbbf24">
-            <span class="rcard-hint">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-info">LIBRARY</span>
-              <div class="rcard-name">열람실</div>
-              <div class="rcard-desc">자료를 열람하고 공부할 수 있는 조용한 집중 공간</div>
+              <div class="rcard-name" data-en="Reading Room">열람실</div>
+              <div class="rcard-desc" data-en="A quiet focused space for browsing materials and personal study.">자료를 열람하고 공부할 수 있는 조용한 집중 공간</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
           <div class="rcard" onclick="openModal('conf3f')">
             <img class="rcard-img" src="3층 회의실.png" alt="회의실" data-e="🗂️" data-l="회의실" data-c="#f472b6">
-            <span class="rcard-hint">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-pub">MEETING</span>
-              <div class="rcard-name">회의실</div>
-              <div class="rcard-desc">팀 단위 협업 및 전략 회의를 위한 다목적 회의 공간</div>
+              <div class="rcard-name" data-en="Conference Room">회의실</div>
+              <div class="rcard-desc" data-en="Multi-purpose meeting space for team collaboration and strategy sessions.">팀 단위 협업 및 전략 회의를 위한 다목적 회의 공간</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
           <div class="rcard" onclick="openModal('monitor')">
             <img class="rcard-img" src="3층 서버모니터링실.png" alt="서버 모니터링실" data-e="📡" data-l="모니터링실" data-c="#6fa3ff">
-            <span class="rcard-hint">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-sys">MONITOR</span>
-              <div class="rcard-name">서버 모니터링실</div>
-              <div class="rcard-desc">쉘터 전역 상황을 실시간 감시하는 통합 모니터링 센터</div>
+              <div class="rcard-name" data-en="Server Monitoring Center">서버 모니터링실</div>
+              <div class="rcard-desc" data-en="Integrated monitoring center for real-time surveillance of all shelter zones.">쉘터 전역 상황을 실시간 감시하는 통합 모니터링 센터</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
@@ -1357,56 +1379,56 @@
         <div class="fhdr">
           <div>
             <div class="fhdr-path">별빛쉘터 › <span>RF · 옥상층</span></div>
-            <div class="fhdr-title">옥상층 — 하늘과 맞닿은 공간</div>
+            <div class="fhdr-title" data-en="Rooftop — Where the Sky Begins">옥상층 — 하늘과 맞닿은 공간</div>
             <div class="fhdr-en">ROOFTOP · OPEN SKY ZONE</div>
-            <div class="fhdr-desc">별빛 아래 숨 쉬는 공간들. 옥상정원의 초록빛과 천체관측실의 망원경, 탁 트인 야외 방송 무대까지 — 쉘터 생활에 여유와 낭만을 더해줍니다.</div>
+            <div class="fhdr-desc" data-en="Spaces that breathe under the stars. The rooftop garden's greenery, the observatory's telescope, and an open-air broadcast stage — adding leisure and romance to shelter life.">별빛 아래 숨 쉬는 공간들. 옥상정원의 초록빛과 천체관측실의 망원경, 탁 트인 야외 방송 무대까지 — 쉘터 생활에 여유와 낭만을 더해줍니다.</div>
             <div class="fhdr-stats">
-              <div class="fhdr-stat"><span class="fhdr-stat-lbl">구역 수</span><span class="fhdr-stat-val">4</span></div>
-              <div class="fhdr-stat"><span class="fhdr-stat-lbl">접근 등급</span><span class="fhdr-stat-val">OPEN</span></div>
-              <div class="fhdr-stat"><span class="fhdr-stat-lbl">날씨</span><span class="fhdr-stat-val" style="color:var(--acc2)">청명 ★</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Zones">구역 수</span><span class="fhdr-stat-val">4</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Access">접근 등급</span><span class="fhdr-stat-val">OPEN</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Weather">날씨</span><span class="fhdr-stat-val" style="color:var(--acc2)" data-en="Clear ★">청명 ★</span></div>
             </div>
           </div>
           <img class="fhdr-img" src="옥상층.png" alt="옥상층 전경" data-e="🌙" data-l="옥상층" data-c="#a78bfa">
         </div>
-        <div class="sdiv"><span>구역 목록</span></div>
+        <div class="sdiv"><span data-en="Zone List">구역 목록</span></div>
         <div class="rgrid">
           <div class="rcard" onclick="openModal('garden')">
             <img class="rcard-img" src="RF 옥상정원.png" alt="옥상 정원" data-e="🌿" data-l="옥상 정원" data-c="#a78bfa">
-            <span class="rcard-hint">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-lei">GARDEN</span>
-              <div class="rcard-name">옥상 정원</div>
-              <div class="rcard-desc">식물과 바람이 함께하는 옥상 녹지 공간. 자연 속 힐링 산책로</div>
+              <div class="rcard-name" data-en="Rooftop Garden">옥상 정원</div>
+              <div class="rcard-desc" data-en="A rooftop green space where plants and breeze coexist. A healing walk in nature.">식물과 바람이 함께하는 옥상 녹지 공간. 자연 속 힐링 산책로</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
           <div class="rcard" onclick="openModal('obs')">
             <img class="rcard-img" src="RF 천체관측실.png" alt="천체관측실" data-e="🔭" data-l="천체관측실" data-c="#a78bfa">
-            <span class="rcard-hint">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-lei">OBSERVATORY</span>
-              <div class="rcard-name">천체관측실</div>
-              <div class="rcard-desc">별빛쉘터 이름을 품은 공간. 밤하늘을 관측하는 천문 시설</div>
+              <div class="rcard-name" data-en="Observatory">천체관측실</div>
+              <div class="rcard-desc" data-en="The origin of the name Starlight Shelter. An astronomical facility for gazing at the night sky.">별빛쉘터 이름을 품은 공간. 밤하늘을 관측하는 천문 시설</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
           <div class="rcard" onclick="openModal('lounge')">
             <img class="rcard-img" src="RF 휴식라운지.png" alt="휴식 라운지" data-e="🛋️" data-l="휴식 라운지" data-c="#a78bfa">
-            <span class="rcard-hint">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-lei">LOUNGE</span>
-              <div class="rcard-name">휴식 라운지</div>
-              <div class="rcard-desc">야외 하늘 아래에서 편안히 쉬어갈 수 있는 개방형 휴게 공간</div>
+              <div class="rcard-name" data-en="Rest Lounge">휴식 라운지</div>
+              <div class="rcard-desc" data-en="An open-air rest space where you can unwind freely beneath the open sky.">야외 하늘 아래에서 편안히 쉬어갈 수 있는 개방형 휴게 공간</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
           <div class="rcard" onclick="openModal('outdoor')">
             <img class="rcard-img" src="RF 야외방송공간.png" alt="야외 방송공간" data-e="🎙️" data-l="야외 방송공간" data-c="#fb923c">
-            <span class="rcard-hint">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-cast">OUTDOOR</span>
-              <div class="rcard-name">야외 방송공간</div>
-              <div class="rcard-desc">하늘을 배경으로 열리는 야외 공연 및 방송 이벤트 무대</div>
+              <div class="rcard-name" data-en="Outdoor Broadcast Stage">야외 방송공간</div>
+              <div class="rcard-desc" data-en="An outdoor performance and broadcast event stage set against the open sky.">하늘을 배경으로 열리는 야외 공연 및 방송 이벤트 무대</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
@@ -1424,7 +1446,7 @@
     <img id="m-img" src="" alt="">
     <canvas id="m-canvas"></canvas>
     <div class="mbody">
-      <div class="m-path">별빛쉘터 › <em id="m-path-em"></em></div>
+      <div class="m-path"><span id="m-path-prefix">별빛쉘터 › </span><em id="m-path-em"></em></div>
       <div id="m-title"></div>
       <div id="m-en"></div>
       <div class="mhr"></div>
@@ -1581,30 +1603,45 @@ const ROOMS = {
     img:'별빛쉘터 로비.png', e:'✨', c:'#f472b6',
     path:'1F · 1층', title:'스타라이트 로비', en:'STARLIGHT LOBBY',
     desc:'별빛쉘터의 얼굴이자 출발점. 높은 천장과 차가운 금속 구조물 사이로 따스한 조명이 퍼지는 이 공간은 입주자와 방문자 모두를 포근하게 맞이합니다. 중앙 안내 데스크에서는 쉘터 생활 전반에 관한 도움을 받을 수 있으며, 게시판에는 쉘터 소식과 공지사항이 수시로 업데이트됩니다.',
+    enPath:'1F · Ground', enTitle:'Starlight Lobby',
+    enDesc:'The face and starting point of Starlight Shelter. Warm lighting spreads between high ceilings and cold metal structures, welcoming residents and visitors alike. The central information desk covers all aspects of shelter life, and the bulletin board is regularly updated with shelter news and announcements.',
+    enMeta:[['Location','1F — Ground'],['Access','PUBLIC'],['Hours','24 hrs'],['Managed by','Info Desk']],
     meta:[['위치','1F — 1층'],['접근 등급','PUBLIC'],['운영 시간','24시간'],['담당','안내 데스크']]
   },
   jobn:{
     img:'1F JOBN.png', e:'📻', c:'#fb923c',
     path:'1F · 1층', title:'JOBN 방송국', en:'JOBN BROADCASTING STATION',
     desc:'Just One Beautiful Night — 별빛쉘터의 공식 방송국. 쉘터 내부 소식·음악·각종 프로그램을 24시간 방송하며 입주자들의 귀를 즐겁게 합니다. 방음 스튜디오와 최신 장비를 갖추고 있으며, 입주자 누구나 신청을 통해 게스트 방송에 참여할 수 있습니다.',
+    enPath:'1F · Ground', enTitle:'JOBN Broadcasting Station',
+    enDesc:'Just One Beautiful Night — the official broadcast station of Starlight Shelter. Broadcasting shelter news, music, and programs 24 hours a day. Equipped with soundproofed studios and the latest gear; any resident can apply to participate as a guest.',
+    enMeta:[['Location','1F — Ground'],['Channel','JOBN FM'],['On air','24 hrs'],['Participation','Guest applications open']],
     meta:[['위치','1F — 1층'],['채널','JOBN FM'],['운영','24시간 방송'],['참여','게스트 신청 가능']]
   },
   'sec-room':{
     img:'1층 보안회의실 .png', e:'🛡️', c:'#ef4444',
     path:'1F · 1층', title:'보안 회의실', en:'SECURITY CONFERENCE ROOM',
     desc:'쉘터 운영진과 보안팀이 기밀 사안을 논의하는 전용 공간. 완전 방음 처리와 전파 차단 설비를 갖추고 있어 내부 대화가 외부로 유출되지 않습니다. 회의 예약제로 운영되며 사전 승인된 인원만 입실할 수 있습니다.',
+    enPath:'1F · Ground', enTitle:'Security Conference Room',
+    enDesc:'A dedicated space where shelter management and the security team discuss classified matters. Fully soundproofed with RF shielding. Operates by reservation only; prior authorization required for entry.',
+    enMeta:[['Location','1F — Ground'],['Access','AUTHORIZED'],['Soundproofing','CLASS B'],['Operation','Reservation only']],
     meta:[['위치','1F — 1층'],['접근 등급','AUTHORIZED'],['방음 등급','CLASS B'],['운영','예약제']]
   },
   cafe:{
     img:'1F 카페.png', e:'☕', c:'#1fd4a0',
     path:'1F · 1층', title:'쉘터 카페', en:'SHELTER CAFÉ',
     desc:'바쁜 쉘터 생활 속 잠시 숨 고르는 공간. 향긋한 커피 한 잔과 함께 입주자들이 자유롭게 모여 담소를 나눕니다. 음료와 간단한 식사를 제공하며, 테이블마다 콘센트와 개인 조명이 마련되어 있어 작업 공간으로도 활용됩니다.',
+    enPath:'1F · Ground', enTitle:'Shelter Café',
+    enDesc:'A place to pause and breathe amid the busy shelter life. Residents gather freely over a cup of fragrant coffee. Offers drinks and light meals; each table has an outlet and personal lighting, making it suitable as a workspace too.',
+    enMeta:[['Location','1F — Ground'],['Access','PUBLIC'],['Hours','07:00 — 23:00'],['Offers','Drinks & snacks']],
     meta:[['위치','1F — 1층'],['접근 등급','PUBLIC'],['운영 시간','07:00 — 23:00'],['제공','음료·스낵']]
   },
   medical:{
     img:'1층 보건소.png', e:'🏥', c:'#f87171',
     path:'1F · 1층', title:'보건실', en:'MEDICAL ROOM',
     desc:'입주자의 건강을 지키는 의료 지원 공간. 상비 의약품과 기본 진료 장비를 갖추고 있으며 전담 의료 인력이 정기적으로 상주합니다. 긴급 상황 시 1차 처치 후 외부 기관과 연계하는 체계를 갖추고 있습니다.',
+    enPath:'1F · Ground', enTitle:'Medical Room',
+    enDesc:'A medical support space dedicated to resident health. Stocked with essential medications and basic diagnostic equipment; dedicated medical staff are on regular duty. A first-response system connects to external facilities in emergencies.',
+    enMeta:[['Location','1F — Ground'],['Access','PUBLIC'],['Hours','09:00 — 21:00'],['Emergency','24-hr standby']],
     meta:[['위치','1F — 1층'],['접근 등급','PUBLIC'],['운영 시간','09:00 — 21:00'],['긴급 시','24시간 대기']]
   },
   /* ── B1 ── */
@@ -1612,24 +1649,36 @@ const ROOMS = {
     img:'지하층 서버실.png', e:'🖥️', c:'#6fa3ff',
     path:'B1 · 지하층', title:'서버실', en:'SERVER ROOM',
     desc:'별빛쉘터의 모든 디지털 신호가 흘러드는 공간. 수십 개의 랙에 빼곡히 들어찬 서버들이 쉴 새 없이 작동하며 쉘터 전체 네트워크·데이터 저장·내부 통신 시스템을 유지합니다. 실내 온도는 항상 18°C 이하로 유지되며, 허가받은 기술 인력만 출입할 수 있습니다.',
+    enPath:'B1 · Basement', enTitle:'Server Room',
+    enDesc:'Where every digital signal of Starlight Shelter converges. Dozens of racks packed with servers run ceaselessly, maintaining the entire network, data storage, and internal communications. Temperature is kept at or below 18°C; only authorized technical personnel may enter.',
+    enMeta:[['Location','B1 — Basement'],['Access','RESTRICTED'],['Temp','≤ 18°C'],['Operation','24/7']],
     meta:[['위치','B1 — 지하층'],['접근 등급','RESTRICTED'],['온도 유지','≤ 18°C'],['운영','24/7 상시 가동']]
   },
   loopcore:{
     img:'지하층 루프코어.png', e:'⚡', c:'#00ccff',
     path:'B1 · 지하층', title:'루프 코어', en:'LOOP CORE',
     desc:'별빛쉘터가 존재할 수 있는 이유. 쉘터를 루프 상태로 유지시키는 핵심 장치가 이곳에 집약되어 있습니다. 육중한 장비들 사이로 미묘하게 맥동하는 에너지가 느껴지며, 이 공간에 대한 정보는 대부분 기밀로 분류됩니다. 오직 최고 권한 관리자만이 전체 시스템에 접근할 수 있습니다.',
+    enPath:'B1 · Basement', enTitle:'Loop Core',
+    enDesc:'The reason Starlight Shelter exists. The core device that keeps the shelter in a loop state is concentrated here. A subtly pulsing energy can be felt among the heavy equipment. Most information about this space is classified; only the highest-level administrators may access the full system.',
+    enMeta:[['Location','B1 — Basement'],['Access','CLASSIFIED'],['System','Loop maintenance device'],['Status','Active']],
     meta:[['위치','B1 — 지하층'],['접근 등급','CLASSIFIED'],['시스템','루프 유지 장치'],['상태','활성']]
   },
   power:{
     img:'지하층 발전실.png', e:'🔋', c:'#f87171',
     path:'B1 · 지하층', title:'발전실', en:'POWER GENERATION ROOM',
     desc:'쉘터 전역에 안정적인 전력을 공급하는 심장부. 주 발전 설비와 함께 정전 시 즉시 가동되는 비상 발전 시스템을 갖추고 있습니다. 72시간 이상의 자체 전력 비축이 가능하며, 예비 연료 탱크와 배터리 배열이 이중 안전망을 제공합니다.',
+    enPath:'B1 · Basement', enTitle:'Power Generation Room',
+    enDesc:'The core of stable power supply across the shelter. Alongside the main generation equipment, an emergency power system activates instantly during outages. Over 72 hours of autonomous power reserves are possible, with backup fuel tanks and battery arrays providing a dual safety net.',
+    enMeta:[['Location','B1 — Basement'],['Access','RESTRICTED'],['Emergency power','72+ hrs'],['Operation','Automated']],
     meta:[['위치','B1 — 지하층'],['접근 등급','RESTRICTED'],['비상 전력','72시간 이상'],['운영','자동화 관리']]
   },
   isolation:{
     img:'지하층 비상격리구역.png', e:'⚠️', c:'#ef4444',
     path:'B1 · 지하층', title:'비상 격리구역', en:'EMERGENCY ISOLATION ZONE',
     desc:'위기 상황 발생 시 활성화되는 특수 목적 구역. 외부와 완전히 차단된 환경을 형성할 수 있으며, 생화학·전자기 차폐 기능을 갖추고 있습니다. 평시에는 봉인 상태이며 내부 세부 사항은 공개되지 않습니다. 경보 레벨 3 이상 시 자동으로 봉쇄 프로토콜이 가동됩니다.',
+    enPath:'B1 · Basement', enTitle:'Emergency Isolation Zone',
+    enDesc:'A special-purpose zone activated during crisis situations. Can establish a completely sealed environment with biochemical and electromagnetic shielding. Remains sealed in peacetime; internal details are not disclosed. Lockdown protocols activate automatically at Alert Level 3 or above.',
+    enMeta:[['Location','B1 — Basement'],['Access','EMERGENCY ONLY'],['Shielding','CLASS A'],['Activation','Alert Level ≥ 3']],
     meta:[['위치','B1 — 지하층'],['접근 등급','EMERGENCY ONLY'],['차폐 등급','CLASS A'],['활성 조건','경보 레벨 ≥ 3']]
   },
   /* ── 2F ── */
@@ -1637,18 +1686,27 @@ const ROOMS = {
     img:'2층 개인 방.png', e:'🛏️', c:'#1fd4a0',
     path:'2F · 2층', title:'개인방 구역', en:'PERSONAL ROOM ZONE',
     desc:'입주자 한 명 한 명에게 배정된 개인 공간. 최소한의 가구와 조명으로 꾸며진 소박하지만 따뜻한 방들이 복도를 따라 늘어서 있습니다. 자신만의 물건으로 방을 꾸밀 수 있으며, 완전한 프라이버시가 보장됩니다.',
+    enPath:'2F · Residential', enTitle:'Personal Room Zone',
+    enDesc:'Individual spaces assigned to each resident. Simple yet warm rooms furnished with minimal furniture and lighting line the corridors. Residents may decorate with their own belongings; complete privacy is guaranteed.',
+    enMeta:[['Location','2F — Residential'],['Access','RESIDENT ONLY'],['Capacity','Single occupancy'],['Amenities','Bed · Desk · Storage']],
     meta:[['위치','2F — 2층'],['접근 등급','RESIDENT ONLY'],['수용 인원','1인실'],['편의시설','침대·책상·수납']]
   },
   kitchen:{
     img:'2층 공용주방.png', e:'🍳', c:'#1fd4a0',
     path:'2F · 2층', title:'공용 주방', en:'COMMUNAL KITCHEN',
     desc:'입주자들이 함께 음식을 만들고 나누는 공간. 넓은 조리대와 여러 대의 가스레인지·오븐·냉장고가 갖추어져 있으며, 개인 음식 보관 칸이 별도로 구분되어 있습니다. 가끔 자발적인 합동 식사 자리가 이 공간을 활기차게 만들기도 합니다.',
+    enPath:'2F · Residential', enTitle:'Communal Kitchen',
+    enDesc:'A space where residents cook and share meals together. Equipped with wide countertops, multiple stovetops, ovens, and refrigerators, with separate personal food storage sections. Occasional spontaneous communal dinners bring this space to life.',
+    enMeta:[['Location','2F — Residential'],['Access','RESIDENT'],['Hours','06:00 — 24:00'],['Capacity','8 simultaneous']],
     meta:[['위치','2F — 2층'],['접근 등급','RESIDENT'],['이용 시간','06:00 — 24:00'],['수용 인원','동시 8인']]
   },
   laundry:{
     img:null, e:'🧺', c:'#1fd4a0',
     path:'2F · 2층', title:'세탁실', en:'LAUNDRY ROOM',
     desc:'입주자 전용 세탁 공간. 드럼세탁기와 건조기가 다수 구비되어 있으며 세제는 공동 비치되어 있습니다. 세탁 예약 앱을 통해 기기 사용 현황을 미리 확인하고 예약할 수 있습니다.',
+    enPath:'2F · Residential', enTitle:'Laundry Room',
+    enDesc:'Residents-only laundry space. Multiple drum washers and dryers are available with shared detergent provided. A reservation app lets you check machine availability and book in advance.',
+    enMeta:[['Location','2F — Residential'],['Access','RESIDENT'],['Hours','07:00 — 23:00'],['Equipment','Multiple washers & dryers']],
     meta:[['위치','2F — 2층'],['접근 등급','RESIDENT'],['이용 시간','07:00 — 23:00'],['기기','세탁기·건조기 다수']]
   },
   /* ── 3F ── */
@@ -1656,30 +1714,45 @@ const ROOMS = {
     img:'3층 아카이브 룸.png', e:'🗄️', c:'#fbbf24',
     path:'3F · 3층', title:'아카이브 룸', en:'ARCHIVE ROOM',
     desc:'쉘터의 역사와 루프에 관련된 모든 기록이 보존되는 공간. 디지털 데이터베이스와 물리적 문서가 함께 보관되며, 체계적인 분류 시스템으로 필요한 정보를 빠르게 탐색할 수 있습니다. 일부 기록은 열람 등급에 따라 접근이 제한됩니다.',
+    enPath:'3F · Third Floor', enTitle:'Archive Room',
+    enDesc:'All records related to the shelter\'s history and loop are preserved here. Digital databases and physical documents are stored together; a systematic classification system allows quick retrieval. Some records are access-restricted by clearance level.',
+    enMeta:[['Location','3F — Third Floor'],['Access','STAFF+'],['Preservation','Digital & physical'],['Classification','Loop-based chronology']],
     meta:[['위치','3F — 3층'],['접근 등급','STAFF+'],['보존 방식','디지털·물리 병행'],['분류 체계','루프 기준 연대기']]
   },
   analysis:{
     img:'3층 분석실.png', e:'🔬', c:'#fbbf24',
     path:'3F · 3층', title:'분석실', en:'ANALYSIS ROOM',
     desc:'수집된 데이터를 면밀히 검토하고 패턴을 찾아내는 전문 공간. 고성능 분석 워크스테이션과 대형 디스플레이가 설치되어 있으며, 팀 단위 공동 분석 작업도 가능합니다. 각종 시뮬레이션 소프트웨어와 통계 도구가 구비되어 있습니다.',
+    enPath:'3F · Third Floor', enTitle:'Analysis Lab',
+    enDesc:'A specialist space for scrutinizing collected data and identifying patterns. High-performance analysis workstations and large displays are installed; team collaboration is supported. Simulation software and statistical tools are fully equipped.',
+    enMeta:[['Location','3F — Third Floor'],['Access','STAFF'],['Equipment','Analysis workstations'],['Use','Data & loop analysis']],
     meta:[['위치','3F — 3층'],['접근 등급','STAFF'],['장비','분석 워크스테이션'],['용도','데이터·루프 분석']]
   },
   reading:{
     img:'3층 열람실.png', e:'📖', c:'#fbbf24',
     path:'3F · 3층', title:'열람실', en:'READING ROOM',
     desc:'조용히 집중하고 싶을 때 찾는 공간. 아카이브 자료의 열람 및 개인 연구를 위한 독립 열람대가 마련되어 있으며, 낮은 조명과 방음 설계로 최적의 집중 환경을 제공합니다.',
+    enPath:'3F · Third Floor', enTitle:'Reading Room',
+    enDesc:'The space to seek when quiet focus is needed. Individual reading stations for browsing archive materials or personal research; low lighting and acoustic design provide an optimal concentration environment.',
+    enMeta:[['Location','3F — Third Floor'],['Access','RESIDENT+'],['Hours','08:00 — 24:00'],['Capacity','20 seats']],
     meta:[['위치','3F — 3층'],['접근 등급','RESIDENT+'],['운영 시간','08:00 — 24:00'],['정원','20석']]
   },
   conf3f:{
     img:'3층 회의실.png', e:'🗂️', c:'#f472b6',
     path:'3F · 3층', title:'회의실', en:'CONFERENCE ROOM — 3F',
     desc:'팀 단위 협업과 전략 논의를 위한 다목적 회의 공간. 대형 스크린과 화상 회의 시스템이 갖춰져 있어 원격 참석자와의 연결도 가능합니다. 화이트보드와 포스트잇이 벽면에 늘 준비되어 있어 아이디어를 자유롭게 펼칠 수 있습니다.',
+    enPath:'3F · Third Floor', enTitle:'Conference Room — 3F',
+    enDesc:'A multi-purpose meeting space for team collaboration and strategic discussion. A large screen and video conferencing system allow remote participation. Whiteboards and sticky notes are always ready on the walls for free-flowing ideas.',
+    enMeta:[['Location','3F — Third Floor'],['Access','STAFF'],['Capacity','Up to 12'],['Operation','Reservation only']],
     meta:[['위치','3F — 3층'],['접근 등급','STAFF'],['수용 인원','최대 12인'],['운영','예약제']]
   },
   monitor:{
     img:'3층 서버모니터링실.png', e:'📡', c:'#6fa3ff',
     path:'3F · 3층', title:'서버 모니터링실', en:'SERVER MONITORING CENTER',
     desc:'쉘터 전역의 상태를 실시간으로 감시하는 통합 관제 센터. 수십 개의 모니터가 각 구역의 CCTV 영상·시스템 상태·환경 데이터를 표시합니다. 이상 징후 감지 시 자동 경보 시스템이 가동되며, 당직 운영 인력이 상시 대기합니다.',
+    enPath:'3F · Third Floor', enTitle:'Server Monitoring Center',
+    enDesc:'An integrated control center for real-time surveillance of all shelter zones. Dozens of monitors display CCTV feeds, system statuses, and environmental data for each zone. Automated alarms trigger on anomaly detection; on-duty staff are always on standby.',
+    enMeta:[['Location','3F — Third Floor'],['Access','OPS STAFF'],['Operation','24-hr duty'],['Coverage','All shelter zones']],
     meta:[['위치','3F — 3층'],['접근 등급','OPS STAFF'],['운영','24시간 당직'],['커버리지','쉘터 전 구역']]
   },
   /* ── RF ── */
@@ -1687,24 +1760,36 @@ const ROOMS = {
     img:'RF 옥상정원.png', e:'🌿', c:'#a78bfa',
     path:'RF · 옥상층', title:'옥상 정원', en:'ROOFTOP GARDEN',
     desc:'콘크리트와 금속으로 이루어진 쉘터 속 작은 자연. 계절에 따라 변하는 식물들이 화분과 화단에 가득하며, 텃밭 구역에서는 쉘터 카페에 납품되는 허브도 재배됩니다. 바람이 좋은 날에는 많은 입주자가 이곳에서 산책하거나 책을 읽습니다.',
+    enPath:'RF · Rooftop', enTitle:'Rooftop Garden',
+    enDesc:'A small piece of nature within the concrete and metal shelter. Plants changing with the seasons fill pots and flower beds; herbs supplied to the shelter café are grown in the vegetable plot. On breezy days many residents stroll or read here.',
+    enMeta:[['Location','RF — Rooftop'],['Access','PUBLIC'],['Hours','Sunrise — Sunset'],['Features','Vegetable plot · Walking path']],
     meta:[['위치','RF — 옥상층'],['접근 등급','PUBLIC'],['운영 시간','일출 — 일몰'],['특징','텃밭·산책로']]
   },
   obs:{
     img:'RF 천체관측실.png', e:'🔭', c:'#a78bfa',
     path:'RF · 옥상층', title:'천체관측실', en:'ASTRONOMICAL OBSERVATORY',
     desc:'별빛쉘터라는 이름의 기원. 돔 형태의 관측실 안에는 고성능 망원경이 설치되어 있으며, 날씨가 맑은 밤이면 입주자들이 줄을 지어 별을 바라봅니다. 이 공간에서 별을 바라보는 일은 쉘터 생활의 작은 의식이 되었습니다.',
+    enPath:'RF · Rooftop', enTitle:'Astronomical Observatory',
+    enDesc:'The origin of the name Starlight Shelter. A high-performance telescope is installed inside the dome-shaped observatory; on clear nights residents queue to gaze at the stars. Looking at the night sky from this space has become a small ritual of shelter life.',
+    enMeta:[['Location','RF — Rooftop'],['Access','PUBLIC'],['Equipment','High-performance telescope'],['Hours','Nights (clear weather)']],
     meta:[['위치','RF — 옥상층'],['접근 등급','PUBLIC'],['장비','고성능 천체 망원경'],['운영','야간 (맑은 날)']]
   },
   lounge:{
     img:'RF 휴식라운지.png', e:'🛋️', c:'#a78bfa',
     path:'RF · 옥상층', title:'휴식 라운지', en:'REST LOUNGE',
     desc:'하늘을 천장 삼아 늘어지는 공간. 소파와 야외 의자가 배치된 개방형 라운지로, 낮에는 햇볕을 쬐고 밤에는 별빛 아래 담소를 나눌 수 있습니다. 간단한 음료 자판기가 구비되어 있으며, 날씨가 좋지 않은 날을 위한 반투명 차양막도 설치되어 있습니다.',
+    enPath:'RF · Rooftop', enTitle:'Rest Lounge',
+    enDesc:'A space to stretch out with the sky as your ceiling. An open-air lounge with sofas and outdoor chairs — sunbathe by day, chat under the stars by night. A drink vending machine is available, with a translucent canopy for overcast days.',
+    enMeta:[['Location','RF — Rooftop'],['Access','PUBLIC'],['Hours','24 hrs'],['Facilities','Outdoor sofas · Canopy']],
     meta:[['위치','RF — 옥상층'],['접근 등급','PUBLIC'],['운영 시간','24시간'],['시설','야외 소파·차양막']]
   },
   outdoor:{
     img:'RF 야외방송공간.png', e:'🎙️', c:'#fb923c',
     path:'RF · 옥상층', title:'야외 방송공간', en:'OUTDOOR BROADCAST STAGE',
     desc:'하늘을 배경으로 펼쳐지는 특별한 이벤트 공간. 소규모 공연·야외 방송·기념 행사 등이 이 공간에서 진행됩니다. 이동식 음향 장비와 조명 시설이 구비되어 있으며, 쉘터에서 가장 활기찬 밤을 만들어내는 무대입니다.',
+    enPath:'RF · Rooftop', enTitle:'Outdoor Broadcast Stage',
+    enDesc:'A special event space set against the open sky. Small performances, outdoor broadcasts, and commemorative events are held here. Equipped with mobile audio and lighting rigs — the stage that creates the most vibrant nights at the shelter.',
+    enMeta:[['Location','RF — Rooftop'],['Access','PUBLIC'],['Capacity','Small performances'],['Operation','Event reservation']],
     meta:[['위치','RF — 옥상층'],['접근 등급','PUBLIC'],['용량','소규모 공연'],['운영','이벤트 예약제']]
   },
 };
@@ -1716,6 +1801,11 @@ function openModal(id){
   const d=ROOMS[id]; if(!d) return;
   Audio.modalOpen(); Audio.click();
 
+  const _title=LANG==='en'?(d.enTitle||d.title):d.title;
+  const _path =LANG==='en'?(d.enPath ||d.path ):d.path;
+  const _desc =LANG==='en'?(d.enDesc ||d.desc ):d.desc;
+  const _meta =LANG==='en'?(d.enMeta ||d.meta ):d.meta;
+
   const imgEl=document.getElementById('m-img');
   const cvEl=document.getElementById('m-canvas');
   imgEl._ph=false; // allow fresh error handling for each room
@@ -1724,23 +1814,24 @@ function openModal(id){
     imgEl.style.display='none';
     cvEl.style.display='block';
     cvEl.width=760; cvEl.height=300;
-    _drawPH(cvEl.getContext('2d'),760,300,d.e,d.title,d.c||'#4d7cff');
+    _drawPH(cvEl.getContext('2d'),760,300,d.e,_title,d.c||'#4d7cff');
   }
 
   if(d.img){
     cvEl.style.display='none';
     imgEl.style.display='block';
-    imgEl.alt=d.title; imgEl.dataset.e=d.e; imgEl.dataset.l=d.title; imgEl.dataset.c=d.c||'#4d7cff';
+    imgEl.alt=_title; imgEl.dataset.e=d.e; imgEl.dataset.l=_title; imgEl.dataset.c=d.c||'#4d7cff';
     imgEl.onerror=showCanvas;
     imgEl.src=d.img;
   } else { showCanvas(); }
-
-  document.getElementById('m-path-em').textContent=d.path;
-  document.getElementById('m-title').textContent=d.title;
+  const pfx=document.getElementById('m-path-prefix');
+  if(pfx) pfx.textContent=LANG==='en'?'Starlight Shelter › ':'별빛쉘터 › ';
+  document.getElementById('m-path-em').textContent=_path;
+  document.getElementById('m-title').textContent=_title;
   document.getElementById('m-en').textContent=d.en;
-  document.getElementById('m-desc').textContent=d.desc;
+  document.getElementById('m-desc').textContent=_desc;
   document.getElementById('m-meta').innerHTML=
-    d.meta.map(([k,v])=>`<div class="mmc"><div class="mmk">${k}</div><div class="mmv">${v}</div></div>`).join('');
+    _meta.map(([k,v])=>`<div class="mmc"><div class="mmk">${k}</div><div class="mmv">${v}</div></div>`).join('');
 
   document.getElementById('mbdp').classList.add('open');
   document.body.style.overflow='hidden';
@@ -1757,6 +1848,7 @@ document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
 /* ── no-src images → placeholder ── */
 document.addEventListener('DOMContentLoaded',()=>{
   document.querySelectorAll('img[data-no-src]').forEach(img=>_replImg(img));
+  applyLang();
   // 게임을 지운 자 — SECRET-3 플래그 감지
   if(localStorage.getItem('byeolbit_gameRemoved')){
     const gameCard = document.querySelector('.lobby-card.c-green');

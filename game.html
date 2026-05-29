@@ -394,7 +394,7 @@ html,body{
 <!-- 검색 오버레이 -->
 <div id="search-overlay" class="hidden">
   <div id="search-box">
-    <div class="sr-header">🔍 인터넷 검색</div>
+    <div class="sr-header" id="sr-header-lbl">🔍 인터넷 검색</div>
     <div class="sr-bar" id="sr-query">검색 중...</div>
     <div class="sr-title" id="sr-title"></div>
     <div class="sr-body" id="sr-body"></div>
@@ -411,10 +411,11 @@ html,body{
     <span class="sb-sep">·</span>
     <span class="sb-name" id="sb-name">지혜피티</span>
     <div class="sb-hp-wrap">
-      <span class="sb-hp-label">정신력</span>
+      <span class="sb-hp-label" id="sb-sanity-lbl">정신력</span>
       <div class="hp-track" id="hp-track"></div>
     </div>
     <span class="sb-karma" id="sb-karma"></span>
+    <button class="sb-save" id="btn-lang" onclick="toggleLang()" title="언어 변경" style="font-family:var(--mono);font-size:10px;letter-spacing:.05em;">EN</button>
     <button class="sb-save" id="btn-save" onclick="saveGame()" title="저장">💾</button>
     <a href="index.html" class="sb-home" onclick="return confirmHome()" title="쉘터로 돌아가기">⌂</a>
   </div>
@@ -605,6 +606,27 @@ function _keepLoop_(d){ return d > 0 ? _keepLoop_(d-1) : void 0; }
  * 삭제하지 마세요.
  * ────────────────────────────────── */
 const __GAME__ = Object.freeze({title:'별빛쉘터', ver:'1.0'});
+
+/* ── 언어 / Language ── */
+const LANG=localStorage.getItem('starlight_lang')||'ko';
+function t(ko,en){return LANG==='en'?(en||ko):ko;}
+function toggleLang(){
+  localStorage.setItem('starlight_lang',LANG==='ko'?'en':'ko');
+  location.reload();
+}
+function applyGameLang(){
+  if(LANG!=='en') return;
+  const m={
+    'sb-sanity-lbl':'Sanity',
+    'sr-header-lbl':'🔍  Web Search',
+    'sr-confirm':'Store Data',
+    'btn-lang':'KO',
+  };
+  Object.entries(m).forEach(([id,txt])=>{
+    const el=document.getElementById(id);
+    if(el) el.textContent=txt;
+  });
+}
 
 const G={
   loop:1,name:'지혜피티',
@@ -822,7 +844,7 @@ function showEncBar(e){
     <div class="enc-bar">
       <span class="eb-name">${e.displayName}</span>
       <div class="eb-right">
-        <span style="font-size:10px;color:var(--dim)">불안정</span>
+        <span style="font-size:10px;color:var(--dim)">${t('불안정','Unstable')}</span>
         <div class="stab-track">
           <div class="stab-fill" id="stab-fill" style="width:${pct}%"></div>
         </div>
@@ -1730,9 +1752,12 @@ async function scene_enc_start(template,afterFn){
   } else {
     setPortrait(G.enemy.img||'','???','할루시네이션','hal');
   }
-  await type('— 조 우 —','system');
-  await type(G.enemy.displayName+'이/가 앞을 막아선다.','narrate');
-  await type('말이 통하지 않는다.\n텍스트를 텍스트로 이기려 하지 마.','narrate');
+  await type(t('— 조 우 —','— E N C O U N T E R —'),'system');
+  await type(LANG==='en'
+    ? G.enemy.displayName+' blocks your path.'
+    : G.enemy.displayName+'이/가 앞을 막아선다.','narrate');
+  await type(t('말이 통하지 않는다.\n텍스트를 텍스트로 이기려 하지 마.',
+    'Communication is impossible.\nDon\'t fight text with text.'),'narrate');
   show_enc_actions();
 }
 
@@ -1745,25 +1770,25 @@ function show_enc_actions(){
 
   if(multi){
     if(e.searchStage===0){
-      searchTxt='인터넷 검색';      searchLocked=false;
-      presentTxt='자료를 제시한다 🔒'; presentCls=''; presentLocked=true;
+      searchTxt=t('인터넷 검색','Search web');      searchLocked=false;
+      presentTxt=t('자료를 제시한다 🔒','Present evidence 🔒'); presentCls=''; presentLocked=true;
     } else if(e.searchStage===1){
-      searchTxt='더 깊이 검색한다';  searchLocked=false;
-      presentTxt='블로그 자료를 제시한다'; presentCls=''; presentLocked=false;
+      searchTxt=t('더 깊이 검색한다','Search deeper');  searchLocked=false;
+      presentTxt=t('블로그 자료를 제시한다','Present blog data'); presentCls=''; presentLocked=false;
     } else {
-      searchTxt='(검색 완료)';       searchLocked=true;
-      presentTxt='논문을 제시한다';  presentCls='';    presentLocked=false;
+      searchTxt=t('(검색 완료)','(Done)');       searchLocked=true;
+      presentTxt=t('논문을 제시한다','Present paper');  presentCls='';    presentLocked=false;
     }
   } else {
-    searchTxt='인터넷 검색';        searchLocked=false;
-    presentTxt='자료를 제시한다'+(e.searched?'':' 🔒');
+    searchTxt=t('인터넷 검색','Search web');        searchLocked=false;
+    presentTxt=t('자료를 제시한다','Present evidence')+(e.searched?'':' 🔒');
     presentCls='';  presentLocked=!e.searched;
   }
 
-  const trustLabel='AI의 말을 믿는다';
+  const trustLabel=t('AI의 말을 믿는다','Trust the AI');
   showChoices([
     {text:trustLabel, cls:'ch-warn', fn:enc_trust_ai},
-    {text:'직관을 믿는다', cls:'', fn:enc_intuition},
+    {text:t('직관을 믿는다','Trust instinct'), cls:'', fn:enc_intuition},
     {text:searchTxt, cls:'ch-safe', locked:searchLocked, fn:enc_search},
     {text:presentTxt, cls:presentCls, locked:presentLocked, fn:enc_present},
   ]);
@@ -1778,27 +1803,27 @@ async function enc_trust_ai(){
 
   if(e.argLines){
     const stage=e.argStage||0;
-    await type('...들었다.','narrate');
+    await type(t('...들었다.','...Heard it.'),'narrate');
     for(const l of e.argLines[stage]) await type(l,'system');
     e.argStage=stage+1;
-    await type('정신력  −15','damage');
+    await type(t('정신력  −15','Sanity  −15'),'damage');
     if(e.argStage<e.argLines.length){
-      await type('...말이 되는 것 같다.','narrate');
+      await type(t('...말이 되는 것 같다.','...It makes sense.'),'narrate');
       show_enc_actions();
     } else {
       G.trust+=2;
-      await type('...그래.\n전부 맞는 말이다.','narrate');
-      await type('서사에 완전히 휩쓸렸다.','narrate');
+      await type(t('...그래.\n전부 맞는 말이다.','...Right.\nAll of it makes sense.'),'narrate');
+      await type(t('서사에 완전히 휩쓸렸다.','Swept away by the narrative.'),'narrate');
       BattleBGM.stop();
       await G.afterFn('trust');
     }
   } else {
     G.trust+=2;
     const line=e.aiWords[Math.floor(Math.random()*e.aiWords.length)];
-    await type('AI의 말을 믿었다.','narrate');
+    await type(t('AI의 말을 믿었다.','Trusted the AI\'s words.'),'narrate');
     await type('"'+line+'"','system');
-    await type('서사에 완전히 휩쓸렸다.','narrate');
-    await type('정신력  −15','damage');
+    await type(t('서사에 완전히 휩쓸렸다.','Swept away by the narrative.'),'narrate');
+    await type(t('정신력  −15','Sanity  −15'),'damage');
     BattleBGM.stop();
     await G.afterFn('trust');
   }
@@ -1814,7 +1839,7 @@ async function enc_intuition(){
     flash('green');
     updateEncBar(e);
     await type(e.intuHit[Math.floor(Math.random()*e.intuHit.length)],'narrate');
-    await type('직감이 맞았다.  (−'+dmg+')','system');
+    await type(t('직감이 맞았다.  (−','Instinct landed.  (−')+dmg+')','system');
     if(e.stability<=0){await scene_disperse(false);return;}
   } else {
     const up=8+Math.floor(Math.random()*10);
@@ -1822,7 +1847,7 @@ async function enc_intuition(){
     flash('red');
     updateEncBar(e);
     await type(e.intuMiss[Math.floor(Math.random()*e.intuMiss.length)],'narrate');
-    await type('직감이 빗나갔다.  (+'+up+')','system');
+    await type(t('직감이 빗나갔다.  (+','Instinct missed.  (+')+up+')','system');
   }
   show_enc_actions();
 }
@@ -1832,23 +1857,23 @@ async function enc_search(){
   const multi=e.searchStage!==undefined;
   if(multi){
     if(e.searchStage===0){
-      await type('검색창을 열었다.','narrate');
+      await type(t('검색창을 열었다.','Opened search.'),'narrate');
       await showSearch(e.search1);
       e.searchStage=1;
-      await type('자료를 저장했다.','system');
-      await type('...근데 이게 맞는 자료인가?','narrate');
+      await type(t('자료를 저장했다.','Data stored.'),'system');
+      await type(t('...근데 이게 맞는 자료인가?','...Is this the right source?'),'narrate');
     } else if(e.searchStage===1){
-      await type('더 깊이 파고들었다.','narrate');
+      await type(t('더 깊이 파고들었다.','Dug deeper.'),'narrate');
       await showSearch(e.search2);
       e.searchStage=2;
-      await type('논문을 찾았다.','system');
+      await type(t('논문을 찾았다.','Found a paper.'),'system');
     }
   } else {
-    await type('검색창을 열었다.','narrate');
+    await type(t('검색창을 열었다.','Opened search.'),'narrate');
     await showSearch(e.search);
     e.searched=true;
-    await type('자료를 저장했다.','system');
-    await type('이제 제시할 수 있다.','system');
+    await type(t('자료를 저장했다.','Data stored.'),'system');
+    await type(t('이제 제시할 수 있다.','Can present now.'),'system');
   }
   show_enc_actions();
 }
@@ -1864,7 +1889,7 @@ async function enc_present(){
       const up=18+Math.floor(Math.random()*15);
       e.stability=Math.min(100,e.stability+up);
       updateEncBar(e);
-      await type('오히려 강해졌다.  (+'+up+')','system');
+      await type(t('오히려 강해졌다.  (+','It only grew stronger.  (+')+up+')','system');
       show_enc_actions();
     } else if(e.searchStage===2){
       // 논문 → 해소
@@ -1895,15 +1920,15 @@ async function scene_disperse(unlocked){
     // 서사 해금
     await type(G.enemy.dataUnlock,'system');
     showChoices([
-      {text:'기록한다',        cls:'ch-good',   fn:()=>{G.karma+=2;G.afterFn('record');}},
-      {text:'그냥 보낸다',     cls:'',          fn:()=>G.afterFn('release')},
-      {text:'없던 일로 한다',  cls:'ch-warn',   fn:()=>{G.karma-=1;G.afterFn('ignore');}},
+      {text:t('기록한다','Record it'),        cls:'ch-good',   fn:()=>{G.karma+=2;G.afterFn('record');}},
+      {text:t('그냥 보낸다','Let it go'),     cls:'',          fn:()=>G.afterFn('release')},
+      {text:t('없던 일로 한다','Forget it'),  cls:'ch-warn',   fn:()=>{G.karma-=1;G.afterFn('ignore');}},
     ]);
   } else {
-    await type('형체가 사라졌다.\n아무것도 남지 않았다.','narrate');
+    await type(t('형체가 사라졌다.\n아무것도 남지 않았다.','The form vanished.\nNothing remained.'),'narrate');
     showChoices([
-      {text:'(저건 뭐였을까...)',    cls:'',  fn:()=>{G.karma+=1;G.afterFn('wonder');}},
-      {text:'(신경 쓰지 않는다)',    cls:'',  fn:()=>G.afterFn('ignore')},
+      {text:t('(저건 뭐였을까...)','(What was that...?)'),    cls:'',  fn:()=>{G.karma+=1;G.afterFn('wonder');}},
+      {text:t('(신경 쓰지 않는다)','(Don\'t think about it)'),    cls:'',  fn:()=>G.afterFn('ignore')},
     ]);
   }
 }
@@ -3651,9 +3676,9 @@ async function scene_game_over(){
   await type('G A M E   O V E R','system',80);
   await type('─────────────────────','system');
   await sleep(600);
-  await type('정신력이 다했다.','narrate');
+  await type(t('정신력이 다했다.','Your sanity has run out.'),'narrate');
   await sleep(400);
-  await type('이 공간이 너를 삼켰다.','narrate');
+  await type(t('이 공간이 너를 삼켰다.','This place has consumed you.'),'narrate');
   await sleep(800);
   showGameOverSlots();
 }
@@ -3723,20 +3748,24 @@ function applyAndLoadSave(slot){
 }
 
 function confirmHome(){
-  return confirm('쉘터로 돌아가면 저장하지 않은 진행이 사라져요.\n먼저 💾 버튼으로 저장하세요.');
+  return confirm(t(
+    '쉘터로 돌아가면 저장하지 않은 진행이 사라져요.\n먼저 💾 버튼으로 저장하세요.',
+    'Returning to the shelter will lose unsaved progress.\nSave first with the 💾 button.'
+  ));
 }
 
 function slotLabel(slot){
   const d=getSaveData(slot);
-  if(!d) return `슬롯 ${slot+1}  — EMPTY —`;
-  const date=new Date(d.savedAt).toLocaleDateString('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});
-  return `슬롯 ${slot+1}  LOOP ${d.loop} · ${d.name||'?'}  ${date}`;
+  if(!d) return t(`슬롯 ${slot+1}  — EMPTY —`,`Slot ${slot+1}  — EMPTY —`);
+  const locale=LANG==='en'?'en-US':'ko-KR';
+  const date=new Date(d.savedAt).toLocaleDateString(locale,{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  return t(`슬롯 ${slot+1}`,`Slot ${slot+1}`)+`  LOOP ${d.loop} · ${d.name||'?'}  ${date}`;
 }
 
 function showSavePrompt(){
   setPortrait(null); clearChoices();
   (async()=>{
-    await type('저장 슬롯을 선택하세요.','system');
+    await type(t('저장 슬롯을 선택하세요.','Select a save slot.'),'system');
     showChoices(SAVE_KEYS.map((_,i)=>({
       text: slotLabel(i),
       fn: getSaveData(i)
@@ -3748,14 +3777,14 @@ function showSavePrompt(){
 
 function showGameOverSlots(){
   (async()=>{
-    await type('저장 슬롯에서 불러오거나\n처음부터 시작하세요.','system');
+    await type(t('저장 슬롯에서 불러오거나\n처음부터 시작하세요.','Load from a save slot or\nstart fresh.'),'system');
     const choices=SAVE_KEYS.map((_,i)=>({
       text: slotLabel(i),
       fn: getSaveData(i)
         ? ()=>{ clearChoices(); applyAndLoadSave(i); }
         : ()=>{ G.saveSlot=i; clearChoices(); scene_awaken(); },
     }));
-    choices.push({text:'처음부터 (슬롯 초기화)', cls:'ch-danger',
+    choices.push({text:t('처음부터 (슬롯 초기화)','New Game (Reset slots)'), cls:'ch-danger',
       fn:()=>{ deleteSave(); G.saveSlot=0; clearChoices(); scene_awaken(); }});
     showChoices(choices);
   })();
@@ -3765,6 +3794,7 @@ function showGameOverSlots(){
    INIT
 ══════════════════════════════════ */
 updateStatus();
+applyGameLang();
 showSavePrompt();
 </script>
 </body>
