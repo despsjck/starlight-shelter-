@@ -1066,11 +1066,11 @@
   </div>
 
   <!-- 오늘의 타로 -->
-  <div id="tarot-widget" onclick="openTarotLb(document.getElementById('tarot-img').src)" style="cursor:pointer;">
+  <div id="tarot-widget" onclick="openTarotLb()" style="cursor:pointer;">
     <div class="tarot-badge">✦  오늘의 카드</div>
     <div class="tarot-body">
       <div class="tarot-img-wrap">
-        <img id="tarot-img" src="" alt="오늘의 타로 카드" onclick="openTarotLb(this.src)">
+        <img id="tarot-img" src="" alt="오늘의 타로 카드">
         <script>
         (function(){
           var files=['hierophant','hermit','sun','star','chariot','fool','tower','empress',
@@ -2130,9 +2130,9 @@ function _initTarot(){
   // t-reveal은 enterLobby에서 호출됨
 }
 
-function openTarotLb(src){
+function openTarotLb(){
   const c=_tarotToday(), en=LANG==='en';
-  document.getElementById('tarot-lb-img').src=src;
+  document.getElementById('tarot-lb-img').src='tarot/'+c.f;
   document.getElementById('tlb-char').textContent=en?c.cEn:c.c;
   document.getElementById('tlb-name').textContent=en?c.nEn:c.n;
   document.getElementById('tlb-en').textContent=c.nEn;
