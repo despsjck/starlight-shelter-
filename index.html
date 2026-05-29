@@ -835,9 +835,42 @@
       border-radius:8px; overflow:hidden;
       box-shadow:0 4px 20px rgba(139,92,246,.4), 0 0 0 1px rgba(139,92,246,.2);
     }
+    .tarot-img-wrap {
+      cursor:pointer;
+    }
     .tarot-img-wrap img {
       width:100%; height:100%; object-fit:cover;
+      transition:transform .2s;
     }
+    .tarot-img-wrap:hover img { transform:scale(1.04); }
+
+    /* 타로 라이트박스 */
+    #tarot-lb {
+      display:none; position:fixed; inset:0; z-index:9000;
+      background:rgba(2,1,14,.88); backdrop-filter:blur(12px);
+      align-items:center; justify-content:center;
+      cursor:pointer;
+      animation:fdIn .22s ease;
+    }
+    #tarot-lb.open { display:flex; }
+    #tarot-lb img {
+      max-height:88vh; max-width:88vw;
+      border-radius:14px;
+      box-shadow:0 0 60px rgba(139,92,246,.5), 0 0 0 1px rgba(139,92,246,.3);
+      cursor:default;
+      animation:lbIn .3s cubic-bezier(.22,.8,.4,1);
+    }
+    @keyframes lbIn {
+      from{ opacity:0; transform:scale(.88); }
+      to  { opacity:1; transform:scale(1); }
+    }
+    #tarot-lb-close {
+      position:absolute; top:1.2rem; right:1.4rem;
+      background:none; border:none; color:rgba(196,204,238,.5);
+      font-size:1.6rem; cursor:pointer; line-height:1;
+      transition:color .15s;
+    }
+    #tarot-lb-close:hover { color:#fff; }
     .tarot-info { flex:1; min-width:0; }
     .tarot-char-lbl {
       font-family:var(--mono); font-size:.56rem;
@@ -1000,7 +1033,7 @@
     <div class="tarot-badge">✦  오늘의 카드</div>
     <div class="tarot-body">
       <div class="tarot-img-wrap">
-        <img id="tarot-img" src="" alt="오늘의 타로 카드">
+        <img id="tarot-img" src="" alt="오늘의 타로 카드" onclick="openTarotLb(this.src)">
       </div>
       <div class="tarot-info">
         <div class="tarot-char-lbl" id="tarot-char"></div>
@@ -1516,6 +1549,12 @@
   </div><!-- /content -->
 </div><!-- /app -->
 
+<!-- 타로 라이트박스 -->
+<div id="tarot-lb" onclick="closeTarotLb()">
+  <button id="tarot-lb-close" onclick="closeTarotLb()">✕</button>
+  <img id="tarot-lb-img" src="" alt="" onclick="event.stopPropagation()">
+</div>
+
 <!-- ══ MODAL ══ -->
 <div id="mbdp" onclick="closeOnBdp(event)">
   <div id="modal">
@@ -1968,6 +2007,17 @@ function _initTarot(){
   if(en){ const el=document.getElementById('tarot-card-en'); if(el) el.style.display='none'; }
   // t-reveal은 enterLobby에서 호출됨
 }
+
+function openTarotLb(src){
+  document.getElementById('tarot-lb-img').src=src;
+  document.getElementById('tarot-lb').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeTarotLb(){
+  document.getElementById('tarot-lb').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeTarotLb(); });
 
 document.addEventListener('DOMContentLoaded',()=>{
   document.querySelectorAll('img[data-no-src]').forEach(img=>_replImg(img));
