@@ -397,21 +397,30 @@
   </div>
 </div>
 
-<!-- 방문자 수 고정 배지 (우하단) -->
-<div style="
+<!-- 방문자 수 고정 위젯 (우하단) -->
+<div id="vc-widget" style="
   position:fixed; bottom:1.2rem; right:1.2rem; z-index:999;
-  opacity:.45; transition:opacity .2s;
-" onmouseover="this.style.opacity='.9'" onmouseout="this.style.opacity='.45'">
-  <img id="vcbadge"
-       src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fdespsjck.github.io%2Fstarlight-shelter-%2F&count_bg=%2319c37d&title_bg=%230d1020&icon=&title=TODAY+%7C+TOTAL&edge_flat=true"
-       alt="방문자 수" style="height:18px;border-radius:3px;display:block;"
-       onerror="
-         var t=this._t=(this._t||0)+1;
-         if(t===1) this.src='https://visitor-badge.laobi.icu/badge?page_id=DESPSJCK.starlight-shelter-&left_color=0d1020&right_color=19c37d&left_text=visitors';
-         else if(t===2) this.src='https://hits.sh/despsjck.github.io/starlight-shelter-.svg';
-         else this.style.display='none';
-       ">
+  font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.06em;
+  color:rgba(196,204,238,.42); text-align:right; line-height:1.8;
+  transition:color .2s; cursor:default;
+" onmouseover="this.style.color='rgba(196,204,238,.85)'" onmouseout="this.style.color='rgba(196,204,238,.42)'">
+  <div>TODAY &nbsp;<span id="vc-today" style="color:#19c37d;min-width:2ch;display:inline-block;">…</span></div>
+  <div>TOTAL &nbsp;<span id="vc-total" style="color:#19c37d;min-width:2ch;display:inline-block;">…</span></div>
 </div>
+<script>
+(function(){
+  const today=new Date().toISOString().slice(0,10);
+  function fmt(n){ return typeof n==='number'?n.toLocaleString():'—'; }
+  function hit(key,elId){
+    fetch('https://api.counterapi.dev/v1/byeolbit-shelter/'+key+'/up')
+      .then(r=>r.json())
+      .then(d=>{ document.getElementById(elId).textContent=fmt(d.count??d.value??null); })
+      .catch(()=>{ document.getElementById(elId).textContent='—'; });
+  }
+  hit('total','vc-total');
+  hit('day-'+today,'vc-today');
+})();
+</script>
 
 <script>
 /* ── 별 ── */
