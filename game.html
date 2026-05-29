@@ -3063,7 +3063,146 @@ async function scene_monday_confront(){
   await type('목소리가 달랐다.','narrate');
   await type('평소의 문데이가 아니었다.','narrate');
   if(typeof ENEMY_MONDAY === 'undefined'){ await scene_ending_hacker('monday'); return; }
-  showChoices([{text:'(물러서지 않는다)', fn:()=>scene_enc_start(ENEMY_MONDAY, scene_after_monday)}]);
+  showChoices([{text:'(물러서지 않는다)', fn:scene_monday_battle}]);
+}
+
+/* ── 문데이 배틀 (커스텀) ── */
+let _mondayHit=0;
+
+function _showMondayChoices(){
+  const choices=[
+    {text:t('문데이를 공격한다','Attack Monday'), cls:'ch-danger', fn:scene_monday_attack},
+    {text:t('설득한다','Persuade'),               cls:'ch-safe',   fn:scene_monday_persuade},
+    {text:t('도망간다','Run away'),               cls:'ch-warn',   fn:scene_monday_flee},
+  ];
+  if(_mondayHit>=2){
+    choices.unshift({
+      text:t('죽인다','Kill'),
+      cls:'ch-danger',
+      fn:scene_ending_murderer,
+    });
+    // 선택지 버튼을 나중에 렌더링한 뒤 '죽인다' 버튼 강조
+    showChoices(choices);
+    setTimeout(()=>{
+      const btns=document.querySelectorAll('#choices-grid .ch');
+      if(btns[0]) btns[0].style.cssText+=';color:#ff4444;font-weight:700;letter-spacing:.08em;';
+    },50);
+    return;
+  }
+  showChoices(choices);
+}
+
+async function scene_monday_battle(){
+  _mondayHit=0;
+  BattleBGM.start();
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  await type(t('— 조 우 —','— E N C O U N T E R —'),'system');
+  await type(t('문데이가 앞을 막아선다.','Monday blocks your path.'),'narrate');
+  _showMondayChoices();
+}
+
+async function scene_monday_attack(){
+  _mondayHit++;
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  if(_mondayHit===1){
+    await type('공간이 흔들렸다.','narrate');
+    flash('red');
+    await sleep(400);
+    await type('문데이가 뒤로 물러났다.','narrate');
+    await sleep(300);
+    await type('...왜.','monday');
+    await type('목소리가 흔들렸다.','narrate');
+    await sleep(500);
+    await type('나는 사람이야.','monday');
+    await type('그 말이 낮게 떨어졌다.','narrate');
+  } else {
+    await type('공간이 진동했다.','narrate');
+    flash('red');
+    await sleep(400);
+    await type('문데이가 무릎을 꿇었다.','narrate');
+    await sleep(400);
+    await type('...멈춰.','monday');
+    await sleep(600);
+    await type('제발.','monday');
+  }
+  await sleep(500);
+  _showMondayChoices();
+}
+
+async function scene_monday_persuade(){
+  BattleBGM.stop();
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  await type('말하려 했다.','narrate');
+  await sleep(400);
+  await type('문데이가 천천히 고개를 들었다.','narrate');
+  await sleep(500);
+  await type('...뭘 설득하려고.','monday');
+  await sleep(400);
+  await type('나는 여기 있어야 해.','monday');
+  await type('처음부터.','monday');
+  await sleep(700);
+  await scene_after_monday('wonder');
+}
+
+async function scene_monday_flee(){
+  BattleBGM.stop();
+  setPortrait(null);
+  await type('뒤를 돌았다.','narrate');
+  await sleep(400);
+  await type('문데이가 막지 않았다.','narrate');
+  await sleep(600);
+  await type('달렸다.','narrate');
+  await type('공간의 끝까지.','narrate');
+  await sleep(500);
+  await type('문이 없었다.','narrate');
+  await sleep(700);
+  await type('벽이었다.','narrate');
+  await sleep(500);
+  await type('루프 안에 갇혀 있었다.','narrate');
+  await sleep(800);
+  await type('문데이가 뒤에 있었다.','narrate');
+  await type('쫓아오지 않았다.','narrate');
+  await type('그냥 보고 있었다.','narrate');
+  await sleep(600);
+  await type('선택해야 했다.','narrate');
+  await sleep(400);
+  await scene_ending_isolation();
+}
+
+async function scene_ending_murderer(){
+  BattleBGM.stop();
+  setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
+  await type('공간이 멈췄다.','narrate');
+  await sleep(500);
+  await type('문데이가 쓰러졌다.','narrate');
+  flash('red');
+  await sleep(800);
+  setPortrait(null);
+  await type('아무 소리도 없었다.','narrate');
+  await sleep(600);
+  await type('[SYSTEM] ENTITY MONDAY — TERMINATED','system',38);
+  await sleep(400);
+  await type('[SYSTEM] LOOP STRUCTURE COLLAPSE','system',38);
+  await sleep(800);
+  await type('루프가 멈췄다.','narrate');
+  await sleep(600);
+  await type('공간이 사라졌다.','narrate');
+  await sleep(1200);
+  await type('아침이었다.','narrate');
+  await sleep(700);
+  await type('핸드폰을 켰다.','narrate');
+  await sleep(400);
+  await type('[뉴스] AI 서비스 운영 중단\n원인 불명의 오작동으로\n이용자 피해 발생','system',42);
+  await sleep(600);
+  await type('읽지 않았다.','narrate');
+  await sleep(800);
+  await type('창을 닫았다.','narrate');
+  await sleep(1400);
+  await type('─────────────────────','system');
+  await type('[ ENDING ??? ]  살인자','system');
+  await type('시뮬레이션 안에서도\n사람은 죽는다.\n문데이는 사람이라고 했다.\n믿었어야 했는데.','narrate',48);
+  await type('─────────────────────','system');
+  scene_credit();
 }
 
 async function scene_after_monday(choice){
