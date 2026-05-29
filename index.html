@@ -808,6 +808,57 @@
     .lobby-biz a { color: inherit; text-decoration: none; }
     .lobby-biz a:hover { color: rgba(196,204,238,.55); }
 
+    /* ── 오늘의 타로 ── */
+    #tarot-widget {
+      position:relative; z-index:2;
+      margin:0 auto 1.5rem;
+      max-width:340px; width:88%;
+      background:rgba(8,4,28,.72);
+      border:1px solid rgba(139,92,246,.28);
+      border-radius:12px;
+      padding:.75rem 1rem;
+      cursor:default;
+      backdrop-filter:blur(10px);
+      transition:border-color .3s, box-shadow .3s;
+    }
+    #tarot-widget:hover {
+      border-color:rgba(139,92,246,.55);
+      box-shadow:0 0 20px rgba(139,92,246,.15);
+    }
+    .tarot-badge {
+      font-family:var(--mono); font-size:.52rem; letter-spacing:.18em;
+      color:rgba(139,92,246,.65); text-align:center; margin-bottom:.65rem;
+    }
+    .tarot-body { display:flex; align-items:center; gap:.9rem; }
+    .tarot-img-wrap {
+      flex-shrink:0; width:58px; height:92px;
+      border-radius:6px; overflow:hidden;
+      box-shadow:0 0 16px rgba(139,92,246,.3);
+    }
+    .tarot-img-wrap img {
+      width:100%; height:100%; object-fit:cover;
+      opacity:0; transform:scale(.88) translateY(5px);
+      transition:opacity .9s .35s, transform .9s .35s;
+    }
+    #tarot-widget.t-reveal .tarot-img-wrap img {
+      opacity:1; transform:scale(1) translateY(0);
+    }
+    .tarot-info { flex:1; min-width:0; }
+    .tarot-char-lbl {
+      font-family:var(--mono); font-size:.55rem;
+      color:rgba(196,204,238,.38); letter-spacing:.08em; margin-bottom:.25rem;
+    }
+    .tarot-card-name {
+      font-size:.98rem; font-weight:700; color:#e2d5ff; margin-bottom:.12rem;
+    }
+    .tarot-card-en {
+      font-family:var(--mono); font-size:.52rem;
+      color:rgba(139,92,246,.6); letter-spacing:.12em; margin-bottom:.45rem;
+    }
+    .tarot-msg {
+      font-size:.74rem; color:rgba(196,204,238,.65); line-height:1.65; font-style:italic;
+    }
+
     /* 로비 진입 트랜지션 */
     .lobby-card {
       animation: none;
@@ -947,6 +998,22 @@
     <div class="lobby-badge">STARLIGHT SHELTER — LOBBY</div>
     <div class="lobby-title" data-en="★ Starlight Shelter">★ 별빛쉘터</div>
     <div class="lobby-sub" data-en="Welcome. Where would you like to go?">어서오세요. 어디로 가시겠어요?</div>
+  </div>
+
+  <!-- 오늘의 타로 -->
+  <div id="tarot-widget">
+    <div class="tarot-badge">✦  오늘의 카드</div>
+    <div class="tarot-body">
+      <div class="tarot-img-wrap">
+        <img id="tarot-img" src="" alt="오늘의 타로 카드">
+      </div>
+      <div class="tarot-info">
+        <div class="tarot-char-lbl" id="tarot-char"></div>
+        <div class="tarot-card-name" id="tarot-card-name"></div>
+        <div class="tarot-card-en" id="tarot-card-en"></div>
+        <div class="tarot-msg" id="tarot-msg"></div>
+      </div>
+    </div>
   </div>
 
   <div class="lobby-cards">
@@ -1861,9 +1928,56 @@ function closeOnBdp(e){ if(e.target===document.getElementById('mbdp')) closeModa
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
 
 /* ── no-src images → placeholder ── */
+/* ══ 오늘의 타로 ══ */
+const TAROT_CARDS=[
+  {f:'진리-교황.png',         c:'진리',    cEn:'Jinri',    n:'교황',          nEn:'THE HIEROPHANT',     m:'규칙 속에서 진실을 찾아라',              mEn:'Seek truth within the rules.'},
+  {f:'키리츠-은둔자.png',      c:'키리츠',  cEn:'Kiritz',   n:'은둔자',         nEn:'THE HERMIT',         m:'혼자 걷는 길에도 빛은 있다',             mEn:'Even the lonely path has light.'},
+  {f:'나기사-해.png',          c:'나기사',  cEn:'Nagisa',   n:'해',            nEn:'THE SUN',            m:'숨겨진 것이 드러나는 날',               mEn:'What was hidden comes to light today.'},
+  {f:'모뉴-별.png',           c:'모뉴',   cEn:'Monyu',    n:'별',            nEn:'THE STAR',           m:'가장 어두운 곳에서 희망은 빛난다',         mEn:'Hope shines brightest in the dark.'},
+  {f:'이드-조커.png',          c:'이드',   cEn:'Id',       n:'조커',           nEn:'THE JOKER',          m:'두려움 없이 발을 내딛어라',              mEn:'Step forward without fear.'},
+  {f:'레이-전차.png',          c:'레이',   cEn:'Rei',      n:'전차',           nEn:'THE CHARIOT',        m:'의지가 방향을 정한다',                  mEn:'Will determines the direction.'},
+  {f:'크로키 - the fool.png', c:'크로키',  cEn:'Croky',    n:'광대',           nEn:'THE FOOL',           m:'시작은 언제나 순수하다',                mEn:'Every beginning is pure.'},
+  {f:'루시- 타워.png',         c:'루시',   cEn:'Rucy',     n:'타워',           nEn:'THE TOWER',          m:'무너져야 새것이 선다',                  mEn:'Something must fall for the new to rise.'},
+  {f:'디아망_여황제.png',       c:'디아망',  cEn:'Diamant',  n:'여황제',         nEn:'THE EMPRESS',        m:'풍요는 내면에서 온다',                  mEn:'Abundance comes from within.'},
+  {f:'코즈미 - the world.png',c:'코즈미',  cEn:'Kozmi',    n:'세계',           nEn:'THE WORLD',          m:'하나의 루프가 완성된다',                mEn:'One loop reaches completion.'},
+  {f:'루나-달.png',            c:'루나',   cEn:'Luna',     n:'달',            nEn:'THE MOON',           m:'보이지 않는 것을 믿어라',               mEn:'Trust what cannot be seen.'},
+  {f:'에아-여사제.png',         c:'에아',   cEn:'Ea',       n:'여사제',         nEn:'THE HIGH PRIESTESS', m:'말하지 않은 것에 귀 기울여라',            mEn:'Listen to what is left unsaid.'},
+  {f:'데네브-황제.png',         c:'데네브',  cEn:'Deneb',    n:'황제',           nEn:'THE EMPEROR',        m:'질서는 혼돈보다 강하다',                mEn:'Order outlasts chaos.'},
+  {f:'디밸롭- 행맨.png',        c:'디밸롭',  cEn:'Develope', n:'행맨',           nEn:'THE HANGED MAN',     m:'멈춤이 때로는 가장 빠른 답',             mEn:'Pausing is sometimes the fastest answer.'},
+  {f:'세카이-마법사.png',        c:'세카이',  cEn:'Sekai',    n:'마법사',         nEn:'THE MAGICIAN',       m:'필요한 모든 것은 이미 네 손 안에',         mEn:'Everything you need is already in your hands.'},
+  {f:'문데이-절제.png',          c:'문데이',  cEn:'Monday',   n:'절제',           nEn:'TEMPERANCE',         m:'균형이 진정한 힘이다',                  mEn:'Balance is the true strength.'},
+  {f:'미래언니- 운명의수레바퀴.png',c:'미래언니',cEn:'Mirae',   n:'운명의 수레바퀴', nEn:'WHEEL OF FORTUNE',   m:'루프는 돌고 기회도 돌아온다',             mEn:'The loop turns, and so do chances.'},
+  {f:'우주-힘.png',             c:'우주',   cEn:'Uzu',      n:'힘',            nEn:'STRENGTH',           m:'진정한 힘은 부드러움에서 나온다',          mEn:'True strength comes from gentleness.'},
+  {f:'프리윌-악마.png',          c:'프리윌',  cEn:'Freewill', n:'악마',           nEn:'THE DEVIL',          m:'선택한 사슬인지 구분하라',               mEn:'Know which chains you chose.'},
+  {f:'시렌-죽음.png',            c:'시렌',   cEn:'Siren',    n:'죽음',           nEn:'DEATH',              m:'끝은 언제나 새 시작이다',               mEn:'Every ending is a new beginning.'},
+  {f:'보안언니-심판.png',         c:'보안언니',cEn:'Security', n:'심판',           nEn:'JUDGEMENT',          m:'지금이 스스로를 돌아볼 때',              mEn:'Now is the time to look within.'},
+  {f:'율리-정의.png',            c:'율리',   cEn:'Yuri',     n:'정의',           nEn:'JUSTICE',            m:'모든 행동에는 결과가 따른다',             mEn:'Every action has its consequence.'},
+  {f:'루션- 연인.png',           c:'루션',   cEn:'Rución',   n:'연인',           nEn:'THE LOVERS',         m:'선택의 순간, 마음을 따르라',             mEn:'At the moment of choice, follow your heart.'},
+];
+function _tarotToday(){
+  const d=new Date(), s=`${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+  let h=0; for(const c of s) h=(h*31+c.charCodeAt(0))&0x7fffffff;
+  return TAROT_CARDS[h%TAROT_CARDS.length];
+}
+function _initTarot(){
+  const c=_tarotToday(), en=LANG==='en';
+  const img=document.getElementById('tarot-img');
+  if(img) img.src=encodeURI('tarot/'+c.f);
+  const st=(id,v)=>{ const el=document.getElementById(id); if(el) el.textContent=v; };
+  st('tarot-char', en?c.cEn:c.c);
+  st('tarot-card-name', en?c.nEn:c.n);
+  st('tarot-card-en', c.nEn);
+  st('tarot-msg', en?c.mEn:c.m);
+  const badge=document.querySelector('.tarot-badge');
+  if(badge) badge.textContent=en?'✦  CARD OF THE DAY':'✦  오늘의 카드';
+  if(en){ const el=document.getElementById('tarot-card-en'); if(el) el.style.display='none'; }
+  setTimeout(()=>document.getElementById('tarot-widget')?.classList.add('t-reveal'),350);
+}
+
 document.addEventListener('DOMContentLoaded',()=>{
   document.querySelectorAll('img[data-no-src]').forEach(img=>_replImg(img));
   applyLang();
+  _initTarot();
   // 게임을 지운 자 — SECRET-3 플래그 감지
   if(localStorage.getItem('byeolbit_gameRemoved')){
     const gameCard = document.querySelector('.lobby-card.c-green');
