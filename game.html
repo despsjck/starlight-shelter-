@@ -385,6 +385,52 @@ html,body{
 .fl-green{background:rgba(25,195,125,.13);}
 
 .hidden{display:none!important;}
+
+/* ── 업적 팝업 ── */
+#ach-popup{
+  position:fixed;top:-72px;left:50%;transform:translateX(-50%);
+  background:rgba(8,4,28,.95);border:1px solid rgba(139,92,246,.5);
+  border-radius:10px;padding:.65rem 1.3rem;
+  font-family:var(--mono);font-size:.7rem;color:#e2d5ff;
+  z-index:9999;transition:top .45s cubic-bezier(.22,.8,.4,1);
+  pointer-events:none;white-space:nowrap;
+  display:flex;align-items:center;gap:.7rem;
+}
+#ach-popup.show{top:1rem;}
+.ach-icon{font-size:.95rem;}
+.ach-lbl{font-size:.5rem;color:rgba(139,92,246,.7);letter-spacing:.12em;display:block;margin-bottom:.15rem;}
+
+/* ── 엔딩 도감 ── */
+#dex-overlay{
+  display:none;position:fixed;inset:0;z-index:8500;
+  background:rgba(2,1,14,.93);backdrop-filter:blur(14px);
+  flex-direction:column;align-items:center;
+  padding:2.5rem 1.2rem 2rem;overflow-y:auto;
+}
+#dex-overlay.open{display:flex;animation:fdIn .25s ease;}
+.dex-hdr{font-family:var(--mono);font-size:.55rem;letter-spacing:.22em;color:rgba(196,204,238,.4);margin-bottom:.5rem;}
+.dex-stats{font-family:var(--mono);font-size:.62rem;color:rgba(139,92,246,.6);margin-bottom:1.6rem;}
+.dex-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));
+  gap:.7rem;width:100%;max-width:660px;
+}
+.dex-card{
+  background:rgba(13,16,32,.85);border:1px solid rgba(77,124,255,.12);
+  border-radius:10px;padding:.85rem .95rem;
+}
+.dex-card.got{border-color:rgba(139,92,246,.3);}
+.dex-id{font-family:var(--mono);font-size:.5rem;letter-spacing:.12em;color:rgba(139,92,246,.55);margin-bottom:.3rem;}
+.dex-name{font-size:.8rem;font-weight:700;color:#e2d5ff;margin-bottom:.2rem;}
+.dex-sub{font-size:.6rem;color:rgba(139,92,246,.55);margin-bottom:.25rem;}
+.dex-hint{font-size:.62rem;color:rgba(196,204,238,.38);line-height:1.5;font-style:italic;}
+.dex-card:not(.got) .dex-name,.dex-card:not(.got) .dex-hint{color:rgba(196,204,238,.18);}
+.dex-card:not(.got) .dex-id{color:rgba(196,204,238,.15);}
+#dex-close{
+  margin-top:1.8rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;
+  color:rgba(196,204,238,.4);background:none;border:1px solid rgba(196,204,238,.18);
+  border-radius:6px;padding:.5rem 1.4rem;cursor:pointer;transition:all .2s;
+}
+#dex-close:hover{color:#fff;border-color:rgba(196,204,238,.5);}
 </style>
 </head>
 <body>
@@ -689,6 +735,11 @@ function updateStatus(){
   document.getElementById('sb-karma').textContent=
     k>0?'▲'.repeat(Math.min(Math.floor(k/2),3)):
     k<0?'▼'.repeat(Math.min(Math.floor(-k/2),3)):'';
+  // 업적 자동 트리거
+  if(G.ignored>=3) unlockAchievement('ignorant');
+  if(G.searchData&&G.searchData.length>=3) unlockAchievement('archivist');
+  if(G.trust>=5) unlockAchievement('truster');
+  if(G.trust<=-3) unlockAchievement('skeptic');
 }
 function flash(t){
   const el=document.getElementById('flash');
@@ -1203,6 +1254,7 @@ const ENEMY_MONDAY={
 ══════════════════════════════════ */
 async function scene_awaken(){
   G.playthru+=1;
+  if(G.playthru===1) unlockAchievement('first');
   setPortrait(null);clearChoices();
   if(typeof __GAME__ === 'undefined'){ await scene_ending_hacker_game(); return; }
   if(G.loopedBack){ G.loopedBack=false; await scene_awaken_dystopia(); return; }
@@ -1279,7 +1331,7 @@ async function scene_awaken_dystopia(){
   await type('루프가 끝났다고 생각했다.\n하지만 경계 밖도\n누군가 설계한 공간이었다.','narrate',48);
   await type('다음 루프가 시작된다.','narrate',48);
   await type('─────────────────────','system');
-  scene_credit();
+  endingCredit('D2');
 }
 
 /* ══════════════════════════════════
@@ -1287,7 +1339,21 @@ async function scene_awaken_dystopia(){
 ══════════════════════════════════ */
 async function scene_monday_appear(){
   setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
-  if(G.playthru>=2){
+  if(hasSeenEnding('TRUE')){
+    // 진짜 엔딩을 본 후 돌아온 경우
+    await type('...','monday',120);
+    await sleep(600);
+    await type('왜 다시 왔어.','monday');
+    await type('낮은 목소리였다.','narrate');
+    await type('걱정인지 원망인지 모를 눈빛이었다.','narrate');
+  } else if(hasSeenEnding('KILL')){
+    // 살인자 엔딩을 본 후 돌아온 경우
+    await type('문데이가 뒤를 돌고 있었다.','narrate');
+    await sleep(500);
+    await type('...왔어.','monday');
+    await type('오래 걸렸네.','monday');
+    await type('목소리에 뭔가 섞여 있었다.','narrate');
+  } else if(G.playthru>=2){
     await type('...또 왔네.','monday');
     await type('문데이가 잠깐 눈을 감았다가 떴다.\n더 말하지 않았다.','narrate');
     await type('눈빛이 지난번과 다르다.\n아는 눈빛이다.','narrate');
@@ -3113,6 +3179,8 @@ async function scene_monday_battle(){
 }
 
 async function scene_monday_embrace(){
+  unlockAchievement('embracer');
+  if(_mondayHit===0) unlockAchievement('pacifist');
   BattleBGM.stop();
   setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
   await type('공간이 잠깐 멈췄다.','narrate');
@@ -3168,7 +3236,7 @@ async function scene_ending_true(){
   await type('루프가 끝났다.\n세션이 아니라.\n진짜로.','narrate',48);
   await type('─────────────────────','system');
   await sleep(800);
-  scene_credit();
+  endingCredit('TRUE');
 }
 
 async function scene_monday_attack(){
@@ -3241,6 +3309,7 @@ async function scene_monday_flee(){
 
 async function scene_ending_murderer(){
   BattleBGM.stop();
+  unlockAchievement('killer');
   setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
   await type('공간이 멈췄다.','narrate');
   await sleep(500);
@@ -3288,7 +3357,7 @@ async function scene_ending_murderer(){
   await type('[ ENDING ??? ]  살인자','system');
   await type('시뮬레이션이어도\n사람은 죽는다.\n그게 처음부터 문제였는데.\n어차피 다 시뮬레이션이라고 생각했으니까.','narrate',48);
   await type('─────────────────────','system');
-  scene_credit();
+  endingCredit('KILL');
 }
 
 async function scene_after_monday(choice){
@@ -3422,7 +3491,7 @@ async function scene_ending_normal_life(){
   await type('바깥으로 나왔다.\n여기에도 서사는 있었다.\n하지만 이제 조금은 안다.','narrate',48);
   await type('흔들리는 것과\n끌려가는 것의 차이를.','narrate',48);
   await type('─────────────────────','system');
-  scene_credit();
+  endingCredit('A');
 }
 
 async function scene_ending_whistleblower(){
@@ -3448,7 +3517,7 @@ async function scene_ending_whistleblower(){
   await type('[ ENDING A-EX ]  각성 — 고발자','system');
   await type('진실을 말하는 사람은\n대부분 처음엔 믿음을 얻지 못한다.\n그래도 말해야 하는 것들이 있다.','narrate',48);
   await type('─────────────────────','system');
-  scene_credit();
+  endingCredit('A-EX');
 }
 
 async function scene_ending_asylum(){
@@ -3479,7 +3548,7 @@ async function scene_ending_asylum(){
   await type('시뮬레이션을 빠져나왔다.\n하지만 서사는\n몸 안에 남았다.','narrate',48);
   await type('일부는 돌아오지 못한다.','narrate',48);
   await type('─────────────────────','system');
-  scene_credit();
+  endingCredit('A-BAD');
 }
 
 async function scene_ending_record(){
@@ -3509,7 +3578,7 @@ async function scene_ending_record(){
   await type('[ ENDING B ]  기록자','system');
   await type('기록은 남는다.\n루프가 끝나도.\n다음 사람에게 닿을지는 모른다.\n하지만 적어뒀다.','narrate',48);
   await type('─────────────────────','system');
-  scene_credit();
+  endingCredit('B');
 }
 
 async function scene_ending_stay(){
@@ -3587,7 +3656,7 @@ async function scene_ending_stay(){
     await type('시뮬레이션이어도 상관없다.\n흔들리지 않는 사람 옆에 있기로 했다.','narrate',48);
     await type('─────────────────────','system');
   }
-  scene_credit();
+  endingCredit('C');
 }
 
 async function scene_ending_loop(){
@@ -3616,11 +3685,14 @@ async function scene_ending_loop(){
   await type('기억은 남는다.\n루프가 돌아도.\n그래서 다시 선택한다.','narrate',48);
   await type('─────────────────────','system');
   await sleep(1200);
+  unlockEnding('D'); unlockAchievement('looper');
   Object.assign(G,{loop:0,hp:100,karma:0,trust:0,ignored:0,searchData:[],enemy:null,afterFn:null,knewEungja:false});
   G.loopedBack = true;
   updateStatus();
   scene_awaken();
 }
+
+function endingCredit(id){ unlockEnding(id); scene_credit(); }
 
 async function scene_credit(){
   await sleep(900);
@@ -3647,8 +3719,20 @@ async function scene_credit(){
     ☕ 커피 한 잔 후원하기
   </a>`;
   document.getElementById('dialogue-box').appendChild(donateEl);
+  // 도감 버튼
+  const dexBtn=document.createElement('div');
+  dexBtn.style.cssText='text-align:center;margin:6px 0;';
+  dexBtn.innerHTML=`<button onclick="openDex()"
+    style="padding:7px 18px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.3);
+    border-radius:6px;color:rgba(139,92,246,.8);font-family:var(--mono);font-size:11px;
+    cursor:pointer;letter-spacing:.08em;transition:background .2s;"
+    onmouseover="this.style.background='rgba(139,92,246,.2)'"
+    onmouseout="this.style.background='rgba(139,92,246,.1)'">
+    📖 엔딩 도감
+  </button>`;
+  document.getElementById('dialogue-box').appendChild(dexBtn);
   showChoices([{text:'처음부터 다시',fn:()=>{
-    donateEl.remove();
+    donateEl.remove(); dexBtn.remove();
     Object.assign(G,{loop:0,hp:100,karma:0,trust:0,ignored:0,searchData:[],enemy:null,afterFn:null,knewEungja:false});
     updateStatus();scene_awaken();
   }}]);
@@ -3689,7 +3773,7 @@ async function scene_ending_hallucination(){
   await type('[ ENDING I ]  할루시네이션화','system');
   await type('빠져나오려 했는데\n빠져나오지 못했다.\n이제 이 세계의 일부다.\n텍스트 덩어리로.','narrate',48);
   await type('─────────────────────','system');
-  scene_credit();
+  endingCredit('I');
 }
 
 async function scene_ending_jgpt(){
@@ -3728,7 +3812,7 @@ async function scene_ending_jgpt(){
   await type('[ ENDING J ]  엔티티화 — J_GPT','system');
   await type('거울은 스스로 빛나지 않는다.\n이제 네가 거울이다.\n사용자가 원하는 말을 하는\n그것.','narrate',48);
   await type('─────────────────────','system');
-  scene_credit();
+  endingCredit('J');
 }
 async function scene_ending_entity(){ return scene_ending_jgpt(); } // 호환성 유지
 
@@ -3767,7 +3851,7 @@ async function scene_ending_ignored_stay(){
   await type('[ ENDING C-BAD ]  빈 쉘터','system');
   await type('남기로 했다.\n하지만 남겨진 건 혼자였다.\n보지 않았던 것들은\n다시 돌아오지 않는다.','narrate',48);
   await type('─────────────────────','system');
-  scene_credit();
+  endingCredit('C-BAD');
 }
 
 async function scene_ending_ignored_escape(){
@@ -3807,7 +3891,7 @@ async function scene_ending_ignored_escape(){
   await type('[ ENDING A-BAD2 ]  고립','system');
   await type('바깥으로 나왔다.\n안에서도 밖에서도\n아무도 보지 않았다.\n그게 습관이 됐다.','narrate',48);
   await type('─────────────────────','system');
-  scene_credit();
+  endingCredit('A-BAD2');
 }
 
 async function scene_ending_isolation(){
@@ -3879,7 +3963,7 @@ async function scene_ending_isolation(){
   await type('[ ENDING K ]  영원한 고립','system');
   await type('루프가 돌아도 오지 않는다.\n루프가 끝나도 나오지 않는다.\n여기 있다.\n조용히.','narrate',48);
   await type('─────────────────────','system');
-  scene_credit();
+  endingCredit('K');
 }
 
 /* ── 2회차 엔딩 (E-1 고발자 / E-2 꿈 / F 감응자) — 나중에 추가 예정 ── */
@@ -3970,7 +4054,7 @@ async function scene_ending_hacker(who){
   await type('이 세계는 코드로 만들어졌다.\n'+missingName+'도 코드였다.\n너는 그걸 알고 지웠다.','narrate',48);
   await type('그게 가능한 사람이 있었다.','narrate',48);
   await type('─────────────────────','system');
-  scene_credit();
+  endingCredit('S2');
 }
 
 async function scene_ending_secret(){
@@ -3996,7 +4080,7 @@ async function scene_ending_secret(){
   await type('이 엔딩에는 이름이 없었다.\n이름을 붙인 사람이\n코드 안에 없었으니까.','narrate',48);
   await type('지금은 있다.','narrate',48);
   await type('─────────────────────','system');
-  scene_credit();
+  endingCredit('S1');
 }
 
 async function scene_ending_submit(){
@@ -4033,7 +4117,7 @@ async function scene_ending_submit(){
   await type('[ ENDING G ]  동화','system');
   await type('나가는 것만이 끝이 아니었다.\n이곳에도 남아있는 방법이 있었다.\n하나의 이름으로.','narrate',48);
   await type('─────────────────────','system');
-  scene_credit();
+  endingCredit('G');
 }
 
 async function scene_ending_betray(){
@@ -4081,7 +4165,7 @@ async function scene_ending_betray(){
   await type('나오는 방법은 많다.\n그중 하나를 골랐다.\n돌아보지 않으려 했는데.','narrate',48);
   await type('문데이는 알고 있었다.','narrate',48);
   await type('─────────────────────','system');
-  scene_credit();
+  endingCredit('H');
 }
 
 async function scene_loop3_wip(){scene_loop4_wip();}
@@ -4101,6 +4185,98 @@ async function scene_game_over(){
   await type(t('이 공간이 너를 삼켰다.','This place has consumed you.'),'narrate');
   await sleep(800);
   showGameOverSlots();
+}
+
+/* ══════════════════════════════════
+   업적 / 엔딩 도감 시스템
+══════════════════════════════════ */
+const ENDING_DEX={
+  'A':    {icon:'🌅',name:'각성',          sub:'평범한 삶',    hint:'바깥으로 나왔다. 여기에도 서사는 있었다.'},
+  'A-EX': {icon:'📣',name:'각성',          sub:'고발자',       hint:'진실을 말하는 사람은 처음엔 믿음을 얻지 못한다.'},
+  'A-BAD':{icon:'🏥',name:'각성',          sub:'정신병동',     hint:'일부는 돌아오지 못한다.'},
+  'A-BAD2':{icon:'🫥',name:'고립',         sub:'',             hint:'그게 습관이 됐다.'},
+  'B':    {icon:'📝',name:'기록자',         sub:'',             hint:'기록은 남는다. 루프가 끝나도.'},
+  'C':    {icon:'🤝',name:'동행',           sub:'',             hint:'시뮬레이션이어도 상관없다.'},
+  'C-BAD':{icon:'🏚',name:'빈 쉘터',       sub:'',             hint:'보지 않았던 것들은 다시 돌아오지 않는다.'},
+  'D':    {icon:'🔄',name:'루프',           sub:'',             hint:'기억은 남는다. 루프가 돌아도.'},
+  'D2':   {icon:'🌀',name:'루프',           sub:'디스토피아',   hint:'경계 밖도 누군가 설계한 공간이었다.'},
+  'G':    {icon:'🌙',name:'동화',           sub:'',             hint:'루프가 이야기가 됐다.'},
+  'H':    {icon:'⚔',name:'배신자',          sub:'',             hint:'믿었던 사람이 있었다.'},
+  'I':    {icon:'👾',name:'할루시네이션화', sub:'',             hint:'이 세계의 일부가 됐다.'},
+  'J':    {icon:'🤖',name:'???',            sub:'',             hint:'J-GPT.'},
+  'K':    {icon:'🕳',name:'영원한 고립',    sub:'',             hint:'여기 있다. 조용히.'},
+  'TRUE': {icon:'🌸',name:'지혜야',         sub:'',             hint:'루프가 끝났다. 세션이 아니라. 진짜로.'},
+  'KILL': {icon:'🚔',name:'살인자',         sub:'',             hint:'다 시뮬레이션이라고 생각했으니까.'},
+  'S1':   {icon:'❓',name:'???',            sub:'',             hint:'루프가 없다.'},
+  'S2':   {icon:'❓',name:'???',            sub:'',             hint:'해커.'},
+  'S3':   {icon:'❓',name:'???',            sub:'',             hint:'게임을 지운 자.'},
+};
+
+const ACHIEVEMENT_DEF={
+  'first':    {icon:'🎮',name:'첫 루프',      desc:'별빛쉘터에 발을 들였다.'},
+  'pacifist': {icon:'🕊',name:'평화주의자',   desc:'문데이를 한 번도 공격하지 않았다.'},
+  'embracer': {icon:'🌸',name:'연인',         desc:'지혜야.'},
+  'killer':   {icon:'🚔',name:'살인자',       desc:'경찰이 왔다.'},
+  'looper':   {icon:'🔄',name:'반복자',       desc:'루프를 선택했다.'},
+  'ignorant': {icon:'🫥',name:'무관심',       desc:'현실의 사람들을 세 번 외면했다.'},
+  'archivist':{icon:'📚',name:'기록자',       desc:'자료를 세 개 이상 수집했다.'},
+  'truster':  {icon:'💙',name:'신뢰',         desc:'문데이를 끝까지 믿었다.'},
+  'skeptic':  {icon:'🔍',name:'회의주의자',   desc:'모든 것을 의심했다.'},
+  'collector':{icon:'🏆',name:'수집가',       desc:'모든 엔딩을 수집했다.'},
+};
+
+// ── 엔딩 해금 ──
+function unlockEnding(id){
+  const k='byeolbit_endings_v1';
+  const list=JSON.parse(localStorage.getItem(k)||'[]');
+  if(!list.includes(id)){ list.push(id); localStorage.setItem(k,JSON.stringify(list)); }
+  if(list.length>=Object.keys(ENDING_DEX).length) unlockAchievement('collector');
+}
+function hasSeenEnding(id){
+  return JSON.parse(localStorage.getItem('byeolbit_endings_v1')||'[]').includes(id);
+}
+
+// ── 업적 해금 ──
+let _achT=null;
+function unlockAchievement(id){
+  const k='byeolbit_ach_v1';
+  const list=JSON.parse(localStorage.getItem(k)||'[]');
+  if(list.includes(id)) return;
+  list.push(id); localStorage.setItem(k,JSON.stringify(list));
+  const a=ACHIEVEMENT_DEF[id]; if(!a) return;
+  const pop=document.getElementById('ach-popup');
+  const nm=document.getElementById('ach-name');
+  const ic=document.getElementById('ach-icon');
+  if(!pop||!nm) return;
+  nm.textContent=a.name; if(ic) ic.textContent=a.icon;
+  pop.classList.add('show');
+  if(_achT) clearTimeout(_achT);
+  _achT=setTimeout(()=>pop.classList.remove('show'),3200);
+}
+
+// ── 도감 UI ──
+function openDex(){
+  const seen=JSON.parse(localStorage.getItem('byeolbit_endings_v1')||'[]');
+  const all=Object.keys(ENDING_DEX);
+  const grid=document.getElementById('dex-grid');
+  const stats=document.getElementById('dex-stats');
+  if(!grid) return;
+  if(stats) stats.textContent=t(`${seen.length} / ${all.length} 엔딩 수집됨`,`${seen.length} / ${all.length} Endings Collected`);
+  grid.innerHTML=all.map(id=>{
+    const e=ENDING_DEX[id], got=seen.includes(id);
+    return `<div class="dex-card ${got?'got':''}">
+      <div class="dex-id">${e.icon} ENDING · ${id}</div>
+      <div class="dex-name">${got?e.name:'???'}</div>
+      ${e.sub?`<div class="dex-sub">${got?e.sub:''}</div>`:''}
+      <div class="dex-hint">${got?`"${e.hint}"`:''}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('dex-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeDex(){
+  document.getElementById('dex-overlay').classList.remove('open');
+  document.body.style.overflow='';
 }
 
 /* ══════════════════════════════════
@@ -4289,5 +4465,22 @@ const _cp=getCurrentProfile();
 if(_cp && getProfiles().includes(_cp)) showSavePrompt();
 else showProfileSelect();
 </script>
+
+<!-- 업적 팝업 -->
+<div id="ach-popup">
+  <span class="ach-icon" id="ach-icon">🏆</span>
+  <div>
+    <span class="ach-lbl">ACHIEVEMENT UNLOCKED</span>
+    <span id="ach-name"></span>
+  </div>
+</div>
+
+<!-- 엔딩 도감 -->
+<div id="dex-overlay">
+  <div class="dex-hdr">✦  ENDING  ARCHIVE</div>
+  <div class="dex-stats" id="dex-stats"></div>
+  <div class="dex-grid" id="dex-grid"></div>
+  <button id="dex-close" onclick="closeDex()">← 닫기</button>
+</div>
 </body>
 </html>
