@@ -2129,6 +2129,14 @@ function _initTarot(){
   if(en){ const el=document.getElementById('tarot-card-en'); if(el) el.style.display='none'; }
   // t-reveal은 enterLobby에서 호출됨
 }
+// 자정 넘으면 카드 자동 교체
+(function(){
+  let _lastDay=new Date().getDate();
+  setInterval(()=>{
+    const today=new Date().getDate();
+    if(today!==_lastDay){ _lastDay=today; _initTarot(); }
+  },60000);
+})();
 
 function openTarotLb(){
   const c=_tarotToday(), en=LANG==='en';
