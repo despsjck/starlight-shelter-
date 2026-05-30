@@ -778,7 +778,8 @@
     }
     .lobby-back:hover { color: rgba(196,204,238,.65); }
     .lobby-biz {
-      position: relative; z-index: 2; margin-top: .9rem;
+      position: absolute; bottom: 1rem; left: 0; right: 0;
+      z-index: 3; text-align: center;
       font-family: var(--mono); font-size: .56rem; letter-spacing: .04em;
       color: rgba(196,204,238,.42); line-height: 1.9;
     }
@@ -1249,13 +1250,13 @@
 
     <button class="lobby-back" onclick="leaveLobby()" data-en="← Back to Exterior">← 외경으로 돌아가기</button>
 
-    <div class="lobby-biz"
-      data-en="Business: Wizmedia  ·  CEO: Yang Jihye||Reg. No.: 622-10-71172||✉ yjh8425@naver.com  ·  📞 010-5776-5772">
-      사업자명: 위즈미디어 &nbsp;·&nbsp; 대표자: 양지혜<br>
-      사업자등록번호: 622-10-71172<br>
-      ✉ <a href="mailto:yjh8425@naver.com">yjh8425@naver.com</a> &nbsp;·&nbsp; 📞 010-5776-5772
-    </div>
+  </div>
 
+  <div class="lobby-biz"
+    data-en="Business: Wizmedia  ·  CEO: Yang Jihye||Reg. No.: 622-10-71172||✉ yjh8425@naver.com  ·  📞 010-5776-5772">
+    사업자명: 위즈미디어 &nbsp;·&nbsp; 대표자: 양지혜<br>
+    사업자등록번호: 622-10-71172<br>
+    ✉ <a href="mailto:yjh8425@naver.com">yjh8425@naver.com</a> &nbsp;·&nbsp; 📞 010-5776-5772
   </div>
 </div>
 
