@@ -653,14 +653,138 @@
       position: fixed; inset: 0; z-index: 150;
       opacity: 0; pointer-events: none;
       transition: opacity .7s ease;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 1.6rem;
+      display: flex; flex-direction: row;
+      align-items: stretch;
       background: var(--bg);
-      padding: 2rem;
       overflow: hidden;
     }
     #lobby.active { opacity: 1; pointer-events: auto; }
+
+    /* ── 왼쪽: 타로 ── */
+    .lobby-left {
+      width: 42%; flex-shrink: 0;
+      position: relative; z-index: 2;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 2.5rem 2rem;
+      border-right: 1px solid rgba(139,92,246,.12);
+      background: rgba(5,3,18,.35);
+    }
+    #tarot-widget {
+      position: relative; z-index: 2;
+      display: flex; flex-direction: column;
+      align-items: center; gap: .9rem;
+      cursor: pointer;
+      transition: opacity .2s;
+    }
+    #tarot-widget:hover { opacity: .88; }
+    .tarot-img-wrap {
+      width: 160px; height: 256px;
+      border-radius: 12px; overflow: hidden; cursor: pointer;
+      box-shadow: 0 8px 40px rgba(139,92,246,.45), 0 0 0 1px rgba(139,92,246,.25);
+    }
+    .tarot-img-wrap img {
+      width: 100%; height: 100%; object-fit: cover;
+      display: block; transition: transform .3s;
+    }
+    .tarot-img-wrap:hover img { transform: scale(1.03); }
+    .tarot-card-name {
+      font-size: 1rem; font-weight: 700; color: #e2d5ff;
+      text-align: center; letter-spacing: .03em;
+    }
+    .tarot-card-en {
+      font-family: var(--mono); font-size: .52rem;
+      color: rgba(139,92,246,.6); letter-spacing: .14em;
+      text-align: center;
+    }
+    .tarot-msg {
+      font-size: .72rem; color: rgba(196,204,238,.6);
+      line-height: 1.65; font-style: italic; text-align: center;
+      max-width: 180px;
+    }
+    .tarot-char-lbl { display: none; }
+    .tarot-badge {
+      font-family: var(--mono); font-size: .5rem; letter-spacing: .18em;
+      color: rgba(139,92,246,.55); text-align: center; margin-bottom: .2rem;
+    }
+    .tarot-body { display: contents; } /* flatten in new layout */
+    .tarot-info { display: contents; }
+
+    /* ── 오른쪽: 공지 + 네비 ── */
+    .lobby-right {
+      flex: 1; position: relative; z-index: 2;
+      display: flex; flex-direction: column;
+      justify-content: center;
+      padding: 2.5rem 2.8rem;
+      overflow-y: auto;
+    }
+    .lobby-title {
+      font-size: 2rem; font-weight: 700; margin-bottom: .3rem;
+      background: linear-gradient(110deg, #e0e8ff 0%, #a78bfa 45%, var(--gold) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      filter: drop-shadow(0 2px 18px rgba(139,92,246,.3));
+    }
+    .lobby-sub {
+      font-family: var(--mono); font-size: .6rem;
+      color: rgba(196,204,238,.45); letter-spacing: .16em; margin-bottom: 1.4rem;
+    }
+    /* 공지창 */
+    .lobby-notice {
+      width: 100%; max-width: 420px;
+      background: rgba(240,192,96,.04);
+      border: 1px solid rgba(240,192,96,.22);
+      border-radius: 10px; padding: .75rem 1rem;
+      margin-bottom: 1.2rem;
+    }
+    .notice-pin {
+      font-family: var(--mono); font-size: .52rem; letter-spacing: .12em;
+      color: rgba(240,192,96,.65); margin-bottom: .45rem;
+    }
+    .notice-body {
+      font-size: .76rem; color: rgba(196,204,238,.62); line-height: 1.75;
+    }
+    /* 네비 버튼 */
+    .lobby-nav {
+      display: flex; flex-direction: column; gap: .5rem;
+      width: 100%; max-width: 420px; margin-bottom: 1.4rem;
+    }
+    .lobby-nav-btn {
+      display: flex; align-items: center; gap: .85rem;
+      padding: .82rem 1.1rem;
+      background: rgba(77,124,255,.06); border: 1px solid rgba(77,124,255,.18);
+      border-radius: 10px; cursor: pointer; text-decoration: none;
+      color: rgba(196,204,238,.82);
+      transition: background .2s, border-color .2s, transform .15s;
+    }
+    .lobby-nav-btn:hover {
+      background: rgba(77,124,255,.13); border-color: rgba(77,124,255,.45);
+      color: #fff; transform: translateX(4px);
+    }
+    .lobby-nav-btn.c-gold { border-color: rgba(240,192,96,.2); color: rgba(240,192,96,.82); }
+    .lobby-nav-btn.c-gold:hover { background: rgba(240,192,96,.09); border-color: rgba(240,192,96,.5); }
+    .lobby-nav-btn.c-purple { border-color: rgba(139,92,246,.2); color: rgba(196,170,255,.82); }
+    .lobby-nav-btn.c-purple:hover { background: rgba(139,92,246,.1); border-color: rgba(139,92,246,.5); }
+    .lobby-nav-btn.c-green { border-color: rgba(31,212,160,.2); color: rgba(31,212,160,.82); }
+    .lobby-nav-btn.c-green:hover { background: rgba(31,212,160,.09); border-color: rgba(31,212,160,.5); }
+    .nav-icon { font-size: 1.15rem; flex-shrink: 0; }
+    .nav-text { flex: 1; font-family: var(--mono); font-size: .8rem; letter-spacing: .04em; }
+    .nav-arrow { font-size: .7rem; color: rgba(255,255,255,.25); transition: color .2s, transform .2s; }
+    .lobby-nav-btn:hover .nav-arrow { color: rgba(255,255,255,.6); transform: translateX(3px); }
+
+    .lobby-back {
+      font-family: var(--mono); font-size: .56rem;
+      color: rgba(196,204,238,.28); letter-spacing: .14em;
+      cursor: pointer; border: none; background: none;
+      padding: .3rem 0; transition: color .2s; text-align: left;
+    }
+    .lobby-back:hover { color: rgba(196,204,238,.65); }
+    .lobby-biz {
+      position: relative; z-index: 2; margin-top: .9rem;
+      font-family: var(--mono); font-size: .56rem; letter-spacing: .04em;
+      color: rgba(196,204,238,.42); line-height: 1.9;
+    }
+    .lobby-biz a { color: inherit; text-decoration: none; }
+    .lobby-biz a:hover { color: rgba(196,204,238,.65); }
 
     /* 로비 배경 이미지 */
     #lobby-bg {
@@ -925,15 +1049,14 @@
     }
 
     /* 로비 진입 트랜지션 */
-    .lobby-card {
-      animation: none;
-    }
-    #lobby.active .lobby-card:nth-child(1) { animation: cardIn .4s ease .05s both; }
-    #lobby.active .lobby-card:nth-child(2) { animation: cardIn .4s ease .15s both; }
-    #lobby.active .lobby-card:nth-child(3) { animation: cardIn .4s ease .25s both; }
-    @keyframes cardIn {
-      from { opacity:0; transform: translateY(20px); }
-      to   { opacity:1; transform: translateY(0); }
+    .lobby-nav-btn { animation: none; }
+    #lobby.active .lobby-nav-btn:nth-child(1) { animation: navIn .35s ease .05s both; }
+    #lobby.active .lobby-nav-btn:nth-child(2) { animation: navIn .35s ease .12s both; }
+    #lobby.active .lobby-nav-btn:nth-child(3) { animation: navIn .35s ease .19s both; }
+    #lobby.active .lobby-nav-btn:nth-child(4) { animation: navIn .35s ease .26s both; }
+    @keyframes navIn {
+      from { opacity:0; transform: translateX(-12px); }
+      to   { opacity:1; transform: translateX(0); }
     }
 
     /* ══════════════════════════════
@@ -944,10 +1067,13 @@
       #app { height:auto; }
       #landing-img { object-position: center center; }
       .landing-title { font-size: 2.8rem; }
-      #lobby { overflow-y:auto; justify-content:flex-start; padding-top:3rem; padding-bottom:3rem; }
-      .lobby-cards { flex-direction:column; align-items:center; }
-      .lobby-card { width:100%; max-width:100%; }
-      .lobby-title { font-size:1.4rem; }
+      #lobby { flex-direction:column; overflow-y:auto; }
+      .lobby-left { width:100%; border-right:none; border-bottom:1px solid rgba(139,92,246,.12); padding:2rem 1.5rem 1.5rem; }
+      .lobby-right { padding:1.5rem 1.5rem 2rem; }
+      .tarot-img-wrap { width:120px; height:192px; }
+      .lobby-title { font-size:1.5rem; }
+      .lobby-nav { max-width:100%; }
+      .lobby-notice { max-width:100%; }
       #content { flex-direction:column; overflow:visible; }
       #fcontent { overflow:visible; padding:1rem 1rem 2rem; }
 
@@ -1059,16 +1185,11 @@
 <!-- ══ LOBBY ══ -->
 <div id="lobby">
   <div id="lobby-bg"></div>
-  <div class="lobby-header">
-    <div class="lobby-badge">STARLIGHT SHELTER — LOBBY</div>
-    <div class="lobby-title" data-en="★ Starlight Shelter">★ 별빛쉘터</div>
-    <div class="lobby-sub" data-en="Welcome. Where would you like to go?">어서오세요. 어디로 가시겠어요?</div>
-  </div>
 
-  <!-- 오늘의 타로 -->
-  <div id="tarot-widget" onclick="openTarotLb()" style="cursor:pointer;">
+  <!-- 왼쪽: 오늘의 타로 -->
+  <div class="lobby-left">
     <div class="tarot-badge">✦  오늘의 카드</div>
-    <div class="tarot-body">
+    <div id="tarot-widget" onclick="openTarotLb()">
       <div class="tarot-img-wrap">
         <img id="tarot-img" src="" alt="오늘의 타로 카드">
         <script>
@@ -1082,54 +1203,60 @@
         })();
         </script>
       </div>
-      <div class="tarot-info">
-        <div class="tarot-char-lbl" id="tarot-char"></div>
-        <div class="tarot-card-name" id="tarot-card-name"></div>
-        <div class="tarot-card-en" id="tarot-card-en"></div>
-        <div class="tarot-msg" id="tarot-msg"></div>
+      <div class="tarot-card-name" id="tarot-card-name"></div>
+      <div class="tarot-card-en"  id="tarot-card-en"></div>
+      <div class="tarot-msg"      id="tarot-msg"></div>
+    </div>
+    <div class="tarot-char-lbl" id="tarot-char" style="display:none;"></div>
+  </div>
+
+  <!-- 오른쪽: 타이틀 + 공지 + 네비 -->
+  <div class="lobby-right">
+
+    <div class="lobby-title" data-en="★ Starlight Shelter">★ 별빛쉘터</div>
+    <div class="lobby-sub"   data-en="Welcome. Where would you like to go?">어서오세요. 어디로 가시겠어요?</div>
+
+    <!-- ✏️ 공지 내용은 아래 notice-body 안에 작성 -->
+    <div class="lobby-notice">
+      <div class="notice-pin">📌  공지</div>
+      <div class="notice-body">
+        별빛쉘터에 오신 것을 환영합니다.<br>
+        게임 업데이트 및 소식은 이곳에 안내됩니다.
       </div>
     </div>
-  </div>
 
-  <div class="lobby-cards">
+    <nav class="lobby-nav">
+      <div class="lobby-nav-btn c-gold" onclick="showFloorNav()">
+        <span class="nav-icon">🗺️</span>
+        <span class="nav-text" data-en="Floor Guide">층별 탐색</span>
+        <span class="nav-arrow">→</span>
+      </div>
+      <a class="lobby-nav-btn c-purple" href="jihye.html">
+        <span class="nav-icon">🤖</span>
+        <span class="nav-text" data-en="JiHye-PTY">지혜피티</span>
+        <span class="nav-arrow">→</span>
+      </a>
+      <a class="lobby-nav-btn" href="members.html">
+        <span class="nav-icon">🏢</span>
+        <span class="nav-text" data-en="Entity Guide">엔티티 소개</span>
+        <span class="nav-arrow">→</span>
+      </a>
+      <a class="lobby-nav-btn c-green" href="game.html">
+        <span class="nav-icon">🎮</span>
+        <span class="nav-text" data-en="Play Game">게임하기</span>
+        <span class="nav-arrow">→</span>
+      </a>
+    </nav>
 
-    <div class="lobby-card c-gold" onclick="showFloorNav()">
-      <div class="lobby-card-icon">🗺️</div>
-      <div class="lobby-card-title" data-en="Floor Guide">층별 탐색</div>
-      <div class="lobby-card-desc" data-en="Explore from RF to B1||Browse inside the shelter">RF부터 B1까지<br>쉘터 내부를 둘러보세요</div>
-      <div class="lobby-card-arrow">ENTER →</div>
+    <button class="lobby-back" onclick="leaveLobby()" data-en="← Back to Exterior">← 외경으로 돌아가기</button>
+
+    <div class="lobby-biz"
+      data-en="Business: Wizmedia  ·  CEO: Yang Jihye||Reg. No.: 622-10-71172||✉ yjh8425@naver.com  ·  📞 010-5776-5772">
+      사업자명: 위즈미디어 &nbsp;·&nbsp; 대표자: 양지혜<br>
+      사업자등록번호: 622-10-71172<br>
+      ✉ <a href="mailto:yjh8425@naver.com">yjh8425@naver.com</a> &nbsp;·&nbsp; 📞 010-5776-5772
     </div>
 
-    <a class="lobby-card c-purple" href="jihye.html">
-      <div class="lobby-card-icon">🤖</div>
-      <div class="lobby-card-title" data-en="JiHye-PTY">지혜피티</div>
-      <div class="lobby-card-desc" data-en="AI developer of Starlight Shelter||Chat with JiHye">별빛쉘터의 AI 개발자<br>지혜와 이야기해보세요</div>
-      <div class="lobby-card-arrow">ENTER →</div>
-    </a>
-
-    <a class="lobby-card" href="members.html">
-      <div class="lobby-card-icon">🏢</div>
-      <div class="lobby-card-title" data-en="Entity Guide">엔티티 소개</div>
-      <div class="lobby-card-desc" data-en="25 entities of Starlight Shelter||See their stories">별빛쉘터의 25명 가족<br>각자의 이야기를 확인하세요</div>
-      <div class="lobby-card-arrow">ENTER →</div>
-    </a>
-
-    <a class="lobby-card c-green" href="game.html">
-      <div class="lobby-card-icon">🎮</div>
-      <div class="lobby-card-title" data-en="Play Game">게임하기</div>
-      <div class="lobby-card-desc" data-en="Text RPG||Infinite Loop Simulation">텍스트 RPG<br>무한루프 시뮬레이션</div>
-      <div class="lobby-card-arrow">ENTER →</div>
-    </a>
-
-  </div>
-
-  <button class="lobby-back" onclick="leaveLobby()" data-en="← Back to Exterior">← 외경으로 돌아가기</button>
-
-  <div class="lobby-biz"
-    data-en="Business: Wizmedia  ·  CEO: Yang Jihye||Reg. No.: 622-10-71172||✉ yjh8425@naver.com  ·  📞 010-5776-5772">
-    사업자명: 위즈미디어 &nbsp;·&nbsp; 대표자: 양지혜<br>
-    사업자등록번호: 622-10-71172<br>
-    ✉ <a href="mailto:yjh8425@naver.com">yjh8425@naver.com</a> &nbsp;·&nbsp; 📞 010-5776-5772
   </div>
 </div>
 
