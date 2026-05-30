@@ -653,10 +653,14 @@
       position: fixed; inset: 0; z-index: 150;
       opacity: 0; pointer-events: none;
       transition: opacity .7s ease;
-      display: flex; flex-direction: row;
+      display: flex; flex-direction: column;
       align-items: stretch;
       background: var(--bg);
       overflow: hidden;
+    }
+    .lobby-cols {
+      flex: 1; display: flex; flex-direction: row;
+      align-items: stretch; overflow: hidden;
     }
     #lobby.active { opacity: 1; pointer-events: auto; }
 
@@ -778,10 +782,11 @@
     }
     .lobby-back:hover { color: rgba(196,204,238,.65); }
     .lobby-biz {
-      position: absolute; bottom: 1rem; left: 0; right: 0;
-      z-index: 3; text-align: center;
+      position: relative; z-index: 3; text-align: center;
       font-family: var(--mono); font-size: .56rem; letter-spacing: .04em;
       color: rgba(196,204,238,.42); line-height: 1.9;
+      padding: .6rem 0 .8rem;
+      flex-shrink: 0;
     }
     .lobby-biz a { color: inherit; text-decoration: none; }
     .lobby-biz a:hover { color: rgba(196,204,238,.65); }
@@ -1067,7 +1072,8 @@
       #app { height:auto; }
       #landing-img { object-position: center center; }
       .landing-title { font-size: 2.8rem; }
-      #lobby { flex-direction:column; overflow-y:auto; }
+      #lobby { overflow-y:auto; }
+      .lobby-cols { flex-direction:column; }
       .lobby-left { width:100%; border-right:none; border-bottom:1px solid rgba(139,92,246,.12); padding:2rem 1.5rem 1.5rem; }
       .lobby-right { padding:1.5rem 1.5rem 2rem; }
       .tarot-img-wrap { width:120px; height:192px; }
@@ -1186,6 +1192,7 @@
 <div id="lobby">
   <div id="lobby-bg"></div>
 
+  <div class="lobby-cols">
   <!-- 왼쪽: 오늘의 타로 -->
   <div class="lobby-left">
     <div class="tarot-badge">✦  오늘의 카드</div>
@@ -1251,6 +1258,7 @@
     <button class="lobby-back" onclick="leaveLobby()" data-en="← Back to Exterior">← 외경으로 돌아가기</button>
 
   </div>
+  </div><!-- /lobby-cols -->
 
   <div class="lobby-biz"
     data-en="Business: Wizmedia  ·  CEO: Yang Jihye||Reg. No.: 622-10-71172||✉ yjh8425@naver.com  ·  📞 010-5776-5772">
