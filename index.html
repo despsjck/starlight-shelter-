@@ -2120,8 +2120,8 @@ function _initTarot(){
   const img=document.getElementById('tarot-img');
   if(img) img.src='tarot/'+c.f;
   const st=(id,v)=>{ const el=document.getElementById(id); if(el) el.textContent=v; };
-  st('tarot-char', en?c.cEn:c.c);
-  st('tarot-card-name', en?c.nEn:c.n);
+  st('tarot-char', '');
+  st('tarot-card-name', (en?c.cEn:c.c)+' · '+(en?c.nEn:c.n));
   st('tarot-card-en', c.nEn);
   st('tarot-msg', en?c.mEn:c.m);
   const badge=document.querySelector('.tarot-badge');
@@ -2141,8 +2141,8 @@ function _initTarot(){
 function openTarotLb(){
   const c=_tarotToday(), en=LANG==='en';
   document.getElementById('tarot-lb-img').src='tarot/'+c.f;
-  document.getElementById('tlb-char').textContent=en?c.cEn:c.c;
-  document.getElementById('tlb-name').textContent=en?c.nEn:c.n;
+  document.getElementById('tlb-char').textContent='';
+  document.getElementById('tlb-name').textContent=(en?c.cEn:c.c)+' · '+(en?c.nEn:c.n);
   document.getElementById('tlb-en').textContent=c.nEn;
   document.getElementById('tlb-msg').textContent=en?c.mEn:c.m;
   document.getElementById('tlb-interp').textContent=en?c.iEn:c.i;
