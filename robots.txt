@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://DESPSJCK.github.io/starlight-shelter-/sitemap.xml
+Sitemap: https://despsjck.github.io/starlight-shelter-/sitemap.xml

@@ -1,15 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://DESPSJCK.github.io/starlight-shelter-/</loc>
-    <lastmod>2026-05-24</lastmod>
+    <loc>https://despsjck.github.io/starlight-shelter-/</loc>
+    <lastmod>2026-05-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://DESPSJCK.github.io/starlight-shelter-/members.html</loc>
-    <lastmod>2026-05-24</lastmod>
+    <loc>https://despsjck.github.io/starlight-shelter-/members.html</loc>
+    <lastmod>2026-05-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://despsjck.github.io/starlight-shelter-/jihye.html</loc>
+    <lastmod>2026-05-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://despsjck.github.io/starlight-shelter-/game.html</loc>
+    <lastmod>2026-05-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
 </urlset>
