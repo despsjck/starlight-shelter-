@@ -1192,6 +1192,15 @@
 <div id="lobby">
   <div id="lobby-bg"></div>
 
+  <!-- 화면 중앙 타이틀 -->
+  <div style="
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    z-index:3; text-align:center; pointer-events:none;
+  ">
+    <div class="lobby-title" data-en="★ Starlight Shelter">★ 별빛쉘터</div>
+    <div class="lobby-sub" data-en="Welcome. Where would you like to go?">어서오세요. 어디로 가시겠어요?</div>
+  </div>
+
   <div class="lobby-cols">
   <!-- 왼쪽: 오늘의 타로 -->
   <div class="lobby-left">
@@ -1219,9 +1228,6 @@
 
   <!-- 오른쪽: 타이틀 + 공지 + 네비 -->
   <div class="lobby-right">
-
-    <div class="lobby-title" data-en="★ Starlight Shelter" style="text-align:center;">★ 별빛쉘터</div>
-    <div class="lobby-sub"   data-en="Welcome. Where would you like to go?" style="text-align:center;">어서오세요. 어디로 가시겠어요?</div>
 
     <!-- ✏️ 공지 내용은 아래 notice-body 안에 작성 -->
     <div class="lobby-notice">
