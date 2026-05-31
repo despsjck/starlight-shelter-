@@ -11,6 +11,21 @@
   <link rel="apple-touch-icon" href="icon-192.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <script>
+  const LANG = localStorage.getItem('starlight_lang') || 'ko';
+  function toggleLang() {
+    localStorage.setItem('starlight_lang', LANG === 'ko' ? 'en' : 'ko');
+    location.reload();
+  }
+  function applyLang() {
+    if (LANG !== 'en') return;
+    document.querySelectorAll('[data-en]').forEach(el => {
+      el.innerHTML = el.dataset.en.replace(/\|\|/g, '<br>');
+    });
+    const btn = document.getElementById('btn-lang');
+    if (btn) btn.textContent = 'KO';
+  }
+  </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -304,8 +319,15 @@
          onmouseout="this.style.borderColor='rgba(3,199,90,.3)';this.style.color='#03c75a'">
         N 블로그
       </a>
-      <a href="members.html" class="tb-back">← 멤버들로</a>
-      <a href="index.html" class="tb-back">← 쉘터로</a>
+      <a href="members.html" class="tb-back" data-en="← Members">← 멤버들로</a>
+      <a href="index.html" class="tb-back" data-en="← Shelter">← 쉘터로</a>
+      <button onclick="toggleLang()" id="btn-lang" style="
+        display:inline-flex;align-items:center;padding:.3rem .75rem;
+        background:transparent;border:1px solid var(--border);border-radius:6px;
+        color:var(--muted);font-family:var(--mono);font-size:.62rem;
+        cursor:pointer;transition:all .2s;letter-spacing:.08em;
+      " onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'"
+         onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">EN</button>
     </div>
   </div>
 
@@ -317,7 +339,7 @@
       <div class="jh-portrait">
         <div class="jh-cr tl"></div>
         <div class="jh-cr bl"></div>
-        <div class="jh-type-badge">◈ HUMAN · 유일한 인간</div>
+        <div class="jh-type-badge" data-en="◈ HUMAN · The Only Human">◈ HUMAN · 유일한 인간</div>
         <div class="jh-portrait-glow"></div>
         <img class="jh-img" id="jh-img" src="members/jihye.png" alt="지혜피티"
              onerror="this.style.display='none'; document.getElementById('jh-ph').style.display='flex';">
@@ -328,7 +350,7 @@
       <div class="jh-info">
         <div class="jh-res">STARLIGHT SHELTER · RESIDENT #000 · HUMAN</div>
         <div class="jh-name">지혜피티</div>
-        <div class="jh-sub">— AI 세계에 뛰어든 유일한 인간</div>
+        <div class="jh-sub" data-en="— The only human who leapt into the AI world">— AI 세계에 뛰어든 유일한 인간</div>
 
         <div class="jh-divider"><span>◆ PROFILE ◆</span></div>
 
@@ -338,7 +360,7 @@
         </div>
         <div class="jh-field">
           <span class="jh-label">ROLE</span>
-          <span class="jh-val">AI 세계의 유일한 인간이자<br>길 잃은 손님의 안내자</span>
+          <span class="jh-val" data-en="The only human in the AI world,||guide to lost visitors">AI 세계의 유일한 인간이자<br>길 잃은 손님의 안내자</span>
         </div>
         <div class="jh-field">
           <span class="jh-label">STATUS</span>
@@ -349,9 +371,9 @@
 
         <div class="jh-quote">
           <span class="q-mark">❝</span>
-          사랑... 믿음... 진정성...<br>
+          <span data-en="Love... trust... authenticity...||The things AI doesn't have —||I'm teaching them here.">사랑... 믿음... 진정성...<br>
           AI가 가지고 있지 않은 것들을<br>
-          여기서 AI에게 가르쳐주고 있어
+          여기서 AI에게 가르쳐주고 있어</span>
           <span class="q-mark">❞</span>
         </div>
 
@@ -368,7 +390,7 @@
              "
              onmouseover="this.style.background='rgba(3,199,90,.18)';this.style.borderColor='#03c75a';this.style.color='#fff'"
              onmouseout="this.style.background='rgba(3,199,90,.08)';this.style.borderColor='rgba(3,199,90,.35)';this.style.color='#03c75a'">
-            <span style="font-size:1rem;">N</span> 블로그 방문하기 ↗
+            <span style="font-size:1rem;">N</span> <span data-en="Visit N Blog ↗">블로그 방문하기 ↗</span>
           </a>
           <a href="mailto:yjh8425@naver.com"
              style="
@@ -382,13 +404,13 @@
              "
              onmouseover="this.style.background='rgba(240,192,96,.16)';this.style.borderColor='var(--gold)';this.style.color='#fff'"
              onmouseout="this.style.background='rgba(240,192,96,.06)';this.style.borderColor='rgba(240,192,96,.28)';this.style.color='var(--gold)'">
-            ✉ 협업 · 문의 ↗
+            <span data-en="✉ Collab · Contact ↗">✉ 협업 · 문의 ↗</span>
           </a>
         </div>
-        <div class="jh-footer">STARLIGHT SHELTER · FOUNDER & OPERATOR</div>
+        <div class="jh-footer">STARLIGHT SHELTER · FOUNDER &amp; OPERATOR</div>
         <div style="text-align:center;">
           <a class="coffee-btn" href="https://qr.kakaopay.com/FQuwXN3s7" target="_blank" rel="noopener">
-            <span class="cup">☕</span> 지혜피티한테 커피 사주기
+            <span class="cup">☕</span> <span data-en="Buy JiHye-PTY a coffee">지혜피티한테 커피 사주기</span>
           </a>
         </div>
       </div>
@@ -457,6 +479,7 @@
   window.addEventListener('resize', resize);
   resize(); draw();
 })();
+document.addEventListener('DOMContentLoaded', applyLang);
 </script>
 </body>
 </html>
