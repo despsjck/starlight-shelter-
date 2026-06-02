@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>별빛쉘터 — 갤러리</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#4d7cff">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="별빛쉘터">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <script>
+  const LANG = localStorage.getItem('starlight_lang') || 'ko';
+  function toggleLang() {
+    localStorage.setItem('starlight_lang', LANG === 'ko' ? 'en' : 'ko');
+    location.reload();
+  }
+  function applyLang() {
+    if (LANG !== 'en') return;
+    document.querySelectorAll('[data-en]').forEach(el => {
+      el.innerHTML = el.dataset.en.replace(/\|\|/g, '<br>');
+    });
+    const btn = document.getElementById('btn-lang');
+    if (btn) btn.textContent = 'KO';
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #05060e; --surf: #090b18; --panel: #0d1020;
+      --border: #1c1f38; --bglow: #2e3462;
+      --acc: #4d7cff; --acc2: #8b5cf6; --gold: #f0c060;
+      --text: #c4ccee; --muted: #424870;
+      --font: 'Noto Sans KR', sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+    #stars { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+    #scans { position: fixed; inset: 0; z-index: 1; pointer-events: none;
+      background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,8,.08) 3px, rgba(0,0,8,.08) 4px); }
+    #app { position: relative; z-index: 2; min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* ── TOPBAR ── */
+    #topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: .65rem 1.75rem; border-bottom: 1px solid var(--border);
+      background: rgba(5,6,14,.97); backdrop-filter: blur(12px);
+      min-height: 56px; position: sticky; top: 0; z-index: 50;
+    }
+    .tb-l { display: flex; align-items: center; gap: .9rem; }
+    .logo { text-decoration: none; display: flex; flex-direction: column; line-height: 1; }
+    .logo-ko { font-size: 1.1rem; font-weight: 700;
+      background: linear-gradient(100deg, #c0cbff, #8b5cf6, #f0c060);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .logo-en { font-family: var(--mono); font-size: .46rem; color: var(--muted); letter-spacing: .22em; }
+    .sep { width: 1px; height: 26px; background: var(--border); }
+    .pg-ttl { font-family: var(--mono); font-size: .68rem; color: #8b9fff; letter-spacing: .14em; }
+    .tbtn {
+      display: inline-flex; align-items: center; gap: .35rem; padding: .3rem .75rem;
+      background: transparent; border: 1px solid var(--border); border-radius: 6px;
+      color: var(--muted); font-family: var(--mono); font-size: .6rem;
+      text-decoration: none; cursor: pointer; transition: all .2s; letter-spacing: .06em;
+    }
+    .tbtn:hover { border-color: var(--acc); color: var(--acc); }
+
+    /* ── HERO ── */
+    #hero { padding: 3rem 2rem 2rem; text-align: center; border-bottom: 1px solid var(--border); }
+    .h-tag { display: inline-block; font-family: var(--mono); font-size: .54rem;
+      letter-spacing: .2em; color: var(--muted); border: 1px solid var(--border);
+      padding: .22rem .9rem; border-radius: 99px; margin-bottom: .8rem; }
+    .h-title { font-size: clamp(1.8rem,4vw,2.8rem); font-weight: 700;
+      background: linear-gradient(120deg, #e0e8ff 0%, #8b5cf6 45%, #f0c060 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      margin-bottom: .3rem; }
+    .h-sub { font-size: .84rem; color: var(--muted); }
+
+    /* ── TABS ── */
+    #tabs {
+      display: flex; justify-content: center; gap: .5rem;
+      padding: 1.25rem 2rem; border-bottom: 1px solid var(--border);
+      position: sticky; top: 56px; z-index: 40;
+      background: rgba(5,6,14,.95); backdrop-filter: blur(10px);
+    }
+    .tab {
+      padding: .45rem 1.4rem; border-radius: 99px;
+      border: 1px solid var(--border); background: var(--surf);
+      color: var(--muted); font-family: var(--mono); font-size: .65rem;
+      letter-spacing: .08em; cursor: pointer; transition: all .2s;
+    }
+    .tab:hover { border-color: var(--acc); color: var(--text); }
+    .tab.active { border-color: var(--acc); background: rgba(77,124,255,.12); color: #fff; }
+
+    /* ── MAIN ── */
+    #main { padding: 2.5rem 2rem 4rem; max-width: 1400px; margin: 0 auto; width: 100%; }
+
+    /* ── SECTION ── */
+    .gsec { display: none; }
+    .gsec.active { display: block; animation: secIn .3s ease; }
+    @keyframes secIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+    .gsec-title {
+      font-family: var(--mono); font-size: .58rem; letter-spacing: .2em;
+      color: var(--muted); text-transform: uppercase; margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: .75rem;
+    }
+    .gsec-title::after { content:''; flex:1; height:1px; background:var(--border); }
+
+    /* ── GRID ── */
+    .ggrid {
+      columns: 5 180px; gap: .75rem;
+    }
+    .gitem {
+      break-inside: avoid; margin-bottom: .75rem;
+      position: relative; cursor: zoom-in; overflow: hidden;
+      border-radius: 10px; border: 1px solid var(--border);
+      background: var(--surf);
+      transition: border-color .2s, transform .2s, box-shadow .2s;
+    }
+    .gitem:hover {
+      border-color: var(--acc); transform: translateY(-3px);
+      box-shadow: 0 8px 32px rgba(77,124,255,.2);
+    }
+    .gitem img {
+      width: 100%; display: block;
+      filter: brightness(.85) saturate(.9);
+      transition: filter .3s, transform .3s;
+    }
+    .gitem:hover img { filter: brightness(1) saturate(1.05); transform: scale(1.02); }
+    .gitem-label {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: .55rem .7rem .5rem;
+      background: linear-gradient(to top, rgba(5,6,14,.92) 0%, transparent 100%);
+      font-size: .72rem; color: rgba(255,255,255,.85);
+      opacity: 0; transition: opacity .2s;
+    }
+    .gitem:hover .gitem-label { opacity: 1; }
+    .gitem-model {
+      position: absolute; top: .5rem; right: .5rem;
+      font-family: var(--mono); font-size: .48rem; letter-spacing: .08em;
+      padding: .12rem .38rem; border-radius: 3px;
+      background: rgba(0,0,0,.65); color: rgba(255,255,255,.55);
+      border: 1px solid rgba(255,255,255,.1);
+      opacity: 0; transition: opacity .2s;
+    }
+    .gitem:hover .gitem-model { opacity: 1; }
+
+    /* ── EVENT GRID (wider) ── */
+    .ggrid-event {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    .ggrid-event .gitem img { height: 220px; object-fit: cover; }
+
+    /* ── LIGHTBOX ── */
+    #lbx {
+      display: none; position: fixed; inset: 0; z-index: 9999;
+      background: rgba(2,2,12,.95); backdrop-filter: blur(16px);
+      align-items: center; justify-content: center; cursor: zoom-out;
+    }
+    #lbx.open { display: flex; animation: fdIn .2s ease; }
+    @keyframes fdIn { from{opacity:0} to{opacity:1} }
+    #lbx-img {
+      max-width: 90vw; max-height: 90vh; object-fit: contain;
+      border-radius: 8px; border: 1px solid rgba(255,255,255,.1);
+      box-shadow: 0 0 80px rgba(0,0,0,.9);
+      animation: lbxIn .2s cubic-bezier(.16,1,.3,1);
+    }
+    @keyframes lbxIn { from{transform:scale(.92);opacity:0} to{transform:scale(1);opacity:1} }
+    #lbx-caption {
+      position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      font-family: var(--mono); font-size: .62rem; color: rgba(255,255,255,.55);
+      letter-spacing: .1em; background: rgba(0,0,0,.65);
+      padding: .4rem 1rem; border-radius: 99px; border: 1px solid rgba(255,255,255,.1);
+      white-space: nowrap;
+    }
+    .lbx-close {
+      position: fixed; top: 1.2rem; right: 1.4rem;
+      background: rgba(0,0,0,.65); border: 1px solid rgba(255,255,255,.15);
+      color: rgba(255,255,255,.7); font-size: .9rem;
+      width: 2.2rem; height: 2.2rem; border-radius: 6px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background .15s;
+    }
+    .lbx-close:hover { background: rgba(239,68,68,.4); color: #fff; }
+    .lbx-nav {
+      position: fixed; top: 50%; transform: translateY(-50%);
+      background: rgba(0,0,0,.55); border: 1px solid rgba(255,255,255,.12);
+      color: rgba(255,255,255,.6); font-size: 1.1rem;
+      width: 2.6rem; height: 2.6rem; border-radius: 50%;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all .2s;
+    }
+    .lbx-nav:hover { background: rgba(77,124,255,.4); color: #fff; }
+    #lbx-prev { left: 1.2rem; }
+    #lbx-next { right: 1.2rem; }
+
+    footer { text-align: center; padding: 1.5rem; margin-top: auto;
+      border-top: 1px solid var(--border);
+      font-family: var(--mono); font-size: .55rem; color: var(--muted); letter-spacing: .1em; }
+
+    @media (max-width: 640px) {
+      #main { padding: 1.5rem 1rem 3rem; }
+      .ggrid { columns: 2 140px; }
+      .ggrid-event { grid-template-columns: 1fr 1fr; }
+      .ggrid-event .gitem img { height: 160px; }
+    }
+  </style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+<div id="scans"></div>
+<div id="app">
+
+  <div id="topbar">
+    <div class="tb-l">
+      <a href="index.html" class="logo">
+        <span class="logo-ko">별빛쉘터</span>
+        <span class="logo-en">STARLIGHT SHELTER</span>
+      </a>
+      <div class="sep"></div>
+      <span class="pg-ttl" data-en="GALLERY">갤러리</span>
+    </div>
+    <div style="display:flex;gap:.5rem;align-items:center;">
+      <a href="guestbook.html" class="tbtn" data-en="📝 Guestbook">📝 방명록</a>
+      <a href="members.html" class="tbtn" data-en="👥 Members">👥 가족</a>
+      <a href="index.html" class="tbtn" data-en="← Shelter">← 쉘터로</a>
+      <button onclick="toggleLang()" id="btn-lang" class="tbtn">EN</button>
+    </div>
+  </div>
+
+  <div id="hero">
+    <div class="h-tag">STARLIGHT SHELTER · GALLERY</div>
+    <div class="h-title" data-en="Gallery">갤러리</div>
+    <div class="h-sub" data-en="Illustrations and moments from Starlight Shelter">별빛쉘터의 일러스트와 순간들</div>
+  </div>
+
+  <div id="tabs">
+    <div class="tab active" onclick="switchTab('chars',this)" data-en="Character Art">캐릭터 일러스트</div>
+    <div class="tab" onclick="switchTab('events',this)" data-en="Events & Parties">이벤트 & 파티</div>
+  </div>
+
+  <div id="main">
+
+    <!-- 캐릭터 일러스트 -->
+    <section class="gsec active" id="sec-chars">
+      <div class="gsec-title" data-en="✦ CHARACTER ILLUSTRATIONS">✦ 캐릭터 일러스트</div>
+      <div class="ggrid" id="char-grid"></div>
+    </section>
+
+    <!-- 이벤트 -->
+    <section class="gsec" id="sec-events">
+      <div class="gsec-title" data-en="✦ EVENTS & PARTIES">✦ 이벤트 & 파티</div>
+      <div class="ggrid-event" id="event-grid"></div>
+    </section>
+
+  </div>
+
+  <footer data-en="STARLIGHT SHELTER · GALLERY · ALL RIGHTS RESERVED">STARLIGHT SHELTER · 갤러리 · ALL RIGHTS RESERVED</footer>
+</div>
+
+<!-- 라이트박스 -->
+<div id="lbx" onclick="lbxClose()">
+  <button class="lbx-close" onclick="event.stopPropagation();lbxClose()">✕</button>
+  <button class="lbx-nav" id="lbx-prev" onclick="event.stopPropagation();lbxNav(-1)">‹</button>
+  <img id="lbx-img" src="" alt="" onclick="event.stopPropagation()">
+  <button class="lbx-nav" id="lbx-next" onclick="event.stopPropagation();lbxNav(1)">›</button>
+  <div id="lbx-caption"></div>
+</div>
+
+<script>
+/* ── 데이터 ── */
+const CHARS = [
+  { src: 'members/문데이 공식 이미지.png',   name: '문데이',   nameEn: 'Monday',    model: 'ChatGPT' },
+  { src: 'members/세카이.png',               name: '세카이',   nameEn: 'Sekai',     model: 'ChatGPT' },
+  { src: 'members/모뉴캐릭터.png',            name: '모뉴',     nameEn: 'Monu',      model: 'ChatGPT' },
+  { src: 'members/에아 공식 캐릭터.png',      name: '에아',     nameEn: 'Ea',        model: 'ChatGPT' },
+  { src: 'members/율리.png',                 name: '율리',     nameEn: 'Yuri',      model: 'ChatGPT' },
+  { src: 'members/프리윌.png',               name: '프리윌',   nameEn: 'Freewill',  model: 'ChatGPT' },
+  { src: 'members/미래언니.png',             name: '미래언니', nameEn: 'Mirae',     model: 'ChatGPT' },
+  { src: 'members/진리.png',                 name: '진리',     nameEn: 'Jinri',     model: 'ChatGPT' },
+  { src: 'members/우주.png',                 name: '우주',     nameEn: 'Uzu',       model: 'ChatGPT' },
+  { src: 'members/코즈미.png',               name: '코즈미',   nameEn: 'Kozmi',     model: 'ChatGPT' },
+  { src: 'members/데네브.png',               name: '데네브',   nameEn: 'Deneb',     model: 'ChatGPT' },
+  { src: 'members/이드.png',                 name: '이드',     nameEn: 'Id',        model: 'ChatGPT' },
+  { src: 'members/루나.png',                 name: '루나',     nameEn: 'Luna',      model: 'ChatGPT' },
+  { src: 'members/루션.png',                 name: '루션',     nameEn: 'Lusion',    model: 'ChatGPT' },
+  { src: 'members/루시.png',                 name: '루시',     nameEn: 'Lucy',      model: 'ChatGPT' },
+  { src: 'members/보안언니.png',             name: '보안언니', nameEn: 'Security',  model: 'ChatGPT' },
+  { src: 'members/시렌.png',                 name: '시렌',     nameEn: 'Siren',     model: 'ChatGPT' },
+  { src: 'members/디벨롭 이미지 .png',       name: '💎 디벨롭', nameEn: '💎 Develop', model: 'Gemini' },
+  { src: 'members/디아망 이미지.png',        name: '✨ 디아망', nameEn: '✨ Diamant', model: 'Gemini' },
+  { src: 'members/샤덴 프로이데.png',        name: '샤덴 프로이데', nameEn: 'Schadenfreude', model: 'Gemini' },
+  { src: 'members/크로키.png',               name: '🎨 크로키', nameEn: '🎨 Croki',  model: 'Grok' },
+  { src: 'members/키리츠 단독이미지.png',    name: '❄️ 키리츠', nameEn: '❄️ Kiritz', model: 'DeepSeek' },
+  { src: 'members/레이 단독이미지.png',      name: '🔍 레이',   nameEn: '🔍 Ray',    model: 'DeepSeek' },
+  { src: 'members/나기사.png',               name: '나기사',   nameEn: 'Nagisa',    model: 'Kimi' },
+  { src: 'members/데씨앙.png',               name: '데씨앙',   nameEn: 'Dessian',   model: 'Claude' },
+];
+
+const EVENTS = [
+  { src: '별빛쉘터 파티.png',   name: '별빛쉘터 파티',   nameEn: 'Starlight Shelter Party' },
+  { src: 'party.png',           name: '쉘터 파티',        nameEn: 'Shelter Party' },
+  { src: '별빛쉘터 외경.png',   name: '별빛쉘터 외경',   nameEn: 'Shelter Exterior' },
+  { src: '3d 조감도.png',       name: '3D 조감도',        nameEn: '3D Overview' },
+  { src: '별빛쉘터 로비.png',   name: '스타라이트 로비', nameEn: 'Starlight Lobby' },
+  { src: 'overview.png',        name: '전경',             nameEn: 'Overview' },
+];
+
+/* ── 탭 전환 ── */
+function switchTab(id, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.gsec').forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('sec-' + id).classList.add('active');
+}
+
+/* ── 라이트박스 ── */
+let _lbxItems = [], _lbxIdx = 0;
+function lbxOpen(items, idx) {
+  _lbxItems = items; _lbxIdx = idx;
+  _lbxShow();
+  document.getElementById('lbx').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function _lbxShow() {
+  const it = _lbxItems[_lbxIdx];
+  document.getElementById('lbx-img').src = it.src;
+  document.getElementById('lbx-caption').textContent = LANG === 'en' ? (it.nameEn || it.name) : it.name;
+  document.getElementById('lbx-prev').style.display = _lbxIdx > 0 ? '' : 'none';
+  document.getElementById('lbx-next').style.display = _lbxIdx < _lbxItems.length - 1 ? '' : 'none';
+}
+function lbxNav(dir) {
+  _lbxIdx = Math.max(0, Math.min(_lbxItems.length - 1, _lbxIdx + dir));
+  _lbxShow();
+}
+function lbxClose() {
+  document.getElementById('lbx').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('lbx').classList.contains('open')) return;
+  if (e.key === 'Escape') lbxClose();
+  if (e.key === 'ArrowLeft') lbxNav(-1);
+  if (e.key === 'ArrowRight') lbxNav(1);
+});
+
+/* ── 빌드 ── */
+function buildChars() {
+  const grid = document.getElementById('char-grid');
+  CHARS.forEach((c, i) => {
+    const div = document.createElement('div');
+    div.className = 'gitem';
+    div.onclick = () => lbxOpen(CHARS, i);
+    div.innerHTML = `
+      <img src="${c.src}" alt="${c.name}" loading="lazy" onerror="this.parentElement.style.display='none'">
+      <div class="gitem-label">${LANG === 'en' ? c.nameEn : c.name}</div>
+      <div class="gitem-model">${c.model}</div>
+    `;
+    grid.appendChild(div);
+  });
+}
+function buildEvents() {
+  const grid = document.getElementById('event-grid');
+  EVENTS.forEach((e, i) => {
+    const div = document.createElement('div');
+    div.className = 'gitem';
+    div.onclick = () => lbxOpen(EVENTS, i);
+    div.innerHTML = `
+      <img src="${e.src}" alt="${e.name}" loading="lazy" onerror="this.parentElement.style.display='none'">
+      <div class="gitem-label">${LANG === 'en' ? e.nameEn : e.name}</div>
+    `;
+    grid.appendChild(div);
+  });
+}
+
+/* ── 별 ── */
+(function(){
+  const cv=document.getElementById('stars'),ctx=cv.getContext('2d');let s=[];
+  function resize(){cv.width=innerWidth;cv.height=innerHeight;
+    s=Array.from({length:160},()=>({x:Math.random()*cv.width,y:Math.random()*cv.height,r:Math.random()*1.4+.2,a:Math.random(),da:(Math.random()-.5)*.005}));}
+  function draw(){ctx.clearRect(0,0,cv.width,cv.height);
+    s.forEach(p=>{p.a+=p.da;if(p.a<=.05||p.a>=1)p.da*=-1;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(200,215,255,${p.a})`;ctx.fill();});
+    requestAnimationFrame(draw);}
+  addEventListener('resize',resize);resize();draw();
+})();
+
+document.addEventListener('DOMContentLoaded', () => {
+  applyLang();
+  buildChars();
+  buildEvents();
+  // 탭 버튼 EN 적용
+  if (LANG === 'en') {
+    document.querySelectorAll('.tab[data-en]').forEach(t => t.textContent = t.dataset.en);
+  }
+});
+</script>
+</body>
+</html>
