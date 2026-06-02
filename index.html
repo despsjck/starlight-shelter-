@@ -1203,10 +1203,19 @@
   </div>
 
   <div class="lobby-cols" style="margin-top: 3rem;">
-  <!-- 왼쪽: 오늘의 타로 -->
+  <!-- 왼쪽: 공지 + 오늘의 타로 -->
   <div class="lobby-left">
+    <!-- 공지 -->
+    <div class="lobby-notice" style="width:100%; max-width:320px; margin-bottom:1.2rem;">
+      <div class="notice-pin">📌  공지</div>
+      <div class="notice-body">
+        별빛쉘터에 오신 것을 환영합니다.<br>
+        게임 업데이트 및 소식은 이곳에 안내됩니다.
+      </div>
+    </div>
+
     <div class="tarot-badge">✦  오늘의 카드</div>
-    <div id="tarot-widget" onclick="openTarotLb()">
+    <div id="tarot-widget" onclick="openTarotLb()" style="margin-top:.5rem;">
       <div class="tarot-img-wrap">
         <img id="tarot-img" src="" alt="오늘의 타로 카드">
         <script>
@@ -1229,15 +1238,6 @@
 
   <!-- 오른쪽: 타이틀 + 공지 + 네비 -->
   <div class="lobby-right">
-
-    <!-- ✏️ 공지 내용은 아래 notice-body 안에 작성 -->
-    <div class="lobby-notice">
-      <div class="notice-pin">📌  공지</div>
-      <div class="notice-body">
-        별빛쉘터에 오신 것을 환영합니다.<br>
-        게임 업데이트 및 소식은 이곳에 안내됩니다.
-      </div>
-    </div>
 
     <nav class="lobby-nav">
       <div class="lobby-nav-btn c-gold" onclick="showFloorNav()">
