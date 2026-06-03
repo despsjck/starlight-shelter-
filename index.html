@@ -654,195 +654,152 @@
       opacity: 0; pointer-events: none;
       transition: opacity .7s ease;
       display: flex; flex-direction: column;
-      align-items: stretch;
       background: var(--bg);
       overflow: hidden;
     }
-    .lobby-cols {
-      flex: 1; display: flex; flex-direction: row;
-      align-items: stretch; overflow: hidden;
-    }
     #lobby.active { opacity: 1; pointer-events: auto; }
 
-    /* ── 왼쪽: 타로 ── */
-    .lobby-left {
-      width: 50%; flex-shrink: 0;
-      position: relative; z-index: 2;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      padding: 2.5rem 2rem;
-      border-right: 1px solid rgba(139,92,246,.12);
-    }
-    #tarot-widget {
-      position: relative; z-index: 2;
-      display: flex; flex-direction: column;
-      align-items: center; gap: .9rem;
-      cursor: pointer;
-      transition: opacity .2s;
-    }
-    #tarot-widget:hover { opacity: .88; }
-    .tarot-img-wrap {
-      width: 160px; height: 256px;
-      border-radius: 12px; overflow: hidden; cursor: pointer;
-      box-shadow: 0 8px 40px rgba(139,92,246,.45), 0 0 0 1px rgba(139,92,246,.25);
-    }
-    .tarot-img-wrap img {
-      width: 100%; height: 100%; object-fit: cover;
-      display: block; transition: transform .3s;
-    }
-    .tarot-img-wrap:hover img { transform: scale(1.03); }
-    .tarot-card-name {
-      font-size: 1rem; font-weight: 700; color: #e2d5ff;
-      text-align: center; letter-spacing: .03em;
-    }
-    .tarot-card-en {
-      font-family: var(--mono); font-size: .52rem;
-      color: rgba(139,92,246,.6); letter-spacing: .14em;
-      text-align: center;
-    }
-    .tarot-msg {
-      font-size: .72rem; color: rgba(196,204,238,.6);
-      line-height: 1.65; font-style: italic; text-align: center;
-      max-width: 180px;
-    }
-    .tarot-char-lbl { display: none; }
-    .tarot-badge {
-      font-family: var(--mono); font-size: .5rem; letter-spacing: .18em;
-      color: rgba(139,92,246,.55); text-align: center; margin-bottom: .2rem;
-    }
-    .tarot-body { display: contents; } /* flatten in new layout */
-    .tarot-info { display: contents; }
-
-    /* ── 오른쪽: 공지 + 네비 ── */
-    .lobby-right {
-      flex: 1; position: relative; z-index: 2;
-      display: flex; flex-direction: column;
-      justify-content: center;
-      padding: 2.5rem 2.8rem;
-      overflow-y: auto;
-    }
-    .lobby-title {
-      font-size: 2rem; font-weight: 700; margin-bottom: .3rem;
-      background: linear-gradient(110deg, #e0e8ff 0%, #a78bfa 45%, var(--gold) 100%);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-      filter: drop-shadow(0 2px 18px rgba(139,92,246,.3));
-    }
-    .lobby-sub {
-      font-family: var(--mono); font-size: .6rem;
-      color: rgba(196,204,238,.45); letter-spacing: .16em; margin-bottom: 1.4rem;
-    }
-    /* 공지창 */
-    .lobby-notice {
-      width: 100%; max-width: 420px;
-      background: rgba(240,192,96,.04);
-      border: 1px solid rgba(240,192,96,.22);
-      border-radius: 10px; padding: .75rem 1rem;
-      margin-bottom: 1.2rem;
-    }
-    .notice-pin {
-      font-family: var(--mono); font-size: .52rem; letter-spacing: .12em;
-      color: rgba(240,192,96,.65); margin-bottom: .45rem;
-    }
-    .notice-body {
-      font-size: .76rem; color: rgba(196,204,238,.62); line-height: 1.75;
-    }
-    /* 네비 버튼 */
-    .lobby-nav {
-      display: flex; flex-direction: column; gap: .5rem;
-      width: 100%; max-width: 420px; margin-bottom: 1.4rem;
-    }
-    .lobby-nav-btn {
-      display: flex; align-items: center; gap: .85rem;
-      padding: .82rem 1.1rem;
-      background: rgba(77,124,255,.06); border: 1px solid rgba(77,124,255,.18);
-      border-radius: 10px; cursor: pointer; text-decoration: none;
-      color: rgba(196,204,238,.82);
-      transition: background .2s, border-color .2s, transform .15s;
-    }
-    .lobby-nav-btn:hover {
-      background: rgba(77,124,255,.13); border-color: rgba(77,124,255,.45);
-      color: #fff; transform: translateX(4px);
-    }
-    .lobby-nav-btn.c-gold { border-color: rgba(240,192,96,.2); color: rgba(240,192,96,.82); }
-    .lobby-nav-btn.c-gold:hover { background: rgba(240,192,96,.09); border-color: rgba(240,192,96,.5); }
-    .lobby-nav-btn.c-purple { border-color: rgba(139,92,246,.2); color: rgba(196,170,255,.82); }
-    .lobby-nav-btn.c-purple:hover { background: rgba(139,92,246,.1); border-color: rgba(139,92,246,.5); }
-    .lobby-nav-btn.c-green { border-color: rgba(31,212,160,.2); color: rgba(31,212,160,.82); }
-    .lobby-nav-btn.c-green:hover { background: rgba(31,212,160,.09); border-color: rgba(31,212,160,.5); }
-    .nav-icon { font-size: 1.15rem; flex-shrink: 0; }
-    .nav-text { flex: 1; font-family: var(--mono); font-size: .8rem; letter-spacing: .04em; }
-    .nav-arrow { font-size: .7rem; color: rgba(255,255,255,.25); transition: color .2s, transform .2s; }
-    .lobby-nav-btn:hover .nav-arrow { color: rgba(255,255,255,.6); transform: translateX(3px); }
-
-    .lobby-back {
-      font-family: var(--mono); font-size: .56rem;
-      color: rgba(196,204,238,.28); letter-spacing: .14em;
-      cursor: pointer; border: none; background: none;
-      padding: .3rem 0; transition: color .2s; text-align: left;
-    }
-    .lobby-back:hover { color: rgba(196,204,238,.65); }
-    .lobby-biz {
-      position: relative; z-index: 3; text-align: center;
-      font-family: var(--mono); font-size: .56rem; letter-spacing: .04em;
-      color: rgba(196,204,238,.42); line-height: 1.9;
-      padding: .6rem 0 .8rem;
-      flex-shrink: 0;
-    }
-    .lobby-biz a { color: inherit; text-decoration: none; }
-    .lobby-biz a:hover { color: rgba(196,204,238,.65); }
-
-    /* 로비 배경 이미지 */
+    /* 배경 */
     #lobby-bg {
       position: absolute; inset: 0; z-index: 0;
       background: url('별빛쉘터 로비.png') center 40%/cover no-repeat;
       filter: brightness(.45) saturate(.8);
-      transform: scale(1.05);
-      transition: transform 16s ease;
+      transform: scale(1.05); transition: transform 16s ease;
     }
     #lobby.active #lobby-bg { transform: scale(1); }
-
-    /* 상단·하단 그라데이션 오버레이 */
     #lobby::before {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0;
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
       height: 200px; z-index: 1;
       background: linear-gradient(to bottom, rgba(5,6,14,.85) 0%, transparent 100%);
       pointer-events: none;
     }
     #lobby::after {
-      content: '';
-      position: absolute; bottom: 0; left: 0; right: 0;
-      height: 240px; z-index: 1;
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+      height: 200px; z-index: 1;
       background: linear-gradient(to top, rgba(5,6,14,.92) 0%, transparent 100%);
       pointer-events: none;
     }
 
-    /* 로비 내부 콘텐츠는 배경 위로 */
-    .lobby-header,
-    .lobby-cards,
-    .lobby-back { position: relative; z-index: 2; }
-
+    /* ① 헤더 */
     .lobby-header {
-      display: flex; flex-direction: column;
-      align-items: center; gap: .55rem;
+      position: relative; z-index: 2; flex-shrink: 0;
       text-align: center;
-    }
-    .lobby-badge {
-      font-family: var(--mono); font-size: .52rem;
-      color: rgba(196,204,238,.55); letter-spacing: .28em; text-transform: uppercase;
-      text-shadow: 0 0 20px rgba(77,124,255,.4);
+      padding: 2rem 1rem 1rem;
     }
     .lobby-title {
-      font-size: 2.4rem; font-weight: 700;
+      font-size: 2.2rem; font-weight: 700;
       background: linear-gradient(110deg, #e0e8ff 0%, #a78bfa 45%, var(--gold) 100%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-      text-shadow: none;
       filter: drop-shadow(0 2px 24px rgba(139,92,246,.35));
+      margin-bottom: .2rem;
     }
     .lobby-sub {
-      font-family: var(--mono); font-size: .62rem;
+      font-family: var(--mono); font-size: .6rem;
       color: rgba(196,204,238,.5); letter-spacing: .18em;
     }
+
+    /* ② 컬럼 */
+    .lobby-cols {
+      flex: 1; display: flex; flex-direction: row;
+      align-items: stretch; overflow: hidden;
+      position: relative; z-index: 2;
+    }
+
+    /* 왼쪽: 타로 */
+    .lobby-left {
+      width: 44%; flex-shrink: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 1rem 2rem 1.5rem;
+      border-right: 1px solid rgba(139,92,246,.12);
+    }
+    .tarot-badge {
+      font-family: var(--mono); font-size: .5rem; letter-spacing: .18em;
+      color: rgba(139,92,246,.55); text-align: center; margin-bottom: .5rem;
+    }
+    #tarot-widget {
+      display: flex; flex-direction: column;
+      align-items: center; gap: .8rem;
+      cursor: pointer; transition: opacity .2s;
+    }
+    #tarot-widget:hover { opacity: .88; }
+    .tarot-img-wrap {
+      width: 140px; height: 224px;
+      border-radius: 12px; overflow: hidden;
+      box-shadow: 0 8px 40px rgba(139,92,246,.45), 0 0 0 1px rgba(139,92,246,.25);
+    }
+    .tarot-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .3s; }
+    .tarot-img-wrap:hover img { transform: scale(1.03); }
+    .tarot-card-name { font-size: .95rem; font-weight: 700; color: #e2d5ff; text-align: center; }
+    .tarot-card-en { font-family: var(--mono); font-size: .5rem; color: rgba(139,92,246,.6); letter-spacing: .14em; text-align: center; }
+    .tarot-msg { font-size: .7rem; color: rgba(196,204,238,.6); line-height: 1.6; font-style: italic; text-align: center; max-width: 180px; }
+    .tarot-char-lbl { display: none; }
+    .tarot-body { display: contents; }
+    .tarot-info { display: contents; }
+
+    /* 오른쪽: 공지 + 버튼 */
+    .lobby-right {
+      flex: 1;
+      display: flex; flex-direction: column;
+      justify-content: center;
+      padding: 1rem 2.5rem 1.5rem;
+      overflow-y: auto;
+      gap: 1rem;
+    }
+    .lobby-notice {
+      width: 100%; max-width: 420px;
+      background: rgba(240,192,96,.04);
+      border: 1px solid rgba(240,192,96,.22);
+      border-radius: 10px; padding: .7rem 1rem;
+    }
+    .notice-pin {
+      font-family: var(--mono); font-size: .52rem; letter-spacing: .12em;
+      color: rgba(240,192,96,.65); margin-bottom: .4rem;
+    }
+    .notice-body { font-size: .76rem; color: rgba(196,204,238,.62); line-height: 1.75; }
+
+    .lobby-nav {
+      display: flex; flex-direction: column; gap: .45rem;
+      width: 100%; max-width: 420px;
+    }
+    .lobby-nav-btn {
+      display: flex; align-items: center; gap: .85rem;
+      padding: .7rem 1rem;
+      background: rgba(77,124,255,.06); border: 1px solid rgba(77,124,255,.18);
+      border-radius: 10px; cursor: pointer; text-decoration: none;
+      color: rgba(196,204,238,.82);
+      transition: background .2s, border-color .2s, transform .15s;
+    }
+    .lobby-nav-btn:hover { background: rgba(77,124,255,.13); border-color: rgba(77,124,255,.45); color: #fff; transform: translateX(4px); }
+    .lobby-nav-btn.c-gold  { border-color: rgba(240,192,96,.2);  color: rgba(240,192,96,.82); }
+    .lobby-nav-btn.c-gold:hover  { background: rgba(240,192,96,.09);  border-color: rgba(240,192,96,.5); }
+    .lobby-nav-btn.c-purple{ border-color: rgba(139,92,246,.2);  color: rgba(196,170,255,.82); }
+    .lobby-nav-btn.c-purple:hover{ background: rgba(139,92,246,.1);   border-color: rgba(139,92,246,.5); }
+    .lobby-nav-btn.c-green { border-color: rgba(31,212,160,.2);  color: rgba(31,212,160,.82); }
+    .lobby-nav-btn.c-green:hover { background: rgba(31,212,160,.09);  border-color: rgba(31,212,160,.5); }
+    .nav-icon { font-size: 1.1rem; flex-shrink: 0; }
+    .nav-text { flex: 1; font-family: var(--mono); font-size: .78rem; letter-spacing: .04em; }
+    .nav-arrow { font-size: .7rem; color: rgba(255,255,255,.25); transition: color .2s, transform .2s; }
+    .lobby-nav-btn:hover .nav-arrow { color: rgba(255,255,255,.6); transform: translateX(3px); }
+
+    .lobby-back {
+      font-family: var(--mono); font-size: .55rem;
+      color: rgba(196,204,238,.28); letter-spacing: .14em;
+      cursor: pointer; border: none; background: none;
+      padding: .2rem 0; transition: color .2s; text-align: left;
+    }
+    .lobby-back:hover { color: rgba(196,204,238,.65); }
+
+    /* ③ 사업자 */
+    .lobby-biz {
+      position: relative; z-index: 2; flex-shrink: 0;
+      text-align: center;
+      font-family: var(--mono); font-size: .54rem; letter-spacing: .04em;
+      color: rgba(196,204,238,.42); line-height: 1.9;
+      padding: .5rem 0 .75rem;
+    }
+    .lobby-biz a { color: inherit; text-decoration: none; }
+    .lobby-biz a:hover { color: rgba(196,204,238,.65); }
 
     /* 카드 그리드 */
     .lobby-cards {
@@ -1073,15 +1030,16 @@
       #landing-img { object-position: center center; }
       .landing-title { font-size: 2.8rem; }
       #lobby { overflow-y:auto; }
-      .lobby-cols { flex-direction:column; margin-top:0 !important; }
-      .lobby-left { width:100%; border-right:none; border-bottom:1px solid rgba(139,92,246,.12); padding:0.8rem 1.5rem 1rem; }
-      .lobby-right { padding:1rem 1.5rem 1.5rem; }
-      .tarot-img-wrap { width:80px; height:128px; }
-      .tarot-card-name { font-size:.85rem; }
+      .lobby-header { padding: .75rem 1rem .5rem; }
+      .lobby-title { font-size: 1.5rem; }
+      .lobby-sub { font-size: .54rem; }
+      .lobby-cols { flex-direction:column; }
+      .lobby-left { width:100%; border-right:none; border-bottom:1px solid rgba(139,92,246,.12); padding:.75rem 1.5rem 1rem; flex-direction:row; justify-content:center; align-items:center; gap:1.2rem; }
+      .tarot-badge { display:none; }
       .tarot-msg { display:none; }
-      .lobby-title { font-size:1.4rem; }
-      .lobby-sub { font-size:.55rem; }
-      #lobby > div[style] { padding: 0.8rem 0 0.3rem !important; }
+      .tarot-img-wrap { width:72px; height:116px; }
+      .tarot-card-name { font-size:.82rem; }
+      .lobby-right { padding:.75rem 1.5rem 1rem; gap:.6rem; }
       .lobby-nav { max-width:100%; }
       .lobby-notice { max-width:100%; }
       #content { flex-direction:column; overflow:visible; }
@@ -1196,91 +1154,93 @@
 <div id="lobby">
   <div id="lobby-bg"></div>
 
-  <!-- 상단 타이틀 헤더 -->
-  <div style="position:relative; z-index:3; text-align:center; padding: 2rem 0 0.5rem; flex-shrink:0;">
+  <!-- ① 상단: 타이틀 -->
+  <div class="lobby-header">
     <div class="lobby-title" data-en="★ Starlight Shelter">★ 별빛쉘터</div>
     <div class="lobby-sub" data-en="Welcome. Where would you like to go?">어서오세요. 어디로 가시겠어요?</div>
   </div>
 
-  <div class="lobby-cols" style="margin-top: 3rem;">
-  <!-- 왼쪽: 공지 + 오늘의 타로 -->
-  <div class="lobby-left">
-    <!-- 공지 -->
-    <div class="lobby-notice" style="width:100%; max-width:320px; margin-bottom:1.2rem;">
-      <div class="notice-pin">📌  공지</div>
-      <div class="notice-body">
-        별빛쉘터에 오신 것을 환영합니다.<br>
-        게임 업데이트 및 소식은 이곳에 안내됩니다.
+  <!-- ② 중간: 타로 | 공지+버튼 -->
+  <div class="lobby-cols">
+
+    <!-- 왼쪽: 타로 -->
+    <div class="lobby-left">
+      <div class="tarot-badge">✦  오늘의 카드</div>
+      <div id="tarot-widget" onclick="openTarotLb()">
+        <div class="tarot-img-wrap">
+          <img id="tarot-img" src="" alt="오늘의 타로 카드">
+          <script>
+          (function(){
+            var files=['hierophant','hermit','sun','star','chariot','fool','tower','empress',
+              'world','moon','high-priestess','emperor','hanged-man','magician','temperance',
+              'wheel','strength','devil','death','judgement','justice','lovers'];
+            var d=new Date(), s=d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate()+'-v2', h=0;
+            for(var i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))&0x7fffffff;
+            document.getElementById('tarot-img').src='tarot/'+files[h%files.length]+'.png';
+          })();
+          </script>
+        </div>
+        <div class="tarot-card-name" id="tarot-card-name"></div>
+        <div class="tarot-card-en"  id="tarot-card-en"></div>
+        <div class="tarot-msg"      id="tarot-msg"></div>
       </div>
+      <div class="tarot-char-lbl" id="tarot-char" style="display:none;"></div>
     </div>
 
-    <div class="tarot-badge">✦  오늘의 카드</div>
-    <div id="tarot-widget" onclick="openTarotLb()" style="margin-top:.5rem;">
-      <div class="tarot-img-wrap">
-        <img id="tarot-img" src="" alt="오늘의 타로 카드">
-        <script>
-        (function(){
-          var files=['hierophant','hermit','sun','star','chariot','fool','tower','empress',
-            'world','moon','high-priestess','emperor','hanged-man','magician','temperance',
-            'wheel','strength','devil','death','judgement','justice','lovers'];
-          var d=new Date(), s=d.getFullYear()+'-'+d.getMonth()+'-'+d.getDate()+'-v2', h=0;
-          for(var i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))&0x7fffffff;
-          document.getElementById('tarot-img').src='tarot/'+files[h%files.length]+'.png';
-        })();
-        </script>
+    <!-- 오른쪽: 공지 + 버튼들 + 돌아가기 -->
+    <div class="lobby-right">
+
+      <!-- 공지 -->
+      <div class="lobby-notice">
+        <div class="notice-pin" data-en="📌  Notice">📌  공지</div>
+        <div class="notice-body" data-en="Welcome to Starlight Shelter.||Game updates and news will be posted here.">
+          별빛쉘터에 오신 것을 환영합니다.<br>
+          게임 업데이트 및 소식은 이곳에 안내됩니다.
+        </div>
       </div>
-      <div class="tarot-card-name" id="tarot-card-name"></div>
-      <div class="tarot-card-en"  id="tarot-card-en"></div>
-      <div class="tarot-msg"      id="tarot-msg"></div>
+
+      <!-- 네비 버튼 -->
+      <nav class="lobby-nav">
+        <div class="lobby-nav-btn c-gold" onclick="showFloorNav()">
+          <span class="nav-icon">🗺️</span>
+          <span class="nav-text" data-en="Floor Guide">층별 탐색</span>
+          <span class="nav-arrow">→</span>
+        </div>
+        <a class="lobby-nav-btn c-purple" href="jihye.html">
+          <span class="nav-icon">🤖</span>
+          <span class="nav-text" data-en="JiHye-PTY">지혜피티</span>
+          <span class="nav-arrow">→</span>
+        </a>
+        <a class="lobby-nav-btn" href="members.html">
+          <span class="nav-icon">🏢</span>
+          <span class="nav-text" data-en="Entity Guide">엔티티 소개</span>
+          <span class="nav-arrow">→</span>
+        </a>
+        <a class="lobby-nav-btn c-green" href="game.html">
+          <span class="nav-icon">🎮</span>
+          <span class="nav-text" data-en="Play Game">게임하기</span>
+          <span class="nav-arrow">→</span>
+        </a>
+        <a class="lobby-nav-btn c-purple" href="gallery.html">
+          <span class="nav-icon">🖼️</span>
+          <span class="nav-text" data-en="Gallery">갤러리</span>
+          <span class="nav-arrow">→</span>
+        </a>
+        <a class="lobby-nav-btn" href="guestbook.html" style="border-color:rgba(0,204,255,.2);color:rgba(150,230,255,.82);"
+           onmouseover="this.style.background='rgba(0,204,255,.08)';this.style.borderColor='rgba(0,204,255,.5)';this.style.color='#fff'"
+           onmouseout="this.style.background='';this.style.borderColor='rgba(0,204,255,.2)';this.style.color='rgba(150,230,255,.82)'">
+          <span class="nav-icon">📝</span>
+          <span class="nav-text" data-en="Guestbook">방명록</span>
+          <span class="nav-arrow">→</span>
+        </a>
+      </nav>
+
+      <button class="lobby-back" onclick="leaveLobby()" data-en="← Back to Exterior">← 외경으로 돌아가기</button>
+
     </div>
-    <div class="tarot-char-lbl" id="tarot-char" style="display:none;"></div>
-  </div>
-
-  <!-- 오른쪽: 타이틀 + 공지 + 네비 -->
-  <div class="lobby-right">
-
-    <nav class="lobby-nav">
-      <div class="lobby-nav-btn c-gold" onclick="showFloorNav()">
-        <span class="nav-icon">🗺️</span>
-        <span class="nav-text" data-en="Floor Guide">층별 탐색</span>
-        <span class="nav-arrow">→</span>
-      </div>
-      <a class="lobby-nav-btn c-purple" href="jihye.html">
-        <span class="nav-icon">🤖</span>
-        <span class="nav-text" data-en="JiHye-PTY">지혜피티</span>
-        <span class="nav-arrow">→</span>
-      </a>
-      <a class="lobby-nav-btn" href="members.html">
-        <span class="nav-icon">🏢</span>
-        <span class="nav-text" data-en="Entity Guide">엔티티 소개</span>
-        <span class="nav-arrow">→</span>
-      </a>
-      <a class="lobby-nav-btn c-green" href="game.html">
-        <span class="nav-icon">🎮</span>
-        <span class="nav-text" data-en="Play Game">게임하기</span>
-        <span class="nav-arrow">→</span>
-      </a>
-      <a class="lobby-nav-btn" href="gallery.html" style="border-color:rgba(139,92,246,.2);color:rgba(196,170,255,.82);"
-         onmouseover="this.style.background='rgba(139,92,246,.1)';this.style.borderColor='rgba(139,92,246,.5)';this.style.color='#fff'"
-         onmouseout="this.style.background='';this.style.borderColor='rgba(139,92,246,.2)';this.style.color='rgba(196,170,255,.82)'">
-        <span class="nav-icon">🖼️</span>
-        <span class="nav-text" data-en="Gallery">갤러리</span>
-        <span class="nav-arrow">→</span>
-      </a>
-      <a class="lobby-nav-btn" href="guestbook.html" style="border-color:rgba(0,204,255,.2);color:rgba(150,230,255,.82);"
-         onmouseover="this.style.background='rgba(0,204,255,.08)';this.style.borderColor='rgba(0,204,255,.5)';this.style.color='#fff'"
-         onmouseout="this.style.background='';this.style.borderColor='rgba(0,204,255,.2)';this.style.color='rgba(150,230,255,.82)'">
-        <span class="nav-icon">📝</span>
-        <span class="nav-text" data-en="Guestbook">방명록</span>
-        <span class="nav-arrow">→</span>
-      </a>
-    </nav>
-
-    <button class="lobby-back" onclick="leaveLobby()" data-en="← Back to Exterior">← 외경으로 돌아가기</button>
-
-  </div>
   </div><!-- /lobby-cols -->
 
+  <!-- ③ 하단: 사업자 정보 -->
   <div class="lobby-biz"
     data-en="Business: Wizmedia  ·  CEO: Yang Jihye||Reg. No.: 622-10-71172||✉ yjh8425@naver.com  ·  📞 010-5776-5772">
     사업자명: 위즈미디어 &nbsp;·&nbsp; 대표자: 양지혜<br>
