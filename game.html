@@ -1851,7 +1851,7 @@ document.addEventListener('keydown',e=>{
 });
 
 function type(text,speaker,speed=36){
-  if(LANG==='en') text = TRANS_EN[text] || text;
+  if(LANG==='en') text = TRANS_EN[text] || TRANS_EN[text.replace(/\n/g,'\\n')] || text;
   return new Promise(res=>{
     const sp=SP[speaker]||SP.narrate;
     const labelEl=document.getElementById('speaker-label');
