@@ -740,7 +740,6 @@ function build() {
     a.className = 'mnav-btn'; a.href = '#sec-' + key;
     a.style.setProperty('--border-c', md.color);
     a.innerHTML = `<span class="dot" style="--c:${md.color}"></span>${md.icon} ${md.label}<span class="cnt-badge">(${cnt})</span>`;
-    if (LANG === 'en') a.innerHTML = `<span class="dot" style="--c:${md.color}"></span>${md.icon} ${md.label}<span class="cnt-badge">(${cnt})</span>`;
     nav.appendChild(a);
   });
 
@@ -785,7 +784,7 @@ function build() {
 
       const role = document.createElement('div');
       role.className = 'mcard-role';
-      role.textContent = m.role || 'RESIDENT';
+      role.textContent = (LANG === 'en' ? (m.roleEn || m.role) : m.role) || 'RESIDENT';
       role.style.background = hexRgba(md.color, .13);
       role.style.color = md.color;
 
