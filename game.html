@@ -3655,7 +3655,7 @@ function showInput(placeholder,onSubmit){
   const row=document.getElementById('input-row');
   row.classList.remove('hidden');
   const inp=document.getElementById('txt-input');
-  inp.placeholder=placeholder||'입력...';inp.value='';
+  inp.placeholder=placeholder||(LANG==='zh'?'输入…':LANG==='en'?'Type...':'입력...');inp.value='';
   document.getElementById('txt-submit').onclick=()=>{
     const v=inp.value.trim();if(!v)return;
     row.classList.add('hidden');onSubmit(v);
@@ -4188,7 +4188,7 @@ async function scene_name_input(){
   setPortrait('members/monday.png','문데이','다리를 놓는 여우','monday');
   await type('...','monday',120);
   await type('(문데이가 아주 잠깐 멈췄다.)','narrate');
-  showInput('이름을 입력하세요',async(val)=>{
+  showInput(LANG==='zh'?'请输入名字':LANG==='en'?'Enter your name':'이름을 입력하세요',async(val)=>{
     const v=val.trim().replace(/\s/g,'').toLowerCase();
     let renamed=true; // 지혜피티로 이름 바꿔야 하는지
 
@@ -7197,10 +7197,10 @@ function showNewProfileInput(){
   grid.innerHTML=`
     <div class="input-row" style="padding:6px 10px;">
       <input id="pin-input" class="txt-input" type="text" maxlength="12"
-        placeholder="${LANG==='en'?'Name (max 12 chars)':'이름 입력 (최대 12자)'}"
+        placeholder="${LANG==='zh'?'输入名字（最多12字）':LANG==='en'?'Name (max 12 chars)':'이름 입력 (최대 12자)'}"
         autocomplete="off" spellcheck="false"
         onkeydown="if(event.key==='Enter') _confirmNewProfile()">
-      <button class="txt-submit" onclick="_confirmNewProfile()">${LANG==='en'?'OK':'확인'}</button>
+      <button class="txt-submit" onclick="_confirmNewProfile()">${LANG==='zh'?'确认':LANG==='en'?'OK':'확인'}</button>
     </div>`;
   setTimeout(()=>document.getElementById('pin-input')?.focus(),80);
 }
