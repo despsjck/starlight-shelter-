@@ -2151,13 +2151,6 @@ const TRANS_ZH = {
   "처음부터 다시": "从头再来"
 };
 
-const TYPE_ZH_JS = `
-function typeZh(text){
-  if(LANG!=='zh') return text;
-  return TRANS_ZH[text] || TRANS_ZH[text.replace(/\n/g,'\\n')] || text;
-}
-`;
-
 /* ──────────────────────────────────
  * 게임 메타데이터
  * 삭제하지 마세요.
