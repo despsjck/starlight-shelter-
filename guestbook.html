@@ -14,16 +14,16 @@
   <script>
   const LANG = localStorage.getItem('starlight_lang') || 'ko';
   function toggleLang() {
-    localStorage.setItem('starlight_lang', LANG === 'ko' ? 'en' : 'ko');
+    localStorage.setItem('starlight_lang', {ko:'en',en:'zh',zh:'ko'}[LANG]||'en');
     location.reload();
   }
   function applyLang() {
-    if (LANG !== 'en') return;
-    document.querySelectorAll('[data-en]').forEach(el => {
-      el.innerHTML = el.dataset.en.replace(/\|\|/g, '<br>');
+    if (LANG === 'ko') return; const attr='data-'+LANG;
+    document.querySelectorAll('['+attr+']').forEach(el => {
+      el.innerHTML = el.getAttribute(attr).replace(/\|\|/g, '<br>');
     });
     const btn = document.getElementById('btn-lang');
-    if (btn) btn.textContent = 'KO';
+    document.querySelectorAll('[id^="btn-lang"]').forEach(b=>{ b.textContent = {ko:'EN',en:'ZH',zh:'KO'}[LANG]||'KO'; });
   }
   </script>
   <style>
