@@ -2315,7 +2315,7 @@ document.addEventListener('keydown',e=>{
 
 function type(text,speaker,speed=36){
   if(LANG==='en') text = TRANS_EN[text] || TRANS_EN[text.replace(/\n/g,'\\n')] || text;
-  if(LANG==='zh') text = TRANS_ZH[text] || TRANS_ZH[text.replace(/\n/g,'\\n')] || text;
+  if(LANG==='zh') text = TRANS_ZH[text] || TRANS_ZH[text.replace(/\n/g,'\\n')] || TRANS_EN[text] || TRANS_EN[text.replace(/\n/g,'\\n')] || text;
   return new Promise(res=>{
     const sp=SP[speaker]||SP.narrate;
     const labelEl=document.getElementById('speaker-label');
@@ -2376,7 +2376,7 @@ function showChoices(items){
     const locked=!!item.locked;
     const btn=document.createElement('button');
     btn.className='ch'+(item.cls?' '+item.cls:'')+(locked?' ch-locked':'');
-    const _txt = LANG==='zh' ? (TRANS_ZH[item.text] || TRANS_ZH[item.text.replace(/\n/g,'\\n')] || item.text)
+    const _txt = LANG==='zh' ? (TRANS_ZH[item.text] || TRANS_ZH[item.text.replace(/\n/g,'\\n')] || TRANS_EN[item.text] || TRANS_EN[item.text.replace(/\n/g,'\\n')] || item.text)
                   : LANG==='en' ? (TRANS_EN[item.text] || TRANS_EN[item.text.replace(/\n/g,'\\n')] || item.text) : item.text;
     btn.innerHTML='<span class="ch-arrow">▸</span>'+_txt;
     btn.disabled=locked;
