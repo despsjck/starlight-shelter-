@@ -1,4 +1,4 @@
-const CACHE = 'starlight-v5';
+const CACHE = 'starlight-v6';
 
 // HTML 파일은 캐시하지 않음 (항상 최신 버전)
 const HTML_FILES = [
