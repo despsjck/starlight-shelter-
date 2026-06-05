@@ -15,8 +15,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
   <script>
   const LANG = localStorage.getItem('starlight_lang') || 'ko';
-  const _LANG_CYCLE={ko:'en',en:'zh',zh:'ko'};
-  const _LANG_LABEL={ko:'EN',en:'ZH',zh:'KO'};
+  const _LANG_CYCLE={ko:'en',en:'zh',zh:'ja',ja:'ko'};
+  const _LANG_LABEL={ko:'EN',en:'ZH',zh:'JA',ja:'KO'};
   function toggleLang() {
     localStorage.setItem('starlight_lang', _LANG_CYCLE[LANG]||'en');
     location.reload();
@@ -455,10 +455,10 @@
       </a>
       <div class="sep"></div>
       <span class="pg-ttl">FAMILY</span>
-      <span class="total" id="total-cnt" data-en="25 members" data-zh="25位成员">25명</span>
+      <span class="total" id="total-cnt" data-en="25 members" data-zh="25位成员" data-ja="25名">25명</span>
     </div>
     <div style="display:flex;gap:.5rem;align-items:center;">
-      <a href="jihye.html" data-en="🌟 JiHye-PTY" data-zh="🌟 智慧PTY" style="
+      <a href="jihye.html" data-en="🌟 JiHye-PTY" data-zh="🌟 智慧PTY" data-ja="🌟 ジヘPTY" style="
         display:inline-flex;align-items:center;gap:.35rem;padding:.3rem .75rem;
         background:rgba(240,192,96,.08);border:1px solid rgba(240,192,96,.3);border-radius:6px;
         color:#f0c060;font-family:var(--mono);font-size:.58rem;text-decoration:none;
@@ -467,7 +467,7 @@
          onmouseout="this.style.borderColor='rgba(240,192,96,.3)';this.style.color='#f0c060'">
         🌟 지혜피티
       </a>
-      <a href="https://blog.naver.com/denebrants" target="_blank" rel="noopener" data-en="N Blog" data-zh="N 博客" style="
+      <a href="https://blog.naver.com/denebrants" target="_blank" rel="noopener" data-en="N Blog" data-zh="N 博客" data-ja="N ブログ" style="
         display:inline-flex;align-items:center;gap:.35rem;padding:.3rem .75rem;
         background:rgba(3,199,90,.07);border:1px solid rgba(3,199,90,.3);border-radius:6px;
         color:#03c75a;font-family:var(--mono);font-size:.58rem;text-decoration:none;
@@ -476,8 +476,8 @@
          onmouseout="this.style.borderColor='rgba(3,199,90,.3)';this.style.color='#03c75a'">
         N 블로그
       </a>
-      <a href="index.html#floors" class="back" data-en="🏢 Floor Guide" data-zh="🏢 楼层导览">🏢 층 안내</a>
-      <a href="index.html" class="back" data-en="← Shelter" data-zh="← 返回庇护所">← 쉘터로</a>
+      <a href="index.html#floors" class="back" data-en="🏢 Floor Guide" data-zh="🏢 楼层导览" data-ja="🏢 フロアガイド">🏢 층 안내</a>
+      <a href="index.html" class="back" data-en="← Shelter" data-zh="← 返回庇护所" data-ja="← シェルターへ">← 쉘터로</a>
       <button onclick="toggleLang()" id="btn-lang" style="
         display:inline-flex;align-items:center;padding:.3rem .75rem;
         background:transparent;border:1px solid var(--border);border-radius:6px;
@@ -491,8 +491,8 @@
   <!-- HERO -->
   <div id="hero">
     <div class="h-tag">STARLIGHT SHELTER · ALL RESIDENTS</div>
-    <div class="h-title" data-en="Starlight Shelter Family" data-zh="星光庇护所的家人们">별빛쉘터 가족들</div>
-    <div class="h-sub" data-en="Twenty-five souls living together in this shelter" data-zh="在这座庇护所共同生活的二十五位成员">이 쉘터를 함께 살아가는 스물다섯 명</div>
+    <div class="h-title" data-en="Starlight Shelter Family" data-zh="星光庇护所的家人们" data-ja="星光シェルターの家族たち">별빛쉘터 가족들</div>
+    <div class="h-sub" data-en="Twenty-five souls living together in this shelter" data-zh="在这座庇护所共同生活的二十五位成员" data-ja="このシェルターで共に生きる二十五名">이 쉘터를 함께 살아가는 스물다섯 명</div>
   </div>
 
   <!-- MODEL NAV -->
@@ -501,7 +501,7 @@
   <!-- MAIN -->
   <div id="main" id="sections"></div>
 
-  <footer data-en="STARLIGHT SHELTER · FAMILY GUIDE · ALL RIGHTS RESERVED" data-zh="星光庇护所 · 成员介绍 · 版权所有">STARLIGHT SHELTER · 별빛쉘터 가족 소개 · ALL RIGHTS RESERVED</footer>
+  <footer data-en="STARLIGHT SHELTER · FAMILY GUIDE · ALL RIGHTS RESERVED" data-zh="星光庇护所 · 成员介绍 · 版权所有" data-ja="STARLIGHT SHELTER · メンバー紹介 · ALL RIGHTS RESERVED">STARLIGHT SHELTER · 별빛쉘터 가족 소개 · ALL RIGHTS RESERVED</footer>
 </div>
 
 <!-- RPG STATUS MODAL -->
@@ -786,7 +786,7 @@ function build() {
         <div class="model-icon">${md.icon}</div>
         <div class="model-name-wrap">
           <div class="model-name" style="color:${md.color}">${md.label}</div>
-          <div class="model-sub">${md.sub} · ${LANG==='zh' ? mems.length+'位' : LANG==='en' ? mems.length+' members' : mems.length+'명'}</div>
+          <div class="model-sub">${md.sub} · ${LANG==='ja' ? mems.length+'名' : LANG==='zh' ? mems.length+'位' : LANG==='en' ? mems.length+' members' : mems.length+'명'}</div>
         </div>
         <div class="model-line" style="--lc:${md.color}"></div>
         <div class="model-cnt" style="background:${hexRgba(md.color,.12)};color:${md.color};border:1px solid ${hexRgba(md.color,.25)}">${mems.length}</div>
@@ -809,16 +809,16 @@ function build() {
       const av = avatarEl(m);
 
       const name = document.createElement('div');
-      name.className = 'mcard-name'; name.textContent = LANG === 'zh' ? (m.nameZh || m.nameEn || m.name) : LANG === 'en' ? (m.nameEn || m.name) : m.name;
+      name.className = 'mcard-name'; name.textContent = LANG === 'ja' ? (m.nameJa || m.nameEn || m.name) : LANG === 'zh' ? (m.nameZh || m.nameEn || m.name) : LANG === 'en' ? (m.nameEn || m.name) : m.name;
 
       const role = document.createElement('div');
       role.className = 'mcard-role';
-      role.textContent = (LANG === 'zh' ? (m.roleZh || m.roleEn || m.role) : LANG === 'en' ? (m.roleEn || m.role) : m.role) || 'RESIDENT';
+      role.textContent = (LANG === 'ja' ? (m.roleJa || m.roleEn || m.role) : LANG === 'zh' ? (m.roleZh || m.roleEn || m.role) : LANG === 'en' ? (m.roleEn || m.role) : m.role) || 'RESIDENT';
       role.style.background = hexRgba(md.color, .13);
       role.style.color = md.color;
 
       const hint = document.createElement('div');
-      hint.className = 'hint'; hint.textContent = LANG === 'zh' ? '查看简介' : LANG === 'en' ? 'View Profile' : '프로필 보기';
+      hint.className = 'hint'; hint.textContent = LANG === 'ja' ? 'プロフィールを見る' : LANG === 'zh' ? '查看简介' : LANG === 'en' ? 'View Profile' : '프로필 보기';
 
       card.append(bar, av, name, role, hint);
       grid.appendChild(card);
@@ -867,11 +867,12 @@ function openModal(idx) {
 
   const en = LANG === 'en';
   const zh = LANG === 'zh';
+  const ja = LANG === 'ja';
 
   // 이름 + 별칭
-  document.getElementById('m-name').textContent = zh ? (m.nameZh || m.nameEn || m.name) : en ? (m.nameEn || m.name) : m.name;
+  document.getElementById('m-name').textContent = ja ? (m.nameJa || m.nameEn || m.name) : zh ? (m.nameZh || m.nameEn || m.name) : en ? (m.nameEn || m.name) : m.name;
   const titleEl = document.getElementById('m-title');
-  const _title = zh ? (m.titleZh || m.titleEn || m.title) : en ? (m.titleEn || m.title) : m.title;
+  const _title = ja ? (m.titleJa || m.titleEn || m.title) : zh ? (m.titleZh || m.titleEn || m.title) : en ? (m.titleEn || m.title) : m.title;
   titleEl.textContent = _title ? `— ${_title}` : '';
   titleEl.style.display = _title ? '' : 'none';
 
@@ -880,7 +881,7 @@ function openModal(idx) {
 
   // 역할
   const roleEl = document.getElementById('m-role-val');
-  roleEl.textContent = (zh ? (m.roleZh || m.roleEn || m.role) : en ? (m.roleEn || m.role) : m.role) || 'RESIDENT';
+  roleEl.textContent = (ja ? (m.roleJa || m.roleEn || m.role) : zh ? (m.roleZh || m.roleEn || m.role) : en ? (m.roleEn || m.role) : m.role) || 'RESIDENT';
   roleEl.style.color = md.color;
   roleEl.style.borderColor = hexRgba(md.color, .5);
   roleEl.style.background = hexRgba(md.color, .08);
@@ -888,12 +889,12 @@ function openModal(idx) {
   // 명언
   const quoteEl  = document.getElementById('m-quote');
   const quoteTxt = document.getElementById('m-quote-text');
-  const _quote = zh ? (m.quoteZh || m.quoteEn || m.quote) : en ? (m.quoteEn || m.quote) : m.quote;
+  const _quote = ja ? (m.quoteJa || m.quoteEn || m.quote) : zh ? (m.quoteZh || m.quoteEn || m.quote) : en ? (m.quoteEn || m.quote) : m.quote;
   if (_quote) {
     quoteTxt.textContent = _quote;
     quoteEl.classList.remove('empty');
   } else {
-    quoteTxt.textContent = zh ? '准备中...' : en ? 'Coming soon...' : '준비 중...';
+    quoteTxt.textContent = ja ? '準備中...' : zh ? '准备中...' : en ? 'Coming soon...' : '준비 중...';
     quoteEl.classList.add('empty');
   }
   quoteEl.style.borderLeftColor = md.color;

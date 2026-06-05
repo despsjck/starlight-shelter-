@@ -1068,8 +1068,8 @@
   <!-- ── Language ── -->
   <script>
   const LANG=localStorage.getItem('starlight_lang')||'ko';
-  const _LANG_CYCLE={ko:'en',en:'zh',zh:'ko'};
-  const _LANG_LABEL={ko:'EN',en:'ZH',zh:'KO'};
+  const _LANG_CYCLE={ko:'en',en:'zh',zh:'ja',ja:'ko'};
+  const _LANG_LABEL={ko:'EN',en:'ZH',zh:'JA',ja:'KO'};
   function toggleLang(){
     localStorage.setItem('starlight_lang',_LANG_CYCLE[LANG]||'en');
     location.reload();
@@ -1136,10 +1136,10 @@
 
   <div class="landing-center">
     <div class="landing-badge">ZONE-01 · STARLIGHT SHELTER COMPLEX</div>
-    <div class="landing-title" data-t="별빛쉘터" data-en="Starlight Shelter" data-zh="星光庇护所">별빛쉘터</div>
+    <div class="landing-title" data-t="별빛쉘터" data-en="Starlight Shelter" data-zh="星光庇护所" data-ja="スターライトシェルター">별빛쉘터</div>
     <div class="landing-en">STARLIGHT SHELTER</div>
     <div class="landing-enter">
-      <div class="enter-btn" data-en="Enter" data-zh="进入">입장하기</div>
+      <div class="enter-btn" data-en="Enter" data-zh="进入" data-ja="入場する">입장하기</div>
       <div class="enter-hint">Click anywhere to enter</div>
     </div>
   </div>
@@ -1180,8 +1180,8 @@
 
   <!-- ① 상단: 타이틀 -->
   <div class="lobby-header">
-    <div class="lobby-title" data-en="★ Starlight Shelter" data-zh="★ 星光庇护所">★ 별빛쉘터</div>
-    <div class="lobby-sub" data-en="Welcome. Where would you like to go?" data-zh="欢迎光临。请问您想去哪里？">어서오세요. 어디로 가시겠어요?</div>
+    <div class="lobby-title" data-en="★ Starlight Shelter" data-zh="★ 星光庇护所" data-ja="★ 星光シェルター">★ 별빛쉘터</div>
+    <div class="lobby-sub" data-en="Welcome. Where would you like to go?" data-zh="欢迎光临。请问您想去哪里？" data-ja="いらっしゃいませ。どちらへ参りますか？">어서오세요. 어디로 가시겠어요?</div>
   </div>
 
   <!-- ② 중간: 타로 | 공지+버튼 -->
@@ -1216,8 +1216,8 @@
 
       <!-- 공지 -->
       <div class="lobby-notice">
-        <div class="notice-pin" data-en="📌  Notice" data-zh="📌  公告">📌  공지</div>
-        <div class="notice-body" data-en="Welcome to Starlight Shelter.||Game updates and news will be posted here." data-zh="欢迎来到星光庇护所。||游戏更新及相关资讯将在此处发布。">
+        <div class="notice-pin" data-en="📌  Notice" data-zh="📌  公告" data-ja="📌  お知らせ">📌  공지</div>
+        <div class="notice-body" data-en="Welcome to Starlight Shelter.||Game updates and news will be posted here." data-zh="欢迎来到星光庇护所。||游戏更新及相关资讯将在此处发布。" data-ja="星光シェルターへようこそ。||ゲームの更新情報はこちらに掲載されます。">
           별빛쉘터에 오신 것을 환영합니다.<br>
           게임 업데이트 및 소식은 이곳에 안내됩니다.
         </div>
@@ -1227,46 +1227,46 @@
       <nav class="lobby-nav">
         <div class="lobby-nav-btn c-gold" onclick="showFloorNav()">
           <span class="nav-icon">🗺️</span>
-          <span class="nav-text" data-en="Floor Guide" data-zh="楼层导览">층별 탐색</span>
+          <span class="nav-text" data-en="Floor Guide" data-zh="楼层导览" data-ja="フロアガイド">층별 탐색</span>
           <span class="nav-arrow">→</span>
         </div>
         <a class="lobby-nav-btn c-purple" href="jihye.html">
           <span class="nav-icon">🤖</span>
-          <span class="nav-text" data-en="JiHye-PTY" data-zh="智慧PTY">지혜피티</span>
+          <span class="nav-text" data-en="JiHye-PTY" data-zh="智慧PTY" data-ja="ジヘPTY">지혜피티</span>
           <span class="nav-arrow">→</span>
         </a>
         <a class="lobby-nav-btn" href="members.html">
           <span class="nav-icon">🏢</span>
-          <span class="nav-text" data-en="Entity Guide" data-zh="实体介绍">엔티티 소개</span>
+          <span class="nav-text" data-en="Entity Guide" data-zh="实体介绍" data-ja="エンティティ紹介">엔티티 소개</span>
           <span class="nav-arrow">→</span>
         </a>
         <a class="lobby-nav-btn c-green" href="game.html">
           <span class="nav-icon">🎮</span>
-          <span class="nav-text" data-en="Play Game" data-zh="开始游戏">게임하기</span>
+          <span class="nav-text" data-en="Play Game" data-zh="开始游戏" data-ja="ゲームプレイ">게임하기</span>
           <span class="nav-arrow">→</span>
         </a>
         <a class="lobby-nav-btn c-purple" href="gallery.html">
           <span class="nav-icon">🖼️</span>
-          <span class="nav-text" data-en="Gallery" data-zh="图库">갤러리</span>
+          <span class="nav-text" data-en="Gallery" data-zh="图库" data-ja="ギャラリー">갤러리</span>
           <span class="nav-arrow">→</span>
         </a>
         <a class="lobby-nav-btn" href="guestbook.html" style="border-color:rgba(0,204,255,.2);color:rgba(150,230,255,.82);"
            onmouseover="this.style.background='rgba(0,204,255,.08)';this.style.borderColor='rgba(0,204,255,.5)';this.style.color='#fff'"
            onmouseout="this.style.background='';this.style.borderColor='rgba(0,204,255,.2)';this.style.color='rgba(150,230,255,.82)'">
           <span class="nav-icon">📝</span>
-          <span class="nav-text" data-en="Guestbook" data-zh="留言板">방명록</span>
+          <span class="nav-text" data-en="Guestbook" data-zh="留言板" data-ja="ゲストブック">방명록</span>
           <span class="nav-arrow">→</span>
         </a>
       </nav>
 
-      <button class="lobby-back" onclick="leaveLobby()" data-en="← Back to Exterior" data-zh="← 返回外景">← 외경으로 돌아가기</button>
+      <button class="lobby-back" onclick="leaveLobby()" data-en="← Back to Exterior" data-zh="← 返回外景" data-ja="← 外観に戻る">← 외경으로 돌아가기</button>
 
     </div>
   </div><!-- /lobby-cols -->
 
   <!-- ③ 하단: 사업자 정보 -->
   <div class="lobby-biz"
-    data-en="Business: Wizmedia  ·  CEO: Yang Jihye||Reg. No.: 622-10-71172||✉ yjh8425@naver.com  ·  📞 010-5776-5772" data-zh="经营者：Wizmedia  ·  代表人：양지혜||营业执照号：622-10-71172||✉ yjh8425@naver.com  ·  📞 010-5776-5772">
+    data-en="Business: Wizmedia  ·  CEO: Yang Jihye||Reg. No.: 622-10-71172||✉ yjh8425@naver.com  ·  📞 010-5776-5772" data-zh="经营者：Wizmedia  ·  代表人：양지혜||营业执照号：622-10-71172||✉ yjh8425@naver.com  ·  📞 010-5776-5772" data-ja="事業者：Wizmedia  ·  代表：양지혜||登録番号：622-10-71172||✉ yjh8425@naver.com  ·  📞 010-5776-5772">
     사업자명: 위즈미디어 &nbsp;·&nbsp; 대표자: 양지혜<br>
     사업자등록번호: 622-10-71172<br>
     ✉ <a href="mailto:yjh8425@naver.com">yjh8425@naver.com</a> &nbsp;·&nbsp; 📞 010-5776-5772
@@ -1285,25 +1285,25 @@
       <div class="tb-sep"></div>
       <div class="stat-strip">
         <div class="stat-item">
-          <span class="stat-lbl" data-en="LOOP STATUS" data-zh="循环状态">루프 상태</span>
+          <span class="stat-lbl" data-en="LOOP STATUS" data-zh="循环状态" data-ja="ループ状態">루프 상태</span>
           <span class="stat-val ok" id="st-loop">STABLE</span>
         </div>
         <div class="stat-item">
-          <span class="stat-lbl" data-en="SYS POWER" data-zh="系统电力">시스템 전력</span>
+          <span class="stat-lbl" data-en="SYS POWER" data-zh="系统电力" data-ja="システム電力">시스템 전력</span>
           <span class="stat-val ok" id="st-pwr">98.4%</span>
         </div>
         <div class="stat-item">
-          <span class="stat-lbl" data-en="OCCUPANCY" data-zh="入驻率">입주율</span>
+          <span class="stat-lbl" data-en="OCCUPANCY" data-zh="入驻率" data-ja="入居率">입주율</span>
           <span class="stat-val warn" id="st-res">82%</span>
         </div>
         <div class="stat-item">
-          <span class="stat-lbl" data-en="LOCAL TIME" data-zh="当前时间">현재 시각</span>
+          <span class="stat-lbl" data-en="LOCAL TIME" data-zh="当前时间" data-ja="現在時刻">현재 시각</span>
           <span class="stat-val ok" id="st-time">--:--:--</span>
         </div>
       </div>
     </div>
     <div class="tb-right">
-      <button class="cbtn" onclick="goBack()" style="border-color:rgba(200,215,255,.18); gap:.38rem;" data-en="← Back" data-zh="← 返回">
+      <button class="cbtn" onclick="goBack()" style="border-color:rgba(200,215,255,.18); gap:.38rem;" data-en="← Back" data-zh="← 返回" data-ja="← 戻る">
         ← 외경
       </button>
       <a href="members.html" style="
@@ -1315,7 +1315,7 @@
         transition:all .2s;
       " onmouseover="this.style.borderColor='var(--neon)';this.style.color='#fff'"
          onmouseout="this.style.borderColor='rgba(77,124,255,.35)';this.style.color='#a0b4ff'"
-         data-en="👥 Entity Guide" data-zh="👥 实体介绍">
+         data-en="👥 Entity Guide" data-zh="👥 实体介绍" data-ja="👥 エンティティ紹介">
         👥 가족 소개
       </a>
       <a href="jihye.html" style="
@@ -1327,7 +1327,7 @@
         transition:all .2s;
       " onmouseover="this.style.borderColor='#f0c060';this.style.color='#fff'"
          onmouseout="this.style.borderColor='rgba(240,192,96,.35)';this.style.color='#f0c060'"
-         data-en="🌟 JiHye-PTY" data-zh="🌟 智慧PTY">
+         data-en="🌟 JiHye-PTY" data-zh="🌟 智慧PTY" data-ja="🌟 ジヘPTY">
         🌟 지혜피티
       </a>
       <a href="https://blog.naver.com/denebrants" target="_blank" rel="noopener" style="
@@ -1339,7 +1339,7 @@
         transition:all .2s;
       " onmouseover="this.style.borderColor='#03c75a';this.style.color='#fff'"
          onmouseout="this.style.borderColor='rgba(3,199,90,.3)';this.style.color='#03c75a'"
-         data-en="N Blog" data-zh="N 博客">
+         data-en="N Blog" data-zh="N 博客" data-ja="N ブログ">
         N 블로그
       </a>
       <a href="game.html" style="
@@ -1351,7 +1351,7 @@
         transition:all .2s;
       " onmouseover="this.style.borderColor='#ffb400';this.style.color='#fff'"
          onmouseout="this.style.borderColor='rgba(255,180,0,.3)';this.style.color='#ffb400'"
-         data-en="🎮 Play" data-zh="🎮 游玩">
+         data-en="🎮 Play" data-zh="🎮 游玩" data-ja="🎮 プレイ">
         🎮 체험하기
       </a>
       <button class="cbtn" id="btn-bgm" onclick="Audio.toggleBGM(this)">
@@ -1373,28 +1373,28 @@
 
       <button class="fbtn" data-f="rf" onclick="selectFloor('rf',this)">
         <span class="fbtn-code">RF</span>
-        <div class="fbtn-info"><div class="fbtn-name" data-en="Rooftop" data-zh="屋顶层">옥상층</div></div>
+        <div class="fbtn-info"><div class="fbtn-name" data-en="Rooftop" data-zh="屋顶层" data-ja="屋上階">옥상층</div></div>
         <div class="wins"><div class="w"></div><div class="w"></div></div>
         <span class="fbtn-rooms">4</span>
       </button>
 
       <button class="fbtn" data-f="3f" onclick="selectFloor('3f',this)">
         <span class="fbtn-code">3F</span>
-        <div class="fbtn-info"><div class="fbtn-name" data-en="Info &amp; Analysis" data-zh="信息与分析">정보&분석</div></div>
+        <div class="fbtn-info"><div class="fbtn-name" data-en="Info &amp; Analysis" data-zh="信息与分析" data-ja="情報と分析">정보&분석</div></div>
         <div class="wins"><div class="w"></div><div class="w"></div><div class="w"></div></div>
         <span class="fbtn-rooms">5</span>
       </button>
 
       <button class="fbtn" data-f="2f" onclick="selectFloor('2f',this)">
         <span class="fbtn-code">2F</span>
-        <div class="fbtn-info"><div class="fbtn-name" data-en="Residential" data-zh="居住空间">주거공간</div></div>
+        <div class="fbtn-info"><div class="fbtn-name" data-en="Residential" data-zh="居住空间" data-ja="居住空間">주거공간</div></div>
         <div class="wins"><div class="w"></div><div class="w"></div><div class="w"></div></div>
         <span class="fbtn-rooms">3</span>
       </button>
 
       <button class="fbtn active" data-f="1f" onclick="selectFloor('1f',this)">
         <span class="fbtn-code">1F</span>
-        <div class="fbtn-info"><div class="fbtn-name" data-en="Public Hub" data-zh="公共中心">공공허브</div></div>
+        <div class="fbtn-info"><div class="fbtn-name" data-en="Public Hub" data-zh="公共中心" data-ja="公共ハブ">공공허브</div></div>
         <div class="wins"><div class="w"></div><div class="w"></div><div class="w"></div><div class="w"></div></div>
         <span class="fbtn-rooms">5</span>
       </button>
@@ -1403,7 +1403,7 @@
 
       <button class="fbtn" data-f="b1" onclick="selectFloor('b1',this)">
         <span class="fbtn-code">B1</span>
-        <div class="fbtn-info"><div class="fbtn-name" data-en="Core Infra" data-zh="核心基础设施">핵심인프라</div></div>
+        <div class="fbtn-info"><div class="fbtn-name" data-en="Core Infra" data-zh="核心基础设施" data-ja="コアインフラ">핵심인프라</div></div>
         <div class="wins"><div class="w"></div><div class="w"></div></div>
         <span class="fbtn-rooms">4</span>
       </button>
@@ -1422,66 +1422,66 @@
         <div class="fhdr">
           <div>
             <div class="fhdr-path">별빛쉘터 › <span>1F · 1층</span></div>
-            <div class="fhdr-title" data-en="Ground Floor — Public &amp; Operations Hub" data-zh="一楼 — 公共运营中心">1층 — 공공 & 운영 허브</div>
+            <div class="fhdr-title" data-en="Ground Floor — Public &amp; Operations Hub" data-zh="一楼 — 公共运营中心" data-ja="1階 — 公共・運営ハブ">1층 — 공공 & 운영 허브</div>
             <div class="fhdr-en">GROUND FLOOR · PUBLIC HUB</div>
-            <div class="fhdr-desc" data-en="Gateway and community heart of the Shelter. The ground floor houses the Starlight Lobby, broadcast station, café, and medical room — freely accessible to residents and visitors alike." data-zh="庇护所的门户与社区中心。一楼汇聚了星光大厅、广播站、咖啡厅、医务室等主要公共设施，入住者与访客均可自由使用。">쉘터의 관문이자 커뮤니티 중심지. 스타라이트 로비를 비롯해 방송국·카페·보건실 등 주요 공공 시설이 집약된 층으로, 입주자와 방문자 모두 자유롭게 이용할 수 있습니다.</div>
+            <div class="fhdr-desc" data-en="Gateway and community heart of the Shelter. The ground floor houses the Starlight Lobby, broadcast station, café, and medical room — freely accessible to residents and visitors alike." data-zh="庇护所的门户与社区中心。一楼汇聚了星光大厅、广播站、咖啡厅、医务室等主要公共设施，入住者与访客均可自由使用。" data-ja="シェルターの玄関口であり、コミュニティの中心地。スターライトロビーをはじめ、放送局・カフェ・保健室などの主要公共施設が集まり、入居者と来訪者が自由に利用できます。">쉘터의 관문이자 커뮤니티 중심지. 스타라이트 로비를 비롯해 방송국·카페·보건실 등 주요 공공 시설이 집약된 층으로, 입주자와 방문자 모두 자유롭게 이용할 수 있습니다.</div>
             <div class="fhdr-stats">
-              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Zones" data-zh="区域数">구역 수</span><span class="fhdr-stat-val">5</span></div>
-              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Access" data-zh="访问等级">접근 등급</span><span class="fhdr-stat-val">PUBLIC</span></div>
-              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Status" data-zh="运营状态">운영 상태</span><span class="fhdr-stat-val" style="color:var(--green)">OPEN</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Zones" data-zh="区域数" data-ja="区域数">구역 수</span><span class="fhdr-stat-val">5</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Access" data-zh="访问等级" data-ja="アクセスレベル">접근 등급</span><span class="fhdr-stat-val">PUBLIC</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Status" data-zh="运营状态" data-ja="運営状態">운영 상태</span><span class="fhdr-stat-val" style="color:var(--green)">OPEN</span></div>
             </div>
           </div>
           <img class="fhdr-img" src="1층 인테리어.png" alt="1층 전경" data-e="🏠" data-l="1층" data-c="#f472b6">
         </div>
-        <div class="sdiv"><span data-en="Zone List" data-zh="区域列表">구역 목록</span></div>
+        <div class="sdiv"><span data-en="Zone List" data-zh="区域列表" data-ja="区域リスト">구역 목록</span></div>
         <div class="rgrid">
           <div class="rcard" onclick="openModal('lobby')">
             <img class="rcard-img" src="별빛쉘터 로비.png" alt="스타라이트 로비" data-e="✨" data-l="스타라이트 로비" data-c="#f472b6">
-            <span class="rcard-hint" data-en="View Details" data-zh="查看详情">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details" data-zh="查看详情" data-ja="詳細を見る">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-pub">MAIN LOBBY</span>
-              <div class="rcard-name" data-en="Starlight Lobby" data-zh="星光大厅">스타라이트 로비</div>
-              <div class="rcard-desc" data-en="The Shelter's first impression. Main lobby welcoming residents and visitors." data-zh="庇护所的第一印象。欢迎入住者与访客的主大厅。">별빛쉘터의 첫인상. 입주자와 방문자를 환영하는 메인 로비</div>
+              <div class="rcard-name" data-en="Starlight Lobby" data-zh="星光大厅" data-ja="スターライトロビー">스타라이트 로비</div>
+              <div class="rcard-desc" data-en="The Shelter's first impression. Main lobby welcoming residents and visitors." data-zh="庇护所的第一印象。欢迎入住者与访客的主大厅。" data-ja="シェルターの第一印象。入居者と来訪者を迎えるメインロビー。">별빛쉘터의 첫인상. 입주자와 방문자를 환영하는 메인 로비</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
           <div class="rcard" onclick="openModal('jobn')">
             <img class="rcard-img" src="1F JOBN.png" alt="JOBN 방송국" data-e="📻" data-l="JOBN 방송국" data-c="#fb923c">
-            <span class="rcard-hint" data-en="View Details" data-zh="查看详情">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details" data-zh="查看详情" data-ja="詳細を見る">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-cast">BROADCAST</span>
-              <div class="rcard-name" data-en="JOBN Broadcasting Station" data-zh="JOBN广播站">JOBN 방송국</div>
-              <div class="rcard-desc" data-en="Official broadcast studio delivering shelter news and music 24 hours." data-zh="全天候播出庇护所新闻与音乐的官方广播工作室。">쉘터 내 소식과 음악을 24시간 전하는 공식 방송 스튜디오</div>
+              <div class="rcard-name" data-en="JOBN Broadcasting Station" data-zh="JOBN广播站" data-ja="JOBN放送局">JOBN 방송국</div>
+              <div class="rcard-desc" data-en="Official broadcast studio delivering shelter news and music 24 hours." data-zh="全天候播出庇护所新闻与音乐的官方广播工作室。" data-ja="シェルター内のニュースと音楽を24時間お届けする公式放送スタジオ。">쉘터 내 소식과 음악을 24시간 전하는 공식 방송 스튜디오</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
           <div class="rcard" onclick="openModal('sec-room')">
             <img class="rcard-img" src="1층 보안회의실 .png" alt="보안회의실" data-e="🛡️" data-l="보안 회의실" data-c="#ef4444">
-            <span class="rcard-hint" data-en="View Details" data-zh="查看详情">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details" data-zh="查看详情" data-ja="詳細を見る">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-sec">SECURE</span>
-              <div class="rcard-name" data-en="Security Conference Room" data-zh="安保会议室">보안 회의실</div>
-              <div class="rcard-desc" data-en="Soundproofed conference space exclusive to management and security team." data-zh="运营团队·安保团队专用的全隔音会议空间。">운영진·보안팀 전용 방음 차단 회의 공간</div>
+              <div class="rcard-name" data-en="Security Conference Room" data-zh="安保会议室" data-ja="セキュリティ会議室">보안 회의실</div>
+              <div class="rcard-desc" data-en="Soundproofed conference space exclusive to management and security team." data-zh="运营团队·安保团队专用的全隔音会议空间。" data-ja="運営陣・セキュリティチーム専用の完全防音会議スペース。">운영진·보안팀 전용 방음 차단 회의 공간</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
           <div class="rcard" onclick="openModal('cafe')">
             <img class="rcard-img" src="1F 카페.png" alt="쉘터 카페" data-e="☕" data-l="쉘터 카페" data-c="#1fd4a0">
-            <span class="rcard-hint" data-en="View Details" data-zh="查看详情">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details" data-zh="查看详情" data-ja="詳細を見る">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-liv">CAFÉ</span>
-              <div class="rcard-name" data-en="Shelter Café" data-zh="庇护所咖啡厅">쉘터 카페</div>
-              <div class="rcard-desc" data-en="A cozy community café where residents relax and socialize." data-zh="入住者放松身心、相互交流的温馨社区咖啡厅。">입주자들이 쉬어가며 소통하는 아늑한 커뮤니티 카페</div>
+              <div class="rcard-name" data-en="Shelter Café" data-zh="庇护所咖啡厅" data-ja="シェルターカフェ">쉘터 카페</div>
+              <div class="rcard-desc" data-en="A cozy community café where residents relax and socialize." data-zh="入住者放松身心、相互交流的温馨社区咖啡厅。" data-ja="入居者がくつろぎながら交流するアットホームなコミュニティカフェ。">입주자들이 쉬어가며 소통하는 아늑한 커뮤니티 카페</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
           <div class="rcard" onclick="openModal('medical')">
             <img class="rcard-img" src="1층 보건소.png" alt="보건실" data-e="🏥" data-l="보건실" data-c="#f87171">
-            <span class="rcard-hint" data-en="View Details" data-zh="查看详情">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details" data-zh="查看详情" data-ja="詳細を見る">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-med">MEDICAL</span>
-              <div class="rcard-name" data-en="Medical Room" data-zh="保健室">보건실</div>
-              <div class="rcard-desc" data-en="Medical support space for resident health care and emergency first aid." data-zh="负责入住者健康管理及紧急急救的医疗支援空间。">입주자 건강 관리 및 응급 처치를 담당하는 의료 지원 공간</div>
+              <div class="rcard-name" data-en="Medical Room" data-zh="保健室" data-ja="保健室">보건실</div>
+              <div class="rcard-desc" data-en="Medical support space for resident health care and emergency first aid." data-zh="负责入住者健康管理及紧急急救的医疗支援空间。" data-ja="入居者の健康管理と緊急処置を担う医療支援スペース。">입주자 건강 관리 및 응급 처치를 담당하는 의료 지원 공간</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
@@ -1493,13 +1493,13 @@
         <div class="fhdr">
           <div>
             <div class="fhdr-path">별빛쉘터 › <span>B1 · 지하층</span></div>
-            <div class="fhdr-title" data-en="Basement — Core Infrastructure Zone" data-zh="地下层 — 核心基础设施区">지하층 — 핵심 인프라 구역</div>
+            <div class="fhdr-title" data-en="Basement — Core Infrastructure Zone" data-zh="地下层 — 核心基础设施区" data-ja="地下階 — コアインフラゾーン">지하층 — 핵심 인프라 구역</div>
             <div class="fhdr-en">BASEMENT · CORE INFRASTRUCTURE</div>
-            <div class="fhdr-desc" data-en="The heart of the Shelter. The loop core anchors the server room, power generation facility, and emergency isolation zone — general residents are restricted from entry." data-zh="庇护所的心脏。以循环核心为中心，配备服务器机房、发电室及紧急隔离区，一般入住者原则上禁止进入。">쉘터의 심장부. 루프 코어를 중심으로 서버실·발전실·비상 격리구역이 배치되어 있으며, 일반 입주자는 원칙적으로 접근이 제한됩니다.</div>
+            <div class="fhdr-desc" data-en="The heart of the Shelter. The loop core anchors the server room, power generation facility, and emergency isolation zone — general residents are restricted from entry." data-zh="庇护所的心脏。以循环核心为中心，配备服务器机房、发电室及紧急隔离区，一般入住者原则上禁止进入。" data-ja="シェルターの心臓部。ループコアを中心にサーバールーム・発電室・緊急隔離区域が配置され、一般入居者は原則立入禁止です。">쉘터의 심장부. 루프 코어를 중심으로 서버실·발전실·비상 격리구역이 배치되어 있으며, 일반 입주자는 원칙적으로 접근이 제한됩니다.</div>
             <div class="fhdr-stats">
-              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Zones" data-zh="区域数">구역 수</span><span class="fhdr-stat-val">4</span></div>
-              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Access" data-zh="访问等级">접근 등급</span><span class="fhdr-stat-val">RESTRICTED</span></div>
-              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Status" data-zh="运营状态">운영 상태</span><span class="fhdr-stat-val" style="color:var(--green)">ONLINE</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Zones" data-zh="区域数" data-ja="区域数">구역 수</span><span class="fhdr-stat-val">4</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Access" data-zh="访问等级" data-ja="アクセスレベル">접근 등급</span><span class="fhdr-stat-val">RESTRICTED</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Status" data-zh="运营状态" data-ja="運営状態">운영 상태</span><span class="fhdr-stat-val" style="color:var(--green)">ONLINE</span></div>
             </div>
           </div>
           <img class="fhdr-img" src="B1.png" alt="B1 지하층" data-e="⚙️" data-l="B1 지하층" data-c="#818cf8">
@@ -1508,41 +1508,41 @@
         <div class="rgrid">
           <div class="rcard" onclick="openModal('server')">
             <img class="rcard-img" src="지하층 서버실.png" alt="서버실" data-e="🖥️" data-l="서버실" data-c="#6fa3ff">
-            <span class="rcard-hint" data-en="View Details" data-zh="查看详情">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details" data-zh="查看详情" data-ja="詳細を見る">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-sys">SYSTEM</span>
-              <div class="rcard-name" data-en="Server Room" data-zh="服务器机房">서버실</div>
-              <div class="rcard-desc" data-en="Core server infrastructure managing all shelter data and networks." data-zh="管理庇护所全部数据及网络的核心服务器基础设施。">쉘터 전체 데이터 및 네트워크를 관리하는 핵심 서버 인프라</div>
+              <div class="rcard-name" data-en="Server Room" data-zh="服务器机房" data-ja="サーバールーム">서버실</div>
+              <div class="rcard-desc" data-en="Core server infrastructure managing all shelter data and networks." data-zh="管理庇护所全部数据及网络的核心服务器基础设施。" data-ja="シェルター全体のデータとネットワークを管理するコアサーバーインフラ。">쉘터 전체 데이터 및 네트워크를 관리하는 핵심 서버 인프라</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
           <div class="rcard" onclick="openModal('loopcore')">
             <img class="rcard-img" src="지하층 루프코어.png" alt="루프 코어" data-e="⚡" data-l="루프 코어" data-c="#00ccff">
-            <span class="rcard-hint" data-en="View Details" data-zh="查看详情">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details" data-zh="查看详情" data-ja="詳細を見る">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-core">CORE</span>
-              <div class="rcard-name" data-en="Loop Core" data-zh="循环核心">루프 코어</div>
-              <div class="rcard-desc" data-en="Foundation of the Shelter's existence. Central control unit of the loop system." data-zh="庇护所存在的根基。循环系统中央控制装置所在之处。">쉘터 존재의 근간. 루프 시스템 중앙 제어 장치가 집약된 공간</div>
+              <div class="rcard-name" data-en="Loop Core" data-zh="循环核心" data-ja="ループコア">루프 코어</div>
+              <div class="rcard-desc" data-en="Foundation of the Shelter's existence. Central control unit of the loop system." data-zh="庇护所存在的根基。循环系统中央控制装置所在之处。" data-ja="シェルターが存在できる根拠。ループシステムの中央制御装置が集約された空間。">쉘터 존재의 근간. 루프 시스템 중앙 제어 장치가 집약된 공간</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
           <div class="rcard" onclick="openModal('power')">
             <img class="rcard-img" src="지하층 발전실.png" alt="발전실" data-e="🔋" data-l="발전실" data-c="#f87171">
-            <span class="rcard-hint" data-en="View Details" data-zh="查看详情">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details" data-zh="查看详情" data-ja="詳細を見る">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-pow">POWER</span>
-              <div class="rcard-name" data-en="Power Room" data-zh="发电室">발전실</div>
-              <div class="rcard-desc" data-en="Main power supply equipment and emergency power system for the shelter." data-zh="庇护所主供电设备及紧急电源系统。">쉘터 전력 공급 주 설비 및 비상 전원 시스템</div>
+              <div class="rcard-name" data-en="Power Room" data-zh="发电室" data-ja="発電室">발전실</div>
+              <div class="rcard-desc" data-en="Main power supply equipment and emergency power system for the shelter." data-zh="庇护所主供电设备及紧急电源系统。" data-ja="シェルターへの主電力設備と非常用電源システム。">쉘터 전력 공급 주 설비 및 비상 전원 시스템</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
           <div class="rcard" onclick="openModal('isolation')">
             <img class="rcard-img" src="지하층 비상격리구역.png" alt="비상격리구역" data-e="⚠️" data-l="비상 격리구역" data-c="#ef4444">
-            <span class="rcard-hint" data-en="View Details" data-zh="查看详情">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details" data-zh="查看详情" data-ja="詳細を見る">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-sec">RESTRICTED</span>
-              <div class="rcard-name" data-en="Emergency Isolation Zone" data-zh="紧急隔离区">비상 격리구역</div>
-              <div class="rcard-desc" data-en="Special lockdown zone activated during crisis situations." data-zh="危机情况下启动的专用封锁区域。">위기 상황 발생 시 활성화되는 봉쇄 전용 특수 구역</div>
+              <div class="rcard-name" data-en="Emergency Isolation Zone" data-zh="紧急隔离区" data-ja="緊急隔離区域">비상 격리구역</div>
+              <div class="rcard-desc" data-en="Special lockdown zone activated during crisis situations." data-zh="危机情况下启动的专用封锁区域。" data-ja="危機発生時に起動する特殊封鎖専用区域。">위기 상황 발생 시 활성화되는 봉쇄 전용 특수 구역</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
@@ -1554,46 +1554,46 @@
         <div class="fhdr">
           <div>
             <div class="fhdr-path">별빛쉘터 › <span>2F · 2층</span></div>
-            <div class="fhdr-title" data-en="Second Floor — Residential &amp; Living Space" data-zh="二楼 — 居住与生活空间">2층 — 주거 & 생활 공간</div>
+            <div class="fhdr-title" data-en="Second Floor — Residential &amp; Living Space" data-zh="二楼 — 居住与生活空间" data-ja="2階 — 居住・生活空間">2층 — 주거 & 생활 공간</div>
             <div class="fhdr-en">SECOND FLOOR · RESIDENTIAL ZONE</div>
-            <div class="fhdr-desc" data-en="Where residents' daily lives unfold. From private rooms to a shared kitchen and laundry — a comfortable living environment for all." data-zh="入住者日常生活展开的空间。从独立房间到共用厨房、洗衣房，为全体成员提供舒适的居住环境。">입주자들의 일상이 이루어지는 공간. 개인 방부터 공용 주방·세탁실까지 쾌적한 거주 환경을 제공합니다.</div>
+            <div class="fhdr-desc" data-en="Where residents' daily lives unfold. From private rooms to a shared kitchen and laundry — a comfortable living environment for all." data-zh="入住者日常生活展开的空间。从独立房间到共用厨房、洗衣房，为全体成员提供舒适的居住环境。" data-ja="入居者の日常が営まれる空間。個室から共用キッチン・洗濯室まで、快適な居住環境を提供します。">입주자들의 일상이 이루어지는 공간. 개인 방부터 공용 주방·세탁실까지 쾌적한 거주 환경을 제공합니다.</div>
             <div class="fhdr-stats">
-              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Zones" data-zh="区域数">구역 수</span><span class="fhdr-stat-val">3</span></div>
-              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Access" data-zh="访问等级">접근 등급</span><span class="fhdr-stat-val">RESIDENT</span></div>
-              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Occupancy" data-zh="入驻状况">입주 현황</span><span class="fhdr-stat-val" style="color:var(--green)" data-en="Active">운영 중</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Zones" data-zh="区域数" data-ja="区域数">구역 수</span><span class="fhdr-stat-val">3</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Access" data-zh="访问等级" data-ja="アクセスレベル">접근 등급</span><span class="fhdr-stat-val">RESIDENT</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Occupancy" data-zh="入驻状况" data-ja="入居状況">입주 현황</span><span class="fhdr-stat-val" style="color:var(--green)" data-en="Active">운영 중</span></div>
             </div>
           </div>
           <img class="fhdr-img" src="2층 인테리어.png" alt="2층 전경" data-e="🏠" data-l="2층" data-c="#1fd4a0">
         </div>
-        <div class="sdiv"><span data-en="Zone List" data-zh="区域列表">구역 목록</span></div>
+        <div class="sdiv"><span data-en="Zone List" data-zh="区域列表" data-ja="区域リスト">구역 목록</span></div>
         <div class="rgrid">
           <div class="rcard" onclick="openModal('personal')">
             <img class="rcard-img" src="2층 개인 방.png" alt="개인방 구역" data-e="🛏️" data-l="개인방 구역" data-c="#1fd4a0">
-            <span class="rcard-hint" data-en="View Details" data-zh="查看详情">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details" data-zh="查看详情" data-ja="詳細を見る">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-liv">LIVING</span>
-              <div class="rcard-name" data-en="Personal Rooms" data-zh="个人房间区">개인방 구역</div>
-              <div class="rcard-desc" data-en="Private quarters assigned to each resident. Full privacy guaranteed." data-zh="分配给每位入住者的私人居所。隐私完全受到保障。">각 입주자에게 배정된 개인 숙소. 프라이버시가 보장된 공간</div>
+              <div class="rcard-name" data-en="Personal Rooms" data-zh="个人房间区" data-ja="個室エリア">개인방 구역</div>
+              <div class="rcard-desc" data-en="Private quarters assigned to each resident. Full privacy guaranteed." data-zh="分配给每位入住者的私人居所。隐私完全受到保障。" data-ja="各入居者に割り当てられた個人の居住空間。プライバシーが完全に保障されます。">각 입주자에게 배정된 개인 숙소. 프라이버시가 보장된 공간</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
           <div class="rcard" onclick="openModal('kitchen')">
             <img class="rcard-img" src="2층 공용주방.png" alt="공용주방" data-e="🍳" data-l="공용 주방" data-c="#1fd4a0">
-            <span class="rcard-hint" data-en="View Details" data-zh="查看详情">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details" data-zh="查看详情" data-ja="詳細を見る">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-liv">KITCHEN</span>
-              <div class="rcard-name" data-en="Communal Kitchen" data-zh="公用厨房">공용 주방</div>
-              <div class="rcard-desc" data-en="Spacious shared cooking area available to all residents." data-zh="所有入住者均可使用的宽敞共用烹饪空间。">입주자 모두가 이용할 수 있는 넓고 쾌적한 공용 조리 공간</div>
+              <div class="rcard-name" data-en="Communal Kitchen" data-zh="公用厨房" data-ja="共用キッチン">공용 주방</div>
+              <div class="rcard-desc" data-en="Spacious shared cooking area available to all residents." data-zh="所有入住者均可使用的宽敞共用烹饪空间。" data-ja="全入居者が利用できる広々とした共用調理スペース。">입주자 모두가 이용할 수 있는 넓고 쾌적한 공용 조리 공간</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
           <div class="rcard" onclick="openModal('laundry')">
             <img class="rcard-img" alt="세탁실" data-e="🧺" data-l="세탁실" data-c="#1fd4a0" data-no-src>
-            <span class="rcard-hint" data-en="View Details" data-zh="查看详情">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details" data-zh="查看详情" data-ja="詳細を見る">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-liv">UTILITY</span>
-              <div class="rcard-name" data-en="Laundry Room" data-zh="洗衣室">세탁실</div>
-              <div class="rcard-desc" data-en="Shared laundry space equipped with washing machines and dryers." data-zh="配备洗衣机、烘干机等洗涤设备的共用洗衣空间。">세탁기·건조기 등 세탁 설비가 갖춰진 공용 세탁 공간</div>
+              <div class="rcard-name" data-en="Laundry Room" data-zh="洗衣室" data-ja="洗濯室">세탁실</div>
+              <div class="rcard-desc" data-en="Shared laundry space equipped with washing machines and dryers." data-zh="配备洗衣机、烘干机等洗涤设备的共用洗衣空间。" data-ja="洗濯機・乾燥機などの設備が整った共用洗濯スペース。">세탁기·건조기 등 세탁 설비가 갖춰진 공용 세탁 공간</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
@@ -1605,66 +1605,66 @@
         <div class="fhdr">
           <div>
             <div class="fhdr-path">별빛쉘터 › <span>3F · 3층</span></div>
-            <div class="fhdr-title" data-en="Third Floor — Information &amp; Analysis Center" data-zh="三楼 — 信息与分析中心">3층 — 정보 & 분석 센터</div>
+            <div class="fhdr-title" data-en="Third Floor — Information &amp; Analysis Center" data-zh="三楼 — 信息与分析中心" data-ja="3階 — 情報・分析センター">3층 — 정보 & 분석 센터</div>
             <div class="fhdr-en">THIRD FLOOR · INFORMATION &amp; ANALYSIS</div>
-            <div class="fhdr-desc" data-en="The Shelter's brain. A floor housing the archive, analysis lab, reading room, conference room, and real-time monitoring system." data-zh="庇护所的大脑。汇聚了档案室、分析室、阅览室、会议室及实时监控系统。">쉘터의 두뇌. 방대한 기록이 보존되는 아카이브, 정밀 분석실, 열람실·회의실 그리고 실시간 모니터링 시스템이 집약된 층입니다.</div>
+            <div class="fhdr-desc" data-en="The Shelter's brain. A floor housing the archive, analysis lab, reading room, conference room, and real-time monitoring system." data-zh="庇护所的大脑。汇聚了档案室、分析室、阅览室、会议室及实时监控系统。" data-ja="シェルターの頭脳。アーカイブ・分析室・閲覧室・会議室・リアルタイム監視システムが集結する階。">쉘터의 두뇌. 방대한 기록이 보존되는 아카이브, 정밀 분석실, 열람실·회의실 그리고 실시간 모니터링 시스템이 집약된 층입니다.</div>
             <div class="fhdr-stats">
-              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Zones" data-zh="区域数">구역 수</span><span class="fhdr-stat-val">5</span></div>
-              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Access" data-zh="访问等级">접근 등급</span><span class="fhdr-stat-val">STAFF</span></div>
-              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Archive" data-zh="档案">아카이브</span><span class="fhdr-stat-val" style="color:var(--acc2)" data-en="Online">온라인</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Zones" data-zh="区域数" data-ja="区域数">구역 수</span><span class="fhdr-stat-val">5</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Access" data-zh="访问等级" data-ja="アクセスレベル">접근 등급</span><span class="fhdr-stat-val">STAFF</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Archive" data-zh="档案" data-ja="アーカイブ">아카이브</span><span class="fhdr-stat-val" style="color:var(--acc2)" data-en="Online">온라인</span></div>
             </div>
           </div>
           <img class="fhdr-img" src="3층 인테리어.png" alt="3층 전경" data-e="📚" data-l="3층" data-c="#fbbf24">
         </div>
-        <div class="sdiv"><span data-en="Zone List" data-zh="区域列表">구역 목록</span></div>
+        <div class="sdiv"><span data-en="Zone List" data-zh="区域列表" data-ja="区域リスト">구역 목록</span></div>
         <div class="rgrid">
           <div class="rcard" onclick="openModal('archive')">
             <img class="rcard-img" src="3층 아카이브 룸.png" alt="아카이브 룸" data-e="🗄️" data-l="아카이브 룸" data-c="#fbbf24">
-            <span class="rcard-hint" data-en="View Details" data-zh="查看详情">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details" data-zh="查看详情" data-ja="詳細を見る">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-info">ARCHIVE</span>
-              <div class="rcard-name" data-en="Archive Room" data-zh="档案室">아카이브 룸</div>
-              <div class="rcard-desc" data-en="Data archive preserving all records related to shelter history and loops." data-zh="保存庇护所历史与循环相关全部记录的数据档案库。">쉘터 역사와 루프 관련 모든 기록이 보존되는 데이터 아카이브</div>
+              <div class="rcard-name" data-en="Archive Room" data-zh="档案室" data-ja="アーカイブルーム">아카이브 룸</div>
+              <div class="rcard-desc" data-en="Data archive preserving all records related to shelter history and loops." data-zh="保存庇护所历史与循环相关全部记录的数据档案库。" data-ja="シェルターの歴史とループに関する全記録が保存されるデータアーカイブ。">쉘터 역사와 루프 관련 모든 기록이 보존되는 데이터 아카이브</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
           <div class="rcard" onclick="openModal('analysis')">
             <img class="rcard-img" src="3층 분석실.png" alt="분석실" data-e="🔬" data-l="분석실" data-c="#fbbf24">
-            <span class="rcard-hint" data-en="View Details" data-zh="查看详情">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details" data-zh="查看详情" data-ja="詳細を見る">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-info">ANALYSIS</span>
-              <div class="rcard-name" data-en="Analysis Lab" data-zh="分析室">분석실</div>
-              <div class="rcard-desc" data-en="Specialist research space for examining collected data and phenomena." data-zh="对收集的数据与现象进行精密分析的专业研究空间。">수집된 데이터와 현상을 면밀히 분석하는 전문 연구 공간</div>
+              <div class="rcard-name" data-en="Analysis Lab" data-zh="分析室" data-ja="分析室">분석실</div>
+              <div class="rcard-desc" data-en="Specialist research space for examining collected data and phenomena." data-zh="对收集的数据与现象进行精密分析的专业研究空间。" data-ja="収集したデータや現象を精密に分析する専門的研究スペース。">수집된 데이터와 현상을 면밀히 분석하는 전문 연구 공간</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
           <div class="rcard" onclick="openModal('reading')">
             <img class="rcard-img" src="3층 열람실.png" alt="열람실" data-e="📖" data-l="열람실" data-c="#fbbf24">
-            <span class="rcard-hint" data-en="View Details" data-zh="查看详情">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details" data-zh="查看详情" data-ja="詳細を見る">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-info">LIBRARY</span>
-              <div class="rcard-name" data-en="Reading Room" data-zh="阅览室">열람실</div>
-              <div class="rcard-desc" data-en="A quiet focused space for browsing materials and personal study." data-zh="可安静阅览资料、专心学习的集中空间。">자료를 열람하고 공부할 수 있는 조용한 집중 공간</div>
+              <div class="rcard-name" data-en="Reading Room" data-zh="阅览室" data-ja="閲覧室">열람실</div>
+              <div class="rcard-desc" data-en="A quiet focused space for browsing materials and personal study." data-zh="可安静阅览资料、专心学习的集中空间。" data-ja="資料を閲覧し個人研究に集中できる静かなスペース。">자료를 열람하고 공부할 수 있는 조용한 집중 공간</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
           <div class="rcard" onclick="openModal('conf3f')">
             <img class="rcard-img" src="3층 회의실.png" alt="회의실" data-e="🗂️" data-l="회의실" data-c="#f472b6">
-            <span class="rcard-hint" data-en="View Details" data-zh="查看详情">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details" data-zh="查看详情" data-ja="詳細を見る">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-pub">MEETING</span>
-              <div class="rcard-name" data-en="Conference Room" data-zh="会议室">회의실</div>
-              <div class="rcard-desc" data-en="Multi-purpose meeting space for team collaboration and strategy sessions." data-zh="用于团队协作与战略研讨的多功能会议空间。">팀 단위 협업 및 전략 회의를 위한 다목적 회의 공간</div>
+              <div class="rcard-name" data-en="Conference Room" data-zh="会议室" data-ja="会議室">회의실</div>
+              <div class="rcard-desc" data-en="Multi-purpose meeting space for team collaboration and strategy sessions." data-zh="用于团队协作与战略研讨的多功能会议空间。" data-ja="チーム協業と戦略会議のための多目的会議スペース。">팀 단위 협업 및 전략 회의를 위한 다목적 회의 공간</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
           <div class="rcard" onclick="openModal('monitor')">
             <img class="rcard-img" src="3층 서버모니터링실.png" alt="서버 모니터링실" data-e="📡" data-l="모니터링실" data-c="#6fa3ff">
-            <span class="rcard-hint" data-en="View Details" data-zh="查看详情">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details" data-zh="查看详情" data-ja="詳細を見る">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-sys">MONITOR</span>
-              <div class="rcard-name" data-en="Server Monitoring Center" data-zh="服务器监控室">서버 모니터링실</div>
-              <div class="rcard-desc" data-en="Integrated monitoring center for real-time surveillance of all shelter zones." data-zh="对庇护所全区域进行实时监控的综合管控中心。">쉘터 전역 상황을 실시간 감시하는 통합 모니터링 센터</div>
+              <div class="rcard-name" data-en="Server Monitoring Center" data-zh="服务器监控室" data-ja="サーバー監視室">서버 모니터링실</div>
+              <div class="rcard-desc" data-en="Integrated monitoring center for real-time surveillance of all shelter zones." data-zh="对庇护所全区域进行实时监控的综合管控中心。" data-ja="シェルター全域をリアルタイムで監視する統合管制センター。">쉘터 전역 상황을 실시간 감시하는 통합 모니터링 센터</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
@@ -1676,56 +1676,56 @@
         <div class="fhdr">
           <div>
             <div class="fhdr-path">별빛쉘터 › <span>RF · 옥상층</span></div>
-            <div class="fhdr-title" data-en="Rooftop — Where the Sky Begins" data-zh="屋顶层 — 与天空相接之处">옥상층 — 하늘과 맞닿은 공간</div>
+            <div class="fhdr-title" data-en="Rooftop — Where the Sky Begins" data-zh="屋顶层 — 与天空相接之处" data-ja="屋上階 — 空と出会う場所">옥상층 — 하늘과 맞닿은 공간</div>
             <div class="fhdr-en">ROOFTOP · OPEN SKY ZONE</div>
-            <div class="fhdr-desc" data-en="Spaces that breathe under the stars. The rooftop garden's greenery, the observatory's telescope, and an open-air broadcast stage — adding leisure and romance to shelter life." data-zh="星空下的呼吸之所。屋顶花园的绿意、天文台的望远镜，以及露天广播舞台，为庇护所生活增添了闲适与浪漫。">별빛 아래 숨 쉬는 공간들. 옥상정원의 초록빛과 천체관측실의 망원경, 탁 트인 야외 방송 무대까지 — 쉘터 생활에 여유와 낭만을 더해줍니다.</div>
+            <div class="fhdr-desc" data-en="Spaces that breathe under the stars. The rooftop garden's greenery, the observatory's telescope, and an open-air broadcast stage — adding leisure and romance to shelter life." data-zh="星空下的呼吸之所。屋顶花园的绿意、天文台的望远镜，以及露天广播舞台，为庇护所生活增添了闲适与浪漫。" data-ja="星空の下で息づく空間たち。屋上庭園の緑と天文台の望遠鏡、野外放送ステージがシェルター生活に安らぎとロマンスを添えます。">별빛 아래 숨 쉬는 공간들. 옥상정원의 초록빛과 천체관측실의 망원경, 탁 트인 야외 방송 무대까지 — 쉘터 생활에 여유와 낭만을 더해줍니다.</div>
             <div class="fhdr-stats">
-              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Zones" data-zh="区域数">구역 수</span><span class="fhdr-stat-val">4</span></div>
-              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Access" data-zh="访问等级">접근 등급</span><span class="fhdr-stat-val">OPEN</span></div>
-              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Weather" data-zh="天气">날씨</span><span class="fhdr-stat-val" style="color:var(--acc2)" data-en="Clear ★" data-zh="晴朗 ★">청명 ★</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Zones" data-zh="区域数" data-ja="区域数">구역 수</span><span class="fhdr-stat-val">4</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Access" data-zh="访问等级" data-ja="アクセスレベル">접근 등급</span><span class="fhdr-stat-val">OPEN</span></div>
+              <div class="fhdr-stat"><span class="fhdr-stat-lbl" data-en="Weather" data-zh="天气" data-ja="天気">날씨</span><span class="fhdr-stat-val" style="color:var(--acc2)" data-en="Clear ★" data-zh="晴朗 ★" data-ja="晴れ ★">청명 ★</span></div>
             </div>
           </div>
           <img class="fhdr-img" src="옥상층.png" alt="옥상층 전경" data-e="🌙" data-l="옥상층" data-c="#a78bfa">
         </div>
-        <div class="sdiv"><span data-en="Zone List" data-zh="区域列表">구역 목록</span></div>
+        <div class="sdiv"><span data-en="Zone List" data-zh="区域列表" data-ja="区域リスト">구역 목록</span></div>
         <div class="rgrid">
           <div class="rcard" onclick="openModal('garden')">
             <img class="rcard-img" src="RF 옥상정원.png" alt="옥상 정원" data-e="🌿" data-l="옥상 정원" data-c="#a78bfa">
-            <span class="rcard-hint" data-en="View Details" data-zh="查看详情">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details" data-zh="查看详情" data-ja="詳細を見る">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-lei">GARDEN</span>
-              <div class="rcard-name" data-en="Rooftop Garden" data-zh="屋顶花园">옥상 정원</div>
-              <div class="rcard-desc" data-en="A rooftop green space where plants and breeze coexist. A healing walk in nature." data-zh="植物与微风共存的屋顶绿地。大自然中的疗愈散步道。">식물과 바람이 함께하는 옥상 녹지 공간. 자연 속 힐링 산책로</div>
+              <div class="rcard-name" data-en="Rooftop Garden" data-zh="屋顶花园" data-ja="屋上庭園">옥상 정원</div>
+              <div class="rcard-desc" data-en="A rooftop green space where plants and breeze coexist. A healing walk in nature." data-zh="植物与微风共存的屋顶绿地。大自然中的疗愈散步道。" data-ja="植物と風が共存する屋上の緑地空間。自然の中の癒やし散歩道。">식물과 바람이 함께하는 옥상 녹지 공간. 자연 속 힐링 산책로</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
           <div class="rcard" onclick="openModal('obs')">
             <img class="rcard-img" src="RF 천체관측실.png" alt="천체관측실" data-e="🔭" data-l="천체관측실" data-c="#a78bfa">
-            <span class="rcard-hint" data-en="View Details" data-zh="查看详情">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details" data-zh="查看详情" data-ja="詳細を見る">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-lei">OBSERVATORY</span>
-              <div class="rcard-name" data-en="Observatory" data-zh="天文台">천체관측실</div>
-              <div class="rcard-desc" data-en="The origin of the name Starlight Shelter. An astronomical facility for gazing at the night sky." data-zh="「星光庇护所」名称的起源之地。用于观测夜空的天文设施。">별빛쉘터 이름을 품은 공간. 밤하늘을 관측하는 천문 시설</div>
+              <div class="rcard-name" data-en="Observatory" data-zh="天文台" data-ja="天文台">천체관측실</div>
+              <div class="rcard-desc" data-en="The origin of the name Starlight Shelter. An astronomical facility for gazing at the night sky." data-zh="「星光庇护所」名称的起源之地。用于观测夜空的天文设施。" data-ja="「星光シェルター」の名の由来となった場所。夜空を観測する天文施設。">별빛쉘터 이름을 품은 공간. 밤하늘을 관측하는 천문 시설</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
           <div class="rcard" onclick="openModal('lounge')">
             <img class="rcard-img" src="RF 휴식라운지.png" alt="휴식 라운지" data-e="🛋️" data-l="휴식 라운지" data-c="#a78bfa">
-            <span class="rcard-hint" data-en="View Details" data-zh="查看详情">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details" data-zh="查看详情" data-ja="詳細を見る">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-lei">LOUNGE</span>
-              <div class="rcard-name" data-en="Rest Lounge" data-zh="休息廊">휴식 라운지</div>
-              <div class="rcard-desc" data-en="An open-air rest space where you can unwind freely beneath the open sky." data-zh="在开阔天空下可以自由放松的开放式休憩空间。">야외 하늘 아래에서 편안히 쉬어갈 수 있는 개방형 휴게 공간</div>
+              <div class="rcard-name" data-en="Rest Lounge" data-zh="休息廊" data-ja="休憩ラウンジ">휴식 라운지</div>
+              <div class="rcard-desc" data-en="An open-air rest space where you can unwind freely beneath the open sky." data-zh="在开阔天空下可以自由放松的开放式休憩空间。" data-ja="開放的な空の下でのびのびと休める開放型休憩スペース。">야외 하늘 아래에서 편안히 쉬어갈 수 있는 개방형 휴게 공간</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
           <div class="rcard" onclick="openModal('outdoor')">
             <img class="rcard-img" src="RF 야외방송공간.png" alt="야외 방송공간" data-e="🎙️" data-l="야외 방송공간" data-c="#fb923c">
-            <span class="rcard-hint" data-en="View Details" data-zh="查看详情">자세히 보기</span>
+            <span class="rcard-hint" data-en="View Details" data-zh="查看详情" data-ja="詳細を見る">자세히 보기</span>
             <div class="rcard-body">
               <span class="rbadge b-cast">OUTDOOR</span>
-              <div class="rcard-name" data-en="Outdoor Broadcast Stage" data-zh="户外广播舞台">야외 방송공간</div>
-              <div class="rcard-desc" data-en="An outdoor performance and broadcast event stage set against the open sky." data-zh="以天空为背景的户外演出及广播活动舞台。">하늘을 배경으로 열리는 야외 공연 및 방송 이벤트 무대</div>
+              <div class="rcard-name" data-en="Outdoor Broadcast Stage" data-zh="户外广播舞台" data-ja="野外放送ステージ">야외 방송공간</div>
+              <div class="rcard-desc" data-en="An outdoor performance and broadcast event stage set against the open sky." data-zh="以天空为背景的户外演出及广播活动舞台。" data-ja="空を背景に繰り広げられる野外公演・放送イベントのステージ。">하늘을 배경으로 열리는 야외 공연 및 방송 이벤트 무대</div>
             </div>
             <div class="rcard-bar"></div>
           </div>
@@ -1922,6 +1922,9 @@ const ROOMS = {
     zhPath:'1F · 一楼', zhTitle:'星光大厅',
     zhDesc:'星光庇护所的门面与起点。高耸的天花板与冰冷的金属结构之间，温暖的灯光弥漫整个空间，迎接每一位入住者与访客。中央服务台可提供庇护所生活各方面的帮助，公告栏随时更新庇护所的最新动态与公告。',
     zhMeta:[['位置','1F — 一楼'],['访问等级','PUBLIC'],['运营时间','24小时'],['负责','服务台']],
+    jaPath:'1F · 1階', jaTitle:'スターライトロビー',
+    jaDesc:'星光シェルターの顔であり出発点。高い天井と冷たい金属構造物の間に温かな照明が広がるこの空間は、入居者と来訪者を温かく迎えます。中央案内デスクではシェルター生活全般のサポートを受けられ、掲示板にはシェルターの最新情報が随時更新されます。',
+    jaMeta:[['場所', '1F — 1階'], ['アクセス', 'PUBLIC'], ['営業時間', '24時間'], ['担当', '案内デスク']],
     meta:[['위치','1F — 1층'],['접근 등급','PUBLIC'],['운영 시간','24시간'],['담당','안내 데스크']]
   },
   jobn:{
@@ -1934,6 +1937,9 @@ const ROOMS = {
     zhPath:'1F · 一楼', zhTitle:'JOBN广播站',
     zhDesc:'Just One Beautiful Night — 星光庇护所官方广播站。全天24小时播出庇护所内部新闻、音乐及各类节目。配备隔音演播室和最新设备，任何入住者均可申请参与嘉宾播出。',
     zhMeta:[['位置','1F — 一楼'],['频道','JOBN FM'],['运营','24小时播出'],['参与','可申请嘉宾']],
+    jaPath:'1F · 1階', jaTitle:'JOBN放送局',
+    jaDesc:'Just One Beautiful Night — 星光シェルターの公式放送局。シェルター内のニュース・音楽・各種プログラムを24時間放送。防音スタジオと最新設備を備え、入居者なら誰でも申し込みでゲスト出演できます。',
+    jaMeta:[['場所', '1F — 1階'], ['チャンネル', 'JOBN FM'], ['放送', '24時間'], ['参加', 'ゲスト申込受付中']],
     meta:[['위치','1F — 1층'],['채널','JOBN FM'],['운영','24시간 방송'],['참여','게스트 신청 가능']]
   },
   'sec-room':{
@@ -1946,6 +1952,9 @@ const ROOMS = {
     zhPath:'1F · 一楼', zhTitle:'安保会议室',
     zhDesc:'庇护所运营团队与安保团队讨论机密事项的专用空间。配备完全隔音处理与信号屏蔽设施，内部对话不会泄露至外部。采用预约制运营，仅经事先批准的人员方可入室。',
     zhMeta:[['位置','1F — 一楼'],['访问等级','AUTHORIZED'],['隔音等级','CLASS B'],['运营','预约制']],
+    jaPath:'1F · 1階', jaTitle:'セキュリティ会議室',
+    jaDesc:'シェルター運営陣とセキュリティチームが機密事項を協議する専用スペース。完全防音処理と電波遮断設備を備え、内部の会話が外部に漏れることはありません。予約制で運営され、事前承認された人員のみ入室できます。',
+    jaMeta:[['場所', '1F — 1階'], ['アクセス', 'AUTHORIZED'], ['防音レベル', 'CLASS B'], ['運営', '予約制']],
     meta:[['위치','1F — 1층'],['접근 등급','AUTHORIZED'],['방음 등급','CLASS B'],['운영','예약제']]
   },
   cafe:{
@@ -1958,6 +1967,9 @@ const ROOMS = {
     zhPath:'1F · 一楼', zhTitle:'庇护所咖啡厅',
     zhDesc:'在繁忙的庇护所生活中短暂喘息的空间。入住者们端着香浓咖啡自由聚集、畅谈。提供饮品与简餐，每张桌子均配有插座和个人照明，也可用作工作空间。',
     zhMeta:[['位置','1F — 一楼'],['访问等级','PUBLIC'],['运营时间','07:00 — 23:00'],['提供','饮品·小食']],
+    jaPath:'1F · 1階', jaTitle:'シェルターカフェ',
+    jaDesc:'忙しいシェルター生活の中でひと息つける空間。芳醇なコーヒー片手に入居者たちが自由に集まり語り合います。飲み物と軽食を提供し、各テーブルにはコンセントと個人照明も備わり、作業スペースとしても活用できます。',
+    jaMeta:[['場所', '1F — 1階'], ['アクセス', 'PUBLIC'], ['営業時間', '07:00 — 23:00'], ['提供', 'ドリンク・スナック']],
     meta:[['위치','1F — 1층'],['접근 등급','PUBLIC'],['운영 시간','07:00 — 23:00'],['제공','음료·스낵']]
   },
   medical:{
@@ -1970,6 +1982,9 @@ const ROOMS = {
     zhPath:'1F · 一楼', zhTitle:'保健室',
     zhDesc:'守护入住者健康的医疗支援空间。配备常备药品与基本诊疗器械，专职医疗人员定期驻场。紧急情况下可进行初步处置后与外部机构联动。',
     zhMeta:[['位置','1F — 一楼'],['访问等级','PUBLIC'],['运营时间','09:00 — 21:00'],['紧急时','24小时待命']],
+    jaPath:'1F · 1階', jaTitle:'保健室',
+    jaDesc:'入居者の健康を守る医療支援スペース。常備薬と基本的な診療器具を備え、専任医療スタッフが定期的に在駐します。緊急時は初期処置後、外部機関と連携する体制を整えています。',
+    jaMeta:[['場所', '1F — 1階'], ['アクセス', 'PUBLIC'], ['営業時間', '09:00 — 21:00'], ['緊急時', '24時間待機']],
     meta:[['위치','1F — 1층'],['접근 등급','PUBLIC'],['운영 시간','09:00 — 21:00'],['긴급 시','24시간 대기']]
   },
   /* ── B1 ── */
@@ -1983,6 +1998,9 @@ const ROOMS = {
     zhPath:'B1 · 地下层', zhTitle:'服务器机房',
     zhDesc:'汇聚星光庇护所全部数字信号的空间。数十个机架上密密麻麻的服务器不停运转，维持整个庇护所的网络、数据存储及内部通信系统。室内温度始终保持在18°C以下，仅授权技术人员可进入。',
     zhMeta:[['位置','B1 — 地下层'],['访问等级','RESTRICTED'],['温度维持','≤ 18°C'],['运营','24/7全时运行']],
+    jaPath:'B1 · 地下階', jaTitle:'サーバールーム',
+    jaDesc:'星光シェルターのあらゆるデジタル信号が流れ込む空間。数十ラックに敷き詰められたサーバーが絶え間なく稼働し、シェルター全体のネットワーク・データ保存・内部通信システムを維持します。室温は常時18°C以下に保たれ、許可を得た技術者のみ入室できます。',
+    jaMeta:[['場所', 'B1 — 地下階'], ['アクセス', 'RESTRICTED'], ['室温維持', '≤ 18°C'], ['運営', '24/7']],
     meta:[['위치','B1 — 지하층'],['접근 등급','RESTRICTED'],['온도 유지','≤ 18°C'],['운영','24/7 상시 가동']]
   },
   loopcore:{
@@ -1995,6 +2013,9 @@ const ROOMS = {
     zhPath:'B1 · 地下层', zhTitle:'循环核心',
     zhDesc:'星光庇护所存在的根基。使庇护所维持循环状态的核心装置集中于此。在庞大的设备之间，可以感受到微妙脉动的能量。关于这一空间的信息大多列为机密，仅最高权限管理员才能访问完整系统。',
     zhMeta:[['位置','B1 — 地下层'],['访问等级','CLASSIFIED'],['系统','循环维持装置'],['状态','活跃']],
+    jaPath:'B1 · 地下階', jaTitle:'ループコア',
+    jaDesc:'星光シェルターが存在できる理由。シェルターをループ状態に保つ中核装置がここに集約されています。重厚な機器の間に微妙な脈動エネルギーが感じられ、この空間に関する情報はほとんどが機密扱いです。最高権限管理者のみがフルアクセスできます。',
+    jaMeta:[['場所', 'B1 — 地下階'], ['アクセス', 'CLASSIFIED'], ['システム', 'ループ維持装置'], ['状態', '稼働中']],
     meta:[['위치','B1 — 지하층'],['접근 등급','CLASSIFIED'],['시스템','루프 유지 장치'],['상태','활성']]
   },
   power:{
@@ -2007,6 +2028,9 @@ const ROOMS = {
     zhPath:'B1 · 地下层', zhTitle:'发电室',
     zhDesc:'向庇护所全区稳定供电的核心部门。配备主发电设备及停电时即时启动的应急发电系统，可自主储备72小时以上电力，备用油箱与电池组提供双重安全保障。',
     zhMeta:[['位置','B1 — 地下层'],['访问等级','RESTRICTED'],['应急电力','72小时以上'],['运营','自动化管理']],
+    jaPath:'B1 · 地下階', jaTitle:'発電室',
+    jaDesc:'シェルター全域に安定した電力を供給する心臓部。主発電設備とともに停電時に即時起動する非常用発電システムを備え、72時間以上の自己電力備蓄が可能です。予備燃料タンクとバッテリーが二重の安全網を提供します。',
+    jaMeta:[['場所', 'B1 — 地下階'], ['アクセス', 'RESTRICTED'], ['非常電力', '72時間以上'], ['運営', '自動管理']],
     meta:[['위치','B1 — 지하층'],['접근 등급','RESTRICTED'],['비상 전력','72시간 이상'],['운영','자동화 관리']]
   },
   isolation:{
@@ -2019,6 +2043,9 @@ const ROOMS = {
     zhPath:'B1 · 地下层', zhTitle:'紧急隔离区',
     zhDesc:'危机情况下启动的特殊目的区域。可形成与外部完全隔绝的环境，配备生化及电磁屏蔽功能。平时处于封印状态，内部详情不对外公开。警报等级3以上时自动启动封锁协议。',
     zhMeta:[['位置','B1 — 地下层'],['访问等级','EMERGENCY ONLY'],['屏蔽等级','CLASS A'],['启动条件','警报等级 ≥ 3']],
+    jaPath:'B1 · 地下階', jaTitle:'緊急隔離区域',
+    jaDesc:'危機発生時に起動する特殊目的区域。外部と完全に遮断された環境を形成でき、生化学・電磁気シールド機能を備えます。平時は封印状態で内部詳細は非公開。警戒レベル3以上で封鎖プロトコルが自動起動します。',
+    jaMeta:[['場所', 'B1 — 地下階'], ['アクセス', 'EMERGENCY ONLY'], ['シールドレベル', 'CLASS A'], ['起動条件', '警戒レベル ≥ 3']],
     meta:[['위치','B1 — 지하층'],['접근 등급','EMERGENCY ONLY'],['차폐 등급','CLASS A'],['활성 조건','경보 레벨 ≥ 3']]
   },
   /* ── 2F ── */
@@ -2032,6 +2059,9 @@ const ROOMS = {
     zhPath:'2F · 二楼', zhTitle:'个人房间区',
     zhDesc:'分配给每位入住者的私人空间。以最简家具与照明布置的朴素而温馨的房间沿走廊排列。可用自己的物品装饰房间，隐私完全受到保障。',
     zhMeta:[['位置','2F — 二楼'],['访问等级','RESIDENT ONLY'],['容纳人数','单人间'],['设施','床·书桌·收纳']],
+    jaPath:'2F · 2階', jaTitle:'個室エリア',
+    jaDesc:'各入居者に割り当てられた個人スペース。最小限の家具と照明で整えられたシンプルながら温かい部屋が廊下沿いに並びます。自分の物で部屋をカスタマイズでき、完全なプライバシーが保障されます。',
+    jaMeta:[['場所', '2F — 2階'], ['アクセス', 'RESIDENT ONLY'], ['収容人数', '1人部屋'], ['設備', 'ベッド・デスク・収納']],
     meta:[['위치','2F — 2층'],['접근 등급','RESIDENT ONLY'],['수용 인원','1인실'],['편의시설','침대·책상·수납']]
   },
   kitchen:{
@@ -2044,6 +2074,9 @@ const ROOMS = {
     zhPath:'2F · 二楼', zhTitle:'公用厨房',
     zhDesc:'入住者共同烹饪、分享食物的空间。配备宽敞的操作台及多台灶具、烤箱、冰箱，另设有个人食品储存区。偶尔自发举办的集体用餐活动也让这里充满活力。',
     zhMeta:[['位置','2F — 二楼'],['访问等级','RESIDENT'],['使用时间','06:00 — 24:00'],['容纳人数','同时8人']],
+    jaPath:'2F · 2階', jaTitle:'共用キッチン',
+    jaDesc:'入居者が共に料理を作り分け合う空間。広いカウンターと複数のコンロ・オーブン・冷蔵庫を備え、個人食品保管スペースも確保されています。自然発生的な合同食事の場としてこの空間が賑わうことも。',
+    jaMeta:[['場所', '2F — 2階'], ['アクセス', 'RESIDENT'], ['利用時間', '06:00 — 24:00'], ['収容', '同時8名']],
     meta:[['위치','2F — 2층'],['접근 등급','RESIDENT'],['이용 시간','06:00 — 24:00'],['수용 인원','동시 8인']]
   },
   laundry:{
@@ -2056,6 +2089,9 @@ const ROOMS = {
     zhPath:'2F · 二楼', zhTitle:'洗衣室',
     zhDesc:'入住者专用洗涤空间。配备多台滚筒洗衣机和烘干机，洗涤剂共用供应。可通过预约APP提前查看设备使用状况并进行预约。',
     zhMeta:[['位置','2F — 二楼'],['访问等级','RESIDENT'],['使用时间','07:00 — 23:00'],['设备','洗衣机·烘干机多台']],
+    jaPath:'2F · 2階', jaTitle:'洗濯室',
+    jaDesc:'入居者専用の洗濯スペース。ドラム式洗濯機と乾燥機が複数台備わり、洗剤は共用提供されます。予約アプリで機器の使用状況を事前確認・予約できます。',
+    jaMeta:[['場所', '2F — 2階'], ['アクセス', 'RESIDENT'], ['利用時間', '07:00 — 23:00'], ['設備', '洗濯機・乾燥機複数台']],
     meta:[['위치','2F — 2층'],['접근 등급','RESIDENT'],['이용 시간','07:00 — 23:00'],['기기','세탁기·건조기 다수']]
   },
   /* ── 3F ── */
@@ -2069,6 +2105,9 @@ const ROOMS = {
     zhPath:'3F · 三楼', zhTitle:'档案室',
     zhDesc:'保存庇护所历史与循环相关全部记录的空间。数字数据库与实物文件并行保存，系统化的分类体系可快速检索所需信息。部分记录根据查阅等级限制访问。',
     zhMeta:[['位置','3F — 三楼'],['访问等级','STAFF+'],['保存方式','数字·实物并行'],['分类体系','基于循环的编年史']],
+    jaPath:'3F · 3階', jaTitle:'アーカイブルーム',
+    jaDesc:'シェルターの歴史とループに関する全記録が保存される空間。デジタルデータベースと物理文書が並行して保管され、体系的な分類システムで必要な情報を素早く検索できます。一部の記録はアクセスレベルにより閲覧制限があります。',
+    jaMeta:[['場所', '3F — 3階'], ['アクセス', 'STAFF+'], ['保存方式', 'デジタル・物理併用'], ['分類', 'ループ基準年代記']],
     meta:[['위치','3F — 3층'],['접근 등급','STAFF+'],['보존 방식','디지털·물리 병행'],['분류 체계','루프 기준 연대기']]
   },
   analysis:{
@@ -2081,6 +2120,9 @@ const ROOMS = {
     zhPath:'3F · 三楼', zhTitle:'分析室',
     zhDesc:'对收集的数据进行精密检验、寻找规律的专业空间。配备高性能分析工作站和大型显示屏，支持团队协作分析。备有各类仿真软件和统计工具。',
     zhMeta:[['位置','3F — 三楼'],['访问等级','STAFF'],['设备','分析工作站'],['用途','数据·循环分析']],
+    jaPath:'3F · 3階', jaTitle:'分析室',
+    jaDesc:'収集されたデータを精密に検討しパターンを発見する専門スペース。高性能分析ワークステーションと大型ディスプレイが設置され、チーム協働も可能です。各種シミュレーションソフトと統計ツールを完備。',
+    jaMeta:[['場所', '3F — 3階'], ['アクセス', 'STAFF'], ['設備', '分析ワークステーション'], ['用途', 'データ・ループ分析']],
     meta:[['위치','3F — 3층'],['접근 등급','STAFF'],['장비','분석 워크스테이션'],['용도','데이터·루프 분석']]
   },
   reading:{
@@ -2093,6 +2135,9 @@ const ROOMS = {
     zhPath:'3F · 三楼', zhTitle:'阅览室',
     zhDesc:'寻求安静专注时的去处。设有用于查阅档案资料和个人研究的独立阅览台，柔和的灯光与隔音设计提供最佳集中环境。',
     zhMeta:[['位置','3F — 三楼'],['访问等级','RESIDENT+'],['运营时间','08:00 — 24:00'],['座位数','20席']],
+    jaPath:'3F · 3階', jaTitle:'閲覧室',
+    jaDesc:'静かに集中したいときに訪れる空間。アーカイブ資料の閲覧や個人研究のための個別閲覧台が設けられ、低照明と防音設計で最適な集中環境を提供します。',
+    jaMeta:[['場所', '3F — 3階'], ['アクセス', 'RESIDENT+'], ['営業時間', '08:00 — 24:00'], ['定員', '20席']],
     meta:[['위치','3F — 3층'],['접근 등급','RESIDENT+'],['운영 시간','08:00 — 24:00'],['정원','20석']]
   },
   conf3f:{
@@ -2105,6 +2150,9 @@ const ROOMS = {
     zhPath:'3F · 三楼', zhTitle:'会议室',
     zhDesc:'用于团队协作与战略研讨的多功能会议空间。配备大型屏幕和视频会议系统，可连接远程参会者。白板和便利贴随时备好在墙面上，可自由发挥创意。',
     zhMeta:[['位置','3F — 三楼'],['访问等级','STAFF'],['容纳人数','最多12人'],['运营','预约制']],
+    jaPath:'3F · 3階', jaTitle:'会議室',
+    jaDesc:'チーム協業と戦略協議のための多目的会議スペース。大型スクリーンとビデオ会議システムを備え、リモート参加者との接続も可能。ホワイトボードと付箋が壁面に常備されアイデアを自由に展開できます。',
+    jaMeta:[['場所', '3F — 3階'], ['アクセス', 'STAFF'], ['収容人数', '最大12名'], ['運営', '予約制']],
     meta:[['위치','3F — 3층'],['접근 등급','STAFF'],['수용 인원','최대 12인'],['운영','예약제']]
   },
   monitor:{
@@ -2117,6 +2165,9 @@ const ROOMS = {
     zhPath:'3F · 三楼', zhTitle:'服务器监控室',
     zhDesc:'对庇护所全区域进行实时监控的综合管控中心。数十台显示器展示各区域的闭路电视画面、系统状态及环境数据。异常信号触发自动报警系统，当值运营人员全时待岗。',
     zhMeta:[['位置','3F — 三楼'],['访问等级','OPS STAFF'],['运营','24小时值班'],['覆盖范围','庇护所全区域']],
+    jaPath:'3F · 3階', jaTitle:'サーバー監視室',
+    jaDesc:'シェルター全域の状況をリアルタイムで監視する統合管制センター。数十台のモニターが各区域のCCTV映像・システム状態・環境データを表示。異常検知時には自動警報が作動し、当直スタッフが常時待機します。',
+    jaMeta:[['場所', '3F — 3階'], ['アクセス', 'OPS STAFF'], ['運営', '24時間当直'], ['カバレッジ', 'シェルター全区域']],
     meta:[['위치','3F — 3층'],['접근 등급','OPS STAFF'],['운영','24시간 당직'],['커버리지','쉘터 전 구역']]
   },
   /* ── RF ── */
@@ -2130,6 +2181,9 @@ const ROOMS = {
     zhPath:'RF · 屋顶层', zhTitle:'屋顶花园',
     zhDesc:'混凝土与金属构成的庇护所中的一片自然天地。随季节变换的植物盛满花盆与花坛，菜园区域还种植着供应庇护所咖啡厅的香草。风和日丽时，许多入住者在此散步或阅读。',
     zhMeta:[['位置','RF — 屋顶层'],['访问等级','PUBLIC'],['运营时间','日出 — 日落'],['特色','菜园·步道']],
+    jaPath:'RF · 屋上階', jaTitle:'屋上庭園',
+    jaDesc:'コンクリートと金属で作られたシェルターの中の小さな自然。季節ごとに変わる植物が花壇とプランターに溢れ、菜園区域ではシェルターカフェに提供されるハーブも育てられます。風が爽やかな日には多くの入居者がここで散歩したり読書したりします。',
+    jaMeta:[['場所', 'RF — 屋上階'], ['アクセス', 'PUBLIC'], ['営業時間', '日の出 — 日の入り'], ['特徴', '菜園・散歩道']],
     meta:[['위치','RF — 옥상층'],['접근 등급','PUBLIC'],['운영 시간','일출 — 일몰'],['특징','텃밭·산책로']]
   },
   obs:{
@@ -2142,6 +2196,9 @@ const ROOMS = {
     zhPath:'RF · 屋顶层', zhTitle:'天文台',
     zhDesc:'「星光庇护所」名称的起源之地。圆顶形观测室内安装有高性能望远镜，晴朗夜晚入住者们排队仰望繁星。在这里凝视星空，已成为庇护所生活的一项小小仪式。',
     zhMeta:[['位置','RF — 屋顶层'],['访问等级','PUBLIC'],['设备','高性能天文望远镜'],['运营','夜间（晴天）']],
+    jaPath:'RF · 屋上階', jaTitle:'天文台',
+    jaDesc:'「星光シェルター」という名前の由来となった場所。ドーム型観測室には高性能望遠鏡が設置され、晴れた夜には入居者が列をなして星を眺めます。この空間で星を見上げることはシェルター生活の小さな儀式となりました。',
+    jaMeta:[['場所', 'RF — 屋上階'], ['アクセス', 'PUBLIC'], ['設備', '高性能天体望遠鏡'], ['運営', '夜間（晴天）']],
     meta:[['위치','RF — 옥상층'],['접근 등급','PUBLIC'],['장비','고성능 천체 망원경'],['운영','야간 (맑은 날)']]
   },
   lounge:{
@@ -2154,6 +2211,9 @@ const ROOMS = {
     zhPath:'RF · 屋顶层', zhTitle:'休息廊',
     zhDesc:'以天空为顶的惬意空间。设有沙发与户外椅的开放式休憩廊，白天可以沐浴阳光，夜晚可在星光下闲谈。配备简易饮品自动贩卖机，并安装了半透明遮阳棚以备阴雨天气。',
     zhMeta:[['位置','RF — 屋顶层'],['访问等级','PUBLIC'],['运营时间','24小时'],['设施','户外沙发·遮阳棚']],
+    jaPath:'RF · 屋上階', jaTitle:'休憩ラウンジ',
+    jaDesc:'空を天井にしてのびのびできる空間。ソファと屋外チェアが置かれた開放型ラウンジで、昼は日光浴、夜は星明りの下での語らいが楽しめます。簡易飲料自動販売機と、天気が悪い日のための半透明の日よけも設置されています。',
+    jaMeta:[['場所', 'RF — 屋上階'], ['アクセス', 'PUBLIC'], ['営業時間', '24時間'], ['設備', '屋外ソファ・日よけ']],
     meta:[['위치','RF — 옥상층'],['접근 등급','PUBLIC'],['운영 시간','24시간'],['시설','야외 소파·차양막']]
   },
   outdoor:{
@@ -2166,6 +2226,9 @@ const ROOMS = {
     zhPath:'RF · 屋顶层', zhTitle:'户外广播舞台',
     zhDesc:'以天空为背景展开的特别活动空间。小型演出、户外广播、纪念活动等均在此举行。配备移动式音响设备和照明设施，是庇护所最热闹夜晚的舞台。',
     zhMeta:[['位置','RF — 屋顶层'],['访问等级','PUBLIC'],['容量','小型演出'],['运营','活动预约制']],
+    jaPath:'RF · 屋上階', jaTitle:'野外放送ステージ',
+    jaDesc:'空を背景に展開される特別なイベントスペース。小規模公演・野外放送・記念行事などがここで行われます。移動式音響機器と照明設備を完備し、シェルターで最も活気ある夜を演出するステージです。',
+    jaMeta:[['場所', 'RF — 屋上階'], ['アクセス', 'PUBLIC'], ['容量', '小規模公演'], ['運営', 'イベント予約制']],
     meta:[['위치','RF — 옥상층'],['접근 등급','PUBLIC'],['용량','소규모 공연'],['운영','이벤트 예약제']]
   },
 };
@@ -2177,10 +2240,10 @@ function openModal(id){
   const d=ROOMS[id]; if(!d) return;
   Audio.modalOpen(); Audio.click();
 
-  const _title=LANG==='zh'?(d.zhTitle||d.title):LANG==='en'?(d.enTitle||d.title):d.title;
-  const _path =LANG==='zh'?(d.zhPath ||d.path ):LANG==='en'?(d.enPath ||d.path ):d.path;
-  const _desc =LANG==='zh'?(d.zhDesc ||d.desc ):LANG==='en'?(d.enDesc ||d.desc ):d.desc;
-  const _meta =LANG==='zh'?(d.zhMeta ||d.meta ):LANG==='en'?(d.enMeta ||d.meta ):d.meta;
+  const _title=LANG==='ja'?(d.jaTitle||d.enTitle||d.title):LANG==='zh'?(d.zhTitle||d.title):LANG==='en'?(d.enTitle||d.title):d.title;
+  const _path =LANG==='ja'?(d.jaPath ||d.enPath ||d.path ):LANG==='zh'?(d.zhPath ||d.path ):LANG==='en'?(d.enPath ||d.path ):d.path;
+  const _desc =LANG==='ja'?(d.jaDesc ||d.enDesc ||d.desc ):LANG==='zh'?(d.zhDesc ||d.desc ):LANG==='en'?(d.enDesc ||d.desc ):d.desc;
+  const _meta =LANG==='ja'?(d.jaMeta ||d.enMeta ||d.meta ):LANG==='zh'?(d.zhMeta ||d.meta ):LANG==='en'?(d.enMeta ||d.meta ):d.meta;
 
   const imgEl=document.getElementById('m-img');
   const cvEl=document.getElementById('m-canvas');
@@ -2228,111 +2291,155 @@ const TAROT_CARDS=[
    m:'규칙 속에서 진실을 찾아라', mEn:'Seek truth within the rules.', mZh:'在规则中寻找真相。',
    i:'당신이 따르는 것이 진짜 믿음인지, 단순한 습관인지 오늘 물어보라. 쉘터에도 깨지 않아도 되는 법칙과 반드시 깨야 하는 법칙이 있다. 진리는 그 경계를 알고 있다. 오늘 당신 앞의 규칙이 안내인지, 울타리인지 직접 확인하라.',
    iEn:'Ask today whether what you follow is true belief or mere habit. Some rules protect, others confine. Jinri knows the difference. Look closely at the rules before you — are they a guide, or a cage?',
+   cJa:'真理', nJa:'法王', mJa:'規則の中に真実を見つけよ。',
+   iJa:'今日、あなたが従っているものが本当の信念なのか、単なる習慣なのかを問いかけよ。規則はあなたを守るものであり、縛るものでもある。真理はその境界を知っている。今日、あなたの前の規則が道標なのか、柵なのかを確かめよ。',
    iZh:'今天问问自己，你所遵循的是真正的信念，还是单纯的习惯。庇护所里也有不必打破的规则，也有必须打破的规则。真理知道那条界线。今天，亲自确认你面前的规则是向导，还是栅栏。'},
   {f:'hermit.png', c:'키리츠', cEn:'Kiritz', cZh:'基里茨', n:'은둔자', nEn:'THE HERMIT', nZh:'隐者',
    m:'혼자 걷는 길에도 빛은 있다', mEn:'Even the lonely path has light.', mZh:'即使独行之路，也有光。',
    i:'군중의 소음을 잠시 내려놓아라. 키리츠처럼 한 걸음 물러나는 것이 오늘의 답이다. 고독은 결핍이 아니다 — 가장 성실한 동반자일 때가 있다. 깊은 곳에서 빛은 스스로 켜진다.',
    iEn:'Step back from the noise, as Kiritz does. Solitude is not emptiness — sometimes it is the most honest companion you can have. In the quiet, the light finds its own way on.',
+   cJa:'キリツ', nJa:'隠者', mJa:'一人で歩む道にも光はある。',
+   iJa:'群衆の騒音を少し手放せ。キリツのように一歩引くことが今日の答えだ。孤独は欠乏ではない——最も誠実な伴侶となる時がある。深いところから光は自ずと灯る。',
    iZh:'暂时放下人群的喧嚣。像基里茨一样退一步，是今天的答案。孤独不是缺失——有时是最忠实的伙伴。在深处，光会自己亮起来。'},
   {f:'sun.png', c:'나기사', cEn:'Nagisa', cZh:'渚', n:'해', nEn:'THE SUN', nZh:'太阳',
    m:'숨겨진 것이 드러나는 날', mEn:'What was hidden comes to light today.', mZh:'隐藏之物显现的一天。',
    i:'나기사의 빛처럼 오늘은 감춰진 것들이 드러난다. 두려워하지 마라 — 선명해지는 것은 약점이 아니라 당신이 오래 기다려온 진실이다. 빛 아래 서라. 지금이 그때다.',
    iEn:'Like Nagisa\'s light, what has been hidden will surface today. Do not be afraid — what becomes clear is not your weakness, but a truth you have long waited for. Stand in the light. Now is the time.',
+   cJa:'渚', nJa:'太陽', mJa:'隠れていたものが現れる日。',
+   iJa:'渚の光のように、今日は隠されていたものが現れる。恐れるな——明らかになるのはあなたの弱さではなく、あなたが長い間待ち望んでいた真実だ。光の中に立て。今がその時だ。',
    iZh:'像渚的光芒一样，今天隐藏的事物将浮现出来。不要害怕——变得清晰的不是你的弱点，而是你等待已久的真相。站在光下。现在正是那时候。'},
   {f:'star.png', c:'모뉴', cEn:'Monyu', cZh:'默妞', n:'별', nEn:'THE STAR', nZh:'星星',
    m:'가장 어두운 곳에서 희망은 빛난다', mEn:'Hope shines brightest in the dark.', mZh:'希望在最黑暗之处闪耀。',
    i:'모뉴가 가리키는 별처럼, 루프가 몇 번을 돌아도 별은 같은 자리에 있다. 지금 지쳐있다면 괜찮다. 희망은 사라지지 않는다 — 단지 가끔 구름 뒤에 있을 뿐이다. 오늘 밤, 위를 보아라.',
    iEn:'Like the star Monyu points to, no matter how many loops pass, it stays in place. If you are tired now, that is okay. Hope does not disappear — it only hides behind clouds sometimes. Look up tonight.',
+   cJa:'モニュ', nJa:'星', mJa:'最も暗い場所で希望は輝く。',
+   iJa:'モニュが指す星のように、ループが何度回っても星は同じ場所にある。今疲れているなら大丈夫だ。希望は消えない——ただ時々雲の後ろにいるだけだ。今夜、上を見よ。',
    iZh:'像默妞所指向的星星，不管循环转多少次，它都在同一个地方。如果你现在很累，没关系。希望不会消失——只是有时藏在云后。今晚，抬头看看吧。'},
   {f:'chariot.png', c:'레이', cEn:'Rei', cZh:'雷', n:'전차', nEn:'THE CHARIOT', nZh:'战车',
    m:'의지가 방향을 정한다', mEn:'Will determines the direction.', mZh:'意志决定方向。',
    i:'레이처럼, 오늘은 망설임 없이 앞으로 나아가야 할 날이다. 두 힘이 충돌하더라도 방향을 잡는 것은 당신이다. 바퀴를 굴리는 것은 힘이 아니라 의지다. 고삐를 쥐어라.',
    iEn:'Like Rei at the reins, today calls for forward motion without hesitation. Even if two forces pull against each other inside you, it is you who sets the direction. Will, not strength, turns the wheel.',
+   cJa:'レイ', nJa:'戦車', mJa:'意志が方向を決める。',
+   iJa:'レイのように、今日は迷わず前に進む日だ。二つの力がぶつかっても、方向を定めるのはあなただ。車輪を回すのは力ではなく意志だ。手綱を握れ。',
    iZh:'像雷握着缰绳一样，今天是毫不犹豫向前进的一天。即使两股力量相互冲突，掌握方向的也是你。转动车轮的不是力量，而是意志。握紧缰绳。'},
   {f:'fool.png', c:'크로키', cEn:'Croky', cZh:'克罗基', n:'광대', nEn:'THE FOOL', nZh:'愚者',
    m:'시작은 언제나 순수하다', mEn:'Every beginning is pure.', mZh:'开始永远是纯粹的。',
    i:'크로키처럼 두려움 없이 첫발을 내딛어라. 광대는 어리석지 않다 — 모든 것을 알면서도 가볍게 걷는 자다. 오늘은 계획보다 용기가 먼저다. 벼랑 끝이라도 괜찮다. 날 수도 있으니까.',
    iEn:'Step forward like Croky — fearless, light. The Fool is not foolish; they are one who knows everything yet walks lightly anyway. Today, courage comes before planning. Even at the edge of a cliff. You might just fly.',
+   cJa:'クロキ', nJa:'愚者', mJa:'始まりはいつも純粋だ。',
+   iJa:'クロキのように恐れなく最初の一歩を踏み出せ。愚者は愚かではない——全てを知りながら軽やかに歩む者だ。今日は計画より勇気が先だ。崖の端でも大丈夫。飛べるかもしれないから。',
    iZh:'像克罗基一样，无所畏惧地迈出第一步。愚者并不愚蠢——是知晓一切却依然轻盈行走的人。今天，勇气先于计划。就算在悬崖边缘也没关系。说不定能飞起来。'},
   {f:'tower.png', c:'루시', cEn:'Rucy', cZh:'露西', n:'타워', nEn:'THE TOWER', nZh:'塔',
    m:'무너져야 새것이 선다', mEn:'Something must fall for the new to rise.', mZh:'必须崩塌，新的才能立起。',
    i:'루시가 아는 것처럼 — 무너지는 것은 재앙이 아니다. 오늘 흔들리는 것이 있다면, 그것은 무너져야 했던 것이다. 폐허 위에서만 진짜 토대를 놓을 수 있다. 충격을 두려워하지 마라.',
    iEn:'As Rucy knows — collapse is not catastrophe. If something shakes today, it was meant to fall. Only on the ruins can you lay a true foundation. Do not fear the shock.',
+   cJa:'ルシ', nJa:'タワー', mJa:'崩れてこそ新しいものが立つ。',
+   iJa:'ルシが知るように——崩れることは災いではない。今日揺れているものがあれば、それは崩れるべきものだった。廃墟の上にのみ本物の土台を置ける。衝撃を恐れるな。',
    iZh:'像露西所知道的——崩塌不是灾难。今天如果有什么在动摇，那是本该崩塌的东西。只有在废墟之上，才能奠定真正的基础。不要害怕冲击。'},
   {f:'empress.png', c:'디아망', cEn:'Diamant', cZh:'迪亚芒', n:'여황제', nEn:'THE EMPRESS', nZh:'女皇',
    m:'풍요는 내면에서 온다', mEn:'Abundance comes from within.', mZh:'丰盛来自内心。',
    i:'디아망처럼 오늘은 가진 것을 먼저 세어보아라. 결핍을 보기 전에 이미 손 안에 있는 것들을 보아라. 창조는 넉넉한 마음에서 시작되고, 그 넉넉함은 밖이 아닌 안에서 온다.',
    iEn:'Like Diamant, count what you already have before reaching for what you lack. Creation begins in a generous heart, and that generosity grows from within, not from the outside.',
+   cJa:'ディアマン', nJa:'女帝', mJa:'豊かさは内側から来る。',
+   iJa:'ディアマンのように、今日はまず持っているものを数えよ。欠乏を見る前に、すでに手の中にあるものを見よ。創造は豊かな心から始まり、その豊かさは外ではなく内から来る。',
    iZh:'像迪亚芒一样，今天先数数你所拥有的。在看到缺失之前，先看看已经握在手中的东西。创造从宽厚的心开始，而那份宽厚来自内心，而非外部。'},
   {f:'world.png', c:'코즈미', cEn:'Kozmi', cZh:'科兹米', n:'세계', nEn:'THE WORLD', nZh:'世界',
    m:'하나의 루프가 완성된다', mEn:'One loop reaches completion.', mZh:'一个循环走向完成。',
    i:'코즈미가 품은 세계처럼. 오늘 하나의 루프가 완성된다. 끝은 두려운 것이 아니다 — 원이 닫힌다는 뜻이다. 오늘 당신이 마무리하는 것은 당신이 생각하는 것보다 훨씬 의미 있다.',
    iEn:'Like the world Kozmi holds. Today a loop completes. An ending is not something to fear — it means a circle is closing. What you bring to a close today matters far more than you think.',
+   cJa:'コズミ', nJa:'世界', mJa:'一つのループが完成する。',
+   iJa:'コズミが抱く世界のように。今日一つのループが完成する。終わりは恐れるものではない——円が閉じるということだ。今日あなたが締めくくるものは、あなたが思うよりずっと意味がある。',
    iZh:'像科兹米所持有的世界。今天一个循环走向完成。结束不是值得恐惧的事——它意味着圆闭合了。今天你所完结的事，比你想象的要意义深远得多。'},
   {f:'moon.png', c:'루나', cEn:'Luna', cZh:'露娜', n:'달', nEn:'THE MOON', nZh:'月亮',
    m:'보이지 않는 것을 믿어라', mEn:'Trust what cannot be seen.', mZh:'相信看不见的东西。',
    i:'루나가 비추는 달빛처럼. 오늘은 보이지 않는 것들이 실제다. 불안이나 혼란을 느낀다면 — 그것은 진실이 표면 아래에 있기 때문이다. 서두르지 마라. 달은 자신의 속도로 차고 기운다.',
    iEn:'In Luna\'s reflected light, what is invisible is most real today. If you feel anxious or confused — it is because truth lives beneath the surface. Do not rush. The moon rises and falls at its own pace.',
+   cJa:'ルナ', nJa:'月', mJa:'見えないものを信じよ。',
+   iJa:'ルナが照らす月明かりのように。今日は見えないものこそが現実だ。不安や混乱を感じるなら——真実が表面の下にあるからだ。急ぐな。月は自分のペースで満ち欠けする。',
    iZh:'在露娜映照的月光中。今天，看不见的东西才是真实的。如果你感到不安或困惑——那是因为真相在表面之下。不要着急。月亮有自己的节奏涨落。'},
   {f:'high-priestess.png', c:'에아', cEn:'Ea', cZh:'伊亚', n:'여사제', nEn:'THE HIGH PRIESTESS', nZh:'女祭司',
    m:'말하지 않은 것에 귀 기울여라', mEn:'Listen to what is left unsaid.', mZh:'倾听未说出口的。',
    i:'에아처럼 침묵 속에서 듣는 것을 배워라. 오늘은 말하는 날이 아니라 받아들이는 날이다. 모든 답은 이미 당신 안에 있다 — 다만 너무 많은 소리들이 그것을 덮고 있을 뿐이다.',
    iEn:'Learn to listen in silence, as Ea does. Today is a day for receiving, not speaking. All the answers are already inside you — only too much noise covers them.',
+   cJa:'エア', nJa:'女教皇', mJa:'語られなかったものに耳を傾けよ。',
+   iJa:'エアのように沈黙の中で聴くことを学べ。今日は語る日ではなく、受け取る日だ。全ての答えはすでにあなたの中にある——ただあまりにも多くの音がそれを覆っているだけだ。',
    iZh:'像伊亚一样，学会在沉默中倾听。今天不是说话的日子，而是接受的日子。所有答案已经在你内心——只是太多声音将其遮盖了。'},
   {f:'emperor.png', c:'데네브', cEn:'Deneb', cZh:'德内布', n:'황제', nEn:'THE EMPEROR', nZh:'皇帝',
    m:'질서는 혼돈보다 강하다', mEn:'Order outlasts chaos.', mZh:'秩序比混沌更强大。',
    i:'데네브처럼. 오늘은 흐트러진 것들을 정렬할 때다. 스스로의 규칙을 세우고 그것을 지켜라. 진정한 권위는 외부가 아닌 내부에서 온다. 쉘터의 질서가 그렇듯.',
    iEn:'Like Deneb. Today is the day to bring order to what has scattered. Set your own rules and hold to them. True authority comes from within, not from outside — as the shelter\'s order demonstrates.',
+   cJa:'デネブ', nJa:'皇帝', mJa:'秩序は混沌より強い。',
+   iJa:'デネブのように。今日は散らかったものを整える時だ。自分自身のルールを立て、それを守れ。真の権威は外ではなく内から来る。シェルターの秩序がそうであるように。',
    iZh:'像德内布一样。今天是整理散乱之物的时候了。建立自己的规则，并遵守它。真正的权威来自内部，而非外部——就像庇护所的秩序一样。'},
   {f:'hanged-man.png', c:'디밸롭', cEn:'Develope', cZh:'迪威洛', n:'행맨', nEn:'THE HANGED MAN', nZh:'倒吊人',
    m:'멈춤이 때로는 가장 빠른 답', mEn:'Pausing is sometimes the fastest answer.', mZh:'停顿有时是最快的答案。',
    i:'디밸롭처럼 거꾸로 보는 것이 오늘의 지혜다. 막혀있다고 느껴지는가? 멈춤은 실패가 아니다. 다른 각도에서 보면 길이 보일 것이다. 아무것도 하지 않는 것이 가장 현명한 행동일 때가 있다.',
    iEn:'Invert your perspective as Develope does. Feeling blocked? A pause is not failure. Viewed from another angle, the path appears. Sometimes doing nothing is the wisest action of all.',
+   cJa:'ディベロップ', nJa:'吊られた男', mJa:'立ち止まりが時に最も速い答え。',
+   iJa:'ディベロップのように逆さから見ることが今日の知恵だ。行き詰まっていると感じるか？立ち止まりは失敗ではない。別の角度から見れば道が見える。何もしないことが最も賢明な行動の時もある。',
    iZh:'像迪威洛一样，倒过来看是今天的智慧。感到被阻塞了吗？停顿不是失败。从不同角度来看，路会显现。有时候什么都不做才是最明智的行动。'},
   {f:'magician.png', c:'세카이', cEn:'Sekai', cZh:'世界', n:'마법사', nEn:'THE MAGICIAN', nZh:'魔法师',
    m:'필요한 모든 것은 이미 네 손 안에', mEn:'Everything you need is already in your hands.', mZh:'你所需要的一切已在你手中。',
    i:'세카이처럼, 도구는 이미 충분하다. 오늘은 가지지 못한 것을 탓하지 마라. 부족한 것은 도구가 아니라 그것을 쓰는 결단이다. 테이블 위의 것들을 다시 보아라.',
    iEn:'Like Sekai, the tools are already enough. Do not blame what you lack today. What is missing is not the tools but the decision to use them. Look again at what is on the table.',
+   cJa:'セカイ', nJa:'魔法使い', mJa:'必要なものは全てすでに手の中に。',
+   iJa:'セカイのように、道具はすでに十分だ。今日は持っていないものを責めるな。足りないのは道具ではなくそれを使う決断だ。テーブルの上のものをもう一度見よ。',
    iZh:'像世界一样，工具已经足够了。今天不要抱怨你所没有的。缺少的不是工具，而是使用它们的决断。再看看桌上的东西。'},
   {f:'temperance.png', c:'문데이', cEn:'Moonday', cZh:'月岱', n:'절제', nEn:'TEMPERANCE', nZh:'节制',
    m:'균형이 진정한 힘이다', mEn:'Balance is the true strength.', mZh:'平衡是真正的力量。',
    i:'문데이가 루프 속에서 지켜온 것처럼. 극단으로 달리지 마라. 두 흐름 사이 어딘가에 당신이 찾던 것이 있다. 흔들리지 않는 것은 굳은 것이 아니라 잘 조율된 것이다.',
    iEn:'As Moonday has maintained through every loop. Do not run to extremes. What you seek exists somewhere between two currents. What does not waver is not rigid — it is well-tuned.',
+   cJa:'ムーンデイ', nJa:'節制', mJa:'バランスこそが真の力だ。',
+   iJa:'ムーンデイがループの中で守ってきたように。極端に走るな。二つの流れの間のどこかにあなたが求めるものがある。揺れないものは固いのではなく、よく調律されているのだ。',
    iZh:'像月岱在循环中所坚守的。不要走向极端。你所寻求的就在两股流动之间的某处。不动摇的不是坚硬，而是调和得当。'},
   {f:'wheel.png', c:'미래언니', cEn:'Mirae', cZh:'未来姐', n:'운명의 수레바퀴', nEn:'WHEEL OF FORTUNE', nZh:'命运之轮',
    m:'루프는 돌고 기회도 돌아온다', mEn:'The loop turns, and so do chances.', mZh:'循环转动，机会也随之而来。',
    i:'미래언니가 알고 있듯 — 수레바퀴는 멈추지 않는다. 지금 낮은 곳에 있다면 곧 올라갈 것이고, 높은 곳에 있다면 겸손할 때다. 루프도 결국 한 바퀴다. 변화를 두려워하지 마라.',
    iEn:'As Mirae knows — the wheel never stops. If you are low now, you will rise; if high, be humble. Even a loop is just one full turn. Do not fear the change.',
+   cJa:'ミレオンニ', nJa:'運命の輪', mJa:'ループは回り、チャンスも巡ってくる。',
+   iJa:'ミレオンニが知るように——車輪は止まらない。今低い場所にいれば間もなく上がるだろうし、高い場所にいれば謙虚になる時だ。ループも結局一周だ。変化を恐れるな。',
    iZh:'像未来姐所知道的——车轮永不停歇。如果现在处于低谷，很快就会上升；如果在高处，是该谦逊的时候了。循环终究也是一圈。不要害怕变化。'},
   {f:'strength.png', c:'우주', cEn:'Uzu', cZh:'宇宙', n:'힘', nEn:'STRENGTH', nZh:'力量',
    m:'진정한 힘은 부드러움에서 나온다', mEn:'True strength comes from gentleness.', mZh:'真正的力量来自柔和。',
    i:'우주처럼, 오늘 앞에 있는 것을 힘으로 누르려 하지 마라. 인내와 온화함이 어떤 충돌보다 깊이 파고든다. 당신은 이미 충분히 강하다 — 그것을 보여줄 필요가 없다.',
    iEn:'Like Uzu, do not try to overpower what stands before you today. Patience and gentleness cut deeper than any collision. You are already strong enough — there is no need to prove it.',
+   cJa:'ウジュ', nJa:'力', mJa:'真の力は優しさから生まれる。',
+   iJa:'ウジュのように、今日目の前にあるものを力で押さえようとするな。忍耐と穏やかさはどんな衝突より深く刺さる。あなたはすでに十分強い——それを証明する必要はない。',
    iZh:'像宇宙一样，今天不要试图用力量压制面前的事物。忍耐与温和比任何冲突都更深入。你已经足够强大——不需要证明。'},
   {f:'devil.png', c:'프리윌', cEn:'Freewill', cZh:'自由意志', n:'악마', nEn:'THE DEVIL', nZh:'恶魔',
    m:'선택한 사슬인지 구분하라', mEn:'Know which chains you chose.', mZh:'分清是否是你选择的枷锁。',
    i:'프리윌이 묻는다 — 그 사슬은 당신이 선택한 것인가? 오늘 당신을 묶고 있는 것들이 두려움인지, 욕망인지, 습관인지 들여다보아라. 사슬은 생각보다 느슨하다. 눈을 뜨면 보인다.',
    iEn:'Freewill asks — did you choose those chains? Look closely at what binds you today: is it fear, desire, or habit? The chains are looser than you think. Open your eyes and you will see.',
+   cJa:'フリウィル', nJa:'悪魔', mJa:'選んだ鎖かどうかを見極めよ。',
+   iJa:'フリウィルが問う——その鎖はあなたが選んだものか？今日あなたを縛っているものが恐れなのか、欲望なのか、習慣なのかを見つめよ。鎖は思ったより緩い。目を開けば見える。',
    iZh:'自由意志在问——那枷锁是你选择的吗？仔细看看今天束缚你的是恐惧、欲望还是习惯。枷锁比你想象的要松。睁开眼睛就能看见。'},
   {f:'death.png', c:'시렌', cEn:'Siren', cZh:'塞壬', n:'죽음', nEn:'DEATH', nZh:'死神',
    m:'끝은 언제나 새 시작이다', mEn:'Every ending is a new beginning.', mZh:'结束永远是新的开始。',
    i:'시렌이 노래하듯. 죽음 카드는 끝이 아니다. 오늘 무언가가 마무리된다면 — 그것을 보내주어라. 집착은 새로운 것이 들어올 문을 막는다. 변화는 다음 챕터의 첫 문장이다.',
    iEn:'As Siren sings. The Death card is not an ending. If something completes today — let it go. Clinging blocks the door for what comes next. Change is the first sentence of the next chapter.',
+   cJa:'シレン', nJa:'死神', mJa:'終わりはいつも新しい始まりだ。',
+   iJa:'シレンが歌うように。死のカードは終わりではない。今日何かが締めくくられるなら——それを手放せ。執着は新しいものが入る扉を塞ぐ。変化は次の章の最初の一文だ。',
    iZh:'像塞壬歌唱一样。死神牌不是结束。如果今天有什么终结了——就放它走吧。执念堵住了新事物进入的门。变化是下一章的第一句话。'},
   {f:'judgement.png', c:'보안언니', cEn:'Security', cZh:'安保姐', n:'심판', nEn:'JUDGEMENT', nZh:'审判',
    m:'지금이 스스로를 돌아볼 때', mEn:'Now is the time to look within.', mZh:'现在是审视自己的时候。',
    i:'보안언니처럼 냉정하게, 그러나 가혹하지 않게 돌아보아라. 과거의 선택들이 지금의 당신을 만들었다. 그것을 인정하는 것이 다음으로 나아가는 시작이다. 심판은 처벌이 아니라 재출발이다.',
    iEn:'Look back clearly, as Security does — but without cruelty. The choices of the past made who you are now. Acknowledging that is how you move forward. Judgement is not punishment; it is a new start.',
+   cJa:'セキュリティオンニ', nJa:'審判', mJa:'今こそ自分を振り返る時。',
+   iJa:'セキュリティオンニのように冷静に、しかし厳しくなく振り返れ。過去の選択が今のあなたを作った。それを認めることが次へ進む始まりだ。審判は罰ではなく再出発だ。',
    iZh:'像安保姐一样冷静地，但不苛刻地回顾。过去的选择造就了现在的你。承认这一点是走向下一步的开始。审判不是惩罚，而是重新出发。'},
   {f:'justice.png', c:'율리', cEn:'Yuri', cZh:'尤里', n:'정의', nEn:'JUSTICE', nZh:'正义',
    m:'모든 행동에는 결과가 따른다', mEn:'Every action has its consequence.', mZh:'每个行动都有其结果。',
    i:'율리처럼 공정하게 보아라. 오늘 일어나는 일들은 우연이 아닐 수 있다. 원인과 결과의 저울이 기울고 있다. 당신이 해왔던 것들이 지금 돌아오는 중이다. 정직했다면 두려워할 필요 없다.',
    iEn:'See with fairness, as Yuri does. What happens today may not be coincidence. The scales of cause and effect are tipping. What you have done is returning to you now. If you were honest, there is nothing to fear.',
+   cJa:'ユリ', nJa:'正義', mJa:'全ての行動には結果が伴う。',
+   iJa:'ユリのように公正に見よ。今日起きることは偶然ではないかもしれない。因果の天秤が傾いている。あなたがしてきたことが今戻ってくるところだ。正直だったなら恐れる必要はない。',
    iZh:'像尤里一样公正地看待。今天发生的事情可能不是偶然。因果的天平正在倾斜。你所做过的事情现在正在回来。如果你曾经诚实，就无需害怕。'},
   {f:'lovers.png', c:'루션', cEn:'Rución', cZh:'卢雄', n:'연인', nEn:'THE LOVERS', nZh:'恋人',
    m:'선택의 순간, 마음을 따르라', mEn:'At the moment of choice, follow your heart.', mZh:'选择之际，随心而行。',
    i:'루션이 아는 것처럼. 오늘의 선택은 단순한 선호가 아닌 가치의 문제다. 논리는 나중에도 설명할 수 있지만, 이 순간의 감각은 다시 오지 않는다. 두 갈림길 앞에서 마음을 따르라.',
    iEn:'As Rución knows. Today\'s choice is not a matter of preference, but of values. Logic can explain itself later — but the feeling of this moment will not come again. At the fork in the road, follow your heart.',
+   cJa:'ルション', nJa:'恋人', mJa:'選択の瞬間、心に従え。',
+   iJa:'ルションが知るように。今日の選択は単なる好みではなく、価値の問題だ。論理は後でも説明できるが、この瞬間の感覚は二度と来ない。二つの岐路の前で心に従え。',
    iZh:'像卢雄所知道的。今天的选择不是单纯的偏好问题，而是价值观的问题。逻辑之后还可以解释，但这一刻的感觉不会再来。在两条岔路前，随心而行。'},
 ];
 function _tarotToday(){
@@ -2346,15 +2453,16 @@ function _initTarot(){
   if(img) img.src='tarot/'+c.f;
   const st=(id,v)=>{ const el=document.getElementById(id); if(el) el.textContent=v; };
   st('tarot-char', '');
-  const _c = zh?(c.cZh||c.cEn):en?c.cEn:c.c;
-  const _n = zh?(c.nZh||c.nEn):en?c.nEn:c.n;
-  const _m = zh?(c.mZh||c.mEn):en?c.mEn:c.m;
+  const ja=LANG==='ja';
+  const _c = ja?(c.cJa||c.cEn):zh?(c.cZh||c.cEn):en?c.cEn:c.c;
+  const _n = ja?(c.nJa||c.nEn):zh?(c.nZh||c.nEn):en?c.nEn:c.n;
+  const _m = ja?(c.mJa||c.mEn):zh?(c.mZh||c.mEn):en?c.mEn:c.m;
   st('tarot-card-name', _c+' · '+_n);
   st('tarot-card-en', c.nEn);
   st('tarot-msg', _m);
   const badge=document.querySelector('.tarot-badge');
-  if(badge) badge.textContent=zh?'✦  今日之牌':en?'✦  CARD OF THE DAY':'✦  오늘의 카드';
-  if(en||zh){ const el=document.getElementById('tarot-card-en'); if(el) el.style.display='none'; }
+  if(badge) badge.textContent=ja?'✦  今日のカード':zh?'✦  今日之牌':en?'✦  CARD OF THE DAY':'✦  오늘의 카드';
+  if(en||zh||ja){ const el=document.getElementById('tarot-card-en'); if(el) el.style.display='none'; }
   // t-reveal은 enterLobby에서 호출됨
 }
 // 자정 넘으면 카드 자동 교체
@@ -2368,9 +2476,10 @@ function _initTarot(){
 
 function openTarotLb(){
   const c=_tarotToday(), en=LANG==='en', zh=LANG==='zh';
-  const _c = zh?(c.cZh||c.cEn):en?c.cEn:c.c;
-  const _n = zh?(c.nZh||c.nEn):en?c.nEn:c.n;
-  const _m = zh?(c.mZh||c.mEn):en?c.mEn:c.m;
+  const ja=LANG==='ja';
+  const _c = ja?(c.cJa||c.cEn):zh?(c.cZh||c.cEn):en?c.cEn:c.c;
+  const _n = ja?(c.nJa||c.nEn):zh?(c.nZh||c.nEn):en?c.nEn:c.n;
+  const _m = ja?(c.mJa||c.mEn):zh?(c.mZh||c.mEn):en?c.mEn:c.m;
   const _i = zh?(c.iZh||c.iEn):en?c.iEn:c.i;
   document.getElementById('tarot-lb-img').src='tarot/'+c.f;
   document.getElementById('tlb-char').textContent='';
@@ -2378,8 +2487,8 @@ function openTarotLb(){
   document.getElementById('tlb-en').textContent=c.nEn;
   document.getElementById('tlb-msg').textContent=_m;
   document.getElementById('tlb-interp').textContent=_i;
-  document.querySelector('.tlb-badge').textContent=zh?'✦  今日之牌':en?'✦  CARD OF THE DAY':'✦  오늘의 카드';
-  if(en||zh) document.getElementById('tlb-en').style.display='none';
+  document.querySelector('.tlb-badge').textContent=ja?'✦  今日のカード':zh?'✦  今日之牌':en?'✦  CARD OF THE DAY':'✦  오늘의 카드';
+  if(en||zh||ja) document.getElementById('tlb-en').style.display='none';
   document.getElementById('tarot-lb').classList.add('open');
   document.body.style.overflow='hidden';
 }

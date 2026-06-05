@@ -14,7 +14,7 @@
   <script>
   const LANG = localStorage.getItem('starlight_lang') || 'ko';
   function toggleLang() {
-    localStorage.setItem('starlight_lang', {ko:'en',en:'zh',zh:'ko'}[LANG]||'en');
+    localStorage.setItem('starlight_lang', {ko:'en',en:'zh',zh:'ja',ja:'ko'}[LANG]||'en');
     location.reload();
   }
   function applyLang() {
@@ -23,7 +23,7 @@
       el.innerHTML = el.getAttribute(attr).replace(/\|\|/g, '<br>');
     });
     const btn = document.getElementById('btn-lang');
-    document.querySelectorAll('[id^="btn-lang"]').forEach(b=>{ b.textContent = {ko:'EN',en:'ZH',zh:'KO'}[LANG]||'KO'; });
+    document.querySelectorAll('[id^="btn-lang"]').forEach(b=>{ b.textContent = {ko:'EN',en:'ZH',zh:'JA',ja:'KO'}[LANG]||'KO'; });
   }
   </script>
   <style>
