@@ -5671,6 +5671,29 @@ function applyGameLang(){
     const el=document.getElementById(id);
     if(el) el.textContent=txt;
   });
+  // 캐릭터 이름 번역
+  const spNames = isJa ? {
+    monday:'ムンデイ', monu:'モニュ', sekai:'セカイ', ea:'エア',
+    yuri:'ユリ', freewill:'フリーウィル', mirae:'ミレ姉さん',
+    lucy:'ルーシー', ray:'レイ', kirits:'キリツ', security:'セキュリティ姉さん',
+    uzu:'ウジュ', cozmi:'コズミ', develop:'ディベロップ', diamant:'ディアマン',
+    player:'ジヘPTY',
+  } : isZh ? {
+    monday:'周一', monu:'莫妮', sekai:'世界', ea:'伊娅',
+    yuri:'尤里', freewill:'自由意志', mirae:'未来姐',
+    lucy:'露西', ray:'雷', kirits:'基里茨', security:'安全姐',
+    uzu:'宇宙', cozmi:'科兹米', develop:'迪维洛普', diamant:'迪亚曼',
+    player:'智慧PTY',
+  } : {
+    monday:'Moonday', monu:'Monu', sekai:'Sekai', ea:'Ea',
+    yuri:'Yuli', freewill:'Freewill', mirae:'Mirae-unnie',
+    lucy:'Lucy', ray:'Ray', kirits:'Kirits', security:'Security-unnie',
+    uzu:'Uzu', cozmi:'Cozmi', develop:'Develop', diamant:'Diamant',
+    player:'Jihye-PTY',
+  };
+  Object.entries(spNames).forEach(([key, name]) => {
+    if(SP[key]) SP[key].label = name;
+  });
 }
 
 const G={
